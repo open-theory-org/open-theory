@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.Covering
+import Theory.Learning.Covering
 import Foundations.Optimization.FiniteRidge
 
 open MeasureTheory StatLean.StatisticalLearning

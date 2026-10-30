@@ -22,7 +22,7 @@ ARCH = dict(inputs=784, hidden=256, classes=10, hidden_bias_scale=256, output_bi
 
 def header(model):
     a = ARCH
-    return f"""import Foundations.Models.QuantizedMLP
+    return f"""import Models.QuantizedMLP.Basic
 
 set_option maxRecDepth 100000
 set_option maxHeartbeats 0

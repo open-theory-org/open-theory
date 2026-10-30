@@ -8,5 +8,5 @@ resolution of singularities in characteristic zero for schemes, analytic manifol
 spaces. `tests/HironakaSmoke.lean` lists its main theorems with their axioms.
 
 The singular learning theory files import only the analytic form they use,
-`Hironaka.Resolution.Standard.Analytic` (`formal/core/LearningTheory/Singular/Resolution.lean`).
+`Hironaka.Resolution.Standard.Analytic` (`formal/core/Theory/Training/Singular/Resolution.lean`).
 -/

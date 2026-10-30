@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.TrainedRidge
+import Theory.Learning.TrainedRidge
 
 open OpenTheory
 

@@ -1,7 +1,7 @@
 """Claim type `heldout-error` v0.1 for `model_type = "quantized-mlp"`.
 
 Writes the Lean file the kernel checks. The theorem statement is fixed by the template
-`OpenTheory.HeldOut.Claim` (formal/core/Verification/Templates/HeldOut.lean). The bundle supplies
+`OpenTheory.HeldOut.Claim` (formal/core/Specs/HeldOut.lean). The bundle supplies
 integers only. The per-batch error counts below are computed here only to split the kernel's
 work; if they are wrong, the kernel rejects.
 """
@@ -89,7 +89,7 @@ def lean_source(m, codes, rows, k, num, den, d):
     ws = [v - 2 for v in codes]
     n = len(rows)
     arch = ", ".join(str(m[key]) for key in ARCH_KEYS)
-    parts = [f"""import Verification.Templates.HeldOut
+    parts = [f"""import Specs.HeldOut
 
 set_option maxRecDepth 100000
 

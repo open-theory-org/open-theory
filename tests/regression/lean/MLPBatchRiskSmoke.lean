@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.MLPBatchRisk
+import Theory.Learning.MLPBatchRisk
 
 open OpenTheory
 

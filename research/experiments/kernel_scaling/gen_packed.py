@@ -31,7 +31,7 @@ def pack(digits, base):
 def header(chunks, p):
     a = ARCH
     lits = ",\n  ".join(str(c) for c in chunks)
-    return f"""import Foundations.Models.QuantizedMLP
+    return f"""import Models.QuantizedMLP.Basic
 
 set_option maxRecDepth 100000
 set_option maxHeartbeats 0

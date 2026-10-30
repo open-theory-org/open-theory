@@ -170,7 +170,7 @@ uses the trace of the spectral projections. `r` counts eigenvalues `≥ s_r²` o
 is a lower Lebesgue integral, so the estimator's measurability is never needed.
 For general Gaussian noise `Φ(x)` the limit is `Σₐ‖P_T Φ(gₐ)‖²` (`tendsto_risk`).
 
-*End to end in Lean* (`formal/core/LearningTheory/Singular/PlateauEndToEnd.lean`,
+*End to end in Lean* (`formal/core/Theory/Training/Singular/PlateauEndToEnd.lean`,
 `gd_plateau_end_to_end`). The pieces are now joined into one checked statement.
 The good event is `‖Ĉₙ − W₀‖_HS ≤ κ`, with `κ` depending on `s₂` and `‖W₀‖`; its
 probability tends to 1 by Chebyshev. On it, Weyl's inequality splits the data's
@@ -292,7 +292,7 @@ be under-sampled. 50 datasets per point. Small input dimension (`d = 3`).
 ## Experiment 5: a stopping rule that needs no oracle
 
 *Rule.* Let `t̂` be the first time the training loss `½‖Ĉ − BA‖²_F` drops below
-`ρ`, and stop at `1.5·t̂`. **Lean** (`formal/core/LearningTheory/Singular/StoppingRule.lean`,
+`ρ`, and stop at `1.5·t̂`. **Lean** (`formal/core/Theory/Training/Singular/StoppingRule.lean`,
 `stopping_rule_end_to_end`): for any fixed `0 < ρ ≤ s₂/4`, outside events of
 probability → 1, the stopped network converges as `ε → 0` to the truncated SVD,
 whose risk is `r(M+N−r)` (aligned initialization). Before the weakest signal mode
@@ -393,7 +393,7 @@ Numerically (high-precision quadrature): `E[m²] = 0.5, 0.333333343, 2.0` for
 `α = 1/2, 1/3, 2`. This gives the Bayes coefficients `1/4` and `1/6` of
 experiment 1 from first principles, without the general theory.
 
-**Formalized** in `formal/core/LearningTheory/Singular/ScaleInvariantPrior.lean`
+**Formalized** in `formal/core/Theory/Training/Singular/ScaleInvariantPrior.lean`
 (`bayes_second_moment`: `∫ m(z)² d N(0,1) = α`, standard axioms only), with
 differentiation under the integral sign (`hasDerivAt_q`, `hasDerivAt_q1`), the
 differential equation (`ode`, by integration by parts split at `u = 0`), the

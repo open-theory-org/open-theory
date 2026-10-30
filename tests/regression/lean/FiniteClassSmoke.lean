@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.FiniteLearning
+import Theory.Learning.FiniteLearning
 
 open MeasureTheory OpenTheory
 

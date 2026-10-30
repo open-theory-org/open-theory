@@ -1,4 +1,4 @@
-import LearningTheory.Dynamics.FeatureStep
+import Theory.Training.Dynamics.FeatureStep
 
 open OpenTheory
 

@@ -16,7 +16,7 @@ tight one, and is what a held-out certificate should report.
 
 ## The theorem: Catoni's PAC-Bayes bound
 
-`formal/core/LearningTheory/Generalization/PACBayes.lean` proves, for any probability law `D`,
+`formal/core/Theory/Learning/PACBayes.lean` proves, for any probability law `D`,
 any measurable loss in `[0,1]` on a finite hypothesis space, any full-support
 prior `π` fixed independently of the sample, and any `t`:
 
@@ -109,7 +109,7 @@ all posteriors and a grid of temperatures simultaneously.
 
 ## Third certificate: the exact binomial tail
 
-`formal/core/Verification/Statistical/BinomialTail.lean` proves, for any probability law
+`formal/core/Foundations/Probability/BinomialTail.lean` proves, for any probability law
 `D`, any measurable `{0,1}` loss and one hypothesis fixed independently of the
 sample, that the error count `K` of `n` IID draws is exactly binomial:
 `P(K ≤ k) = F_{n,R}(k)`, where `R` is the population error and
@@ -158,16 +158,16 @@ The file is hand-written and imports the generated
 
 ## Checked boundary and reproduction
 
-- `formal/core/Foundations/Models/QuantizedMLP.lean`: the integer decoder. It
+- `formal/core/Models/QuantizedMLP/Basic.lean`: the integer decoder. It
   evaluates in linear time by list traversal; `errorCount_codeOfList` lets the
   kernel check saved networks without indexed lookups.
-- `formal/core/LearningTheory/Generalization/PACBayes.lean`, `PACBayesCodes.lean`: the general
+- `formal/core/Theory/Learning/PACBayes.lean`, `PACBayesCodes.lean`: the general
   theory.
-- `formal/core/Verification/Statistical/QuantizedMLP.lean`: the Hoeffding certificate,
+- `formal/core/Specs/QuantizedMLP/Occam.lean`: the Hoeffding certificate,
   the empirical-risk bridge, and the re-indexing bridge for saved rows.
-- `formal/core/Verification/Statistical/QuantizedMLPPACBayes.lean`: the centred prior,
+- `formal/core/Specs/QuantizedMLP/PACBayes.lean`: the centred prior,
   the generic `dirac_certificate`, and rational inversion of `Φ_t`.
-- `formal/core/Verification/Statistical/BinomialTail.lean`: the exact binomial law of the
+- `formal/core/Foundations/Probability/BinomialTail.lean`: the exact binomial law of the
   error count, the test-set bound and Clopper–Pearson.
 - `examples/certified_accuracy/lean/CertifiedDigits/QuantizedMLPDigits.lean`,
   `examples/certified_accuracy/lean/CertifiedDigits/PACBayesMLPDigits.lean`: generated files with the

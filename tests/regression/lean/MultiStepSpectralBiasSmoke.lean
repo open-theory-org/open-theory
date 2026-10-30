@@ -1,5 +1,5 @@
-import LearningTheory.Dynamics.MultiStepSpectralBias
-import LearningTheory.Dynamics.SpectralBias
+import Theory.Training.Dynamics.MultiStepSpectralBias
+import Theory.Training.Dynamics.SpectralBias
 
 open OpenTheory
 open OpenTheory.MultiStepSpectralBias

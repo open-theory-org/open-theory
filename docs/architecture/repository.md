@@ -24,6 +24,7 @@ Only the kernel and the Lean statements are trusted. Producers are not.
 
 **Lean layout.**
 
-- `lakefile.lean` builds the root module `OpenTheory` (`formal/OpenTheory.lean`), the area modules (`Foundations.…`, `LearningTheory.…`, …) from `formal/core/`, and `CertifiedDigits` from `examples/certified_accuracy/lean/`.
+- `lakefile.lean` builds the root module `OpenTheory` (`formal/OpenTheory.lean`), the layer modules (`Foundations.…`, `Models.…`, `Theory.…`, `Specs.…`) from `formal/core/`, and `CertifiedDigits` from `examples/certified_accuracy/lean/`.
+- `formal/core/` is layered bottom-up: Foundations → Models → Theory → Specs. A module imports only its own layer and earlier ones. See [formal/README.md](../../formal/README.md).
 - The vendored ports are in `formal/vendors/`.
 - The axiom-audit executable is `verifier/backends/formal/audit_axioms.lean`.

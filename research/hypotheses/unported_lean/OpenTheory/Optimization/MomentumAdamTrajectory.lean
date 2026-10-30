@@ -1,8 +1,8 @@
 import Foundations.Data.Foundation
-import LearningTheory.Dynamics.LocalSharpnessDescent
-import LearningTheory.Dynamics.PreconditionedDescent
+import Theory.Training.Dynamics.LocalSharpnessDescent
+import Theory.Training.Dynamics.PreconditionedDescent
 import OpenTheory.Optimization.StochasticSharpnessSGD
-import LearningTheory.Generalization.TrajectoryGeneralization
+import Theory.Learning.TrajectoryGeneralization
 
 /-!
 # Momentum, Exponential Moving Average (EMA), AdamW Decoupled Weight Decay, and Optimizer Regime Selection

@@ -1,4 +1,4 @@
-import LearningTheory.Dynamics.MLPEndpoint
+import Theory.Training.Dynamics.MLPEndpoint
 
 open OpenTheory
 

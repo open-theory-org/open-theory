@@ -1,6 +1,6 @@
 import Foundations.Data.Spectrum
-import Representations.Alignment
-import LearningTheory.Dynamics.MultiStepSpectralBias
+import Theory.Representation.Alignment
+import Theory.Training.Dynamics.MultiStepSpectralBias
 import OpenTheory.Generalization.SpikedSampleComplexity
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset

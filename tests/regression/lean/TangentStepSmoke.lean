@@ -1,5 +1,5 @@
-import LearningTheory.Dynamics.TangentStep
-import LearningTheory.Generalization.PredictionGap
+import Theory.Training.Dynamics.TangentStep
+import Theory.Learning.PredictionGap
 
 open OpenTheory
 

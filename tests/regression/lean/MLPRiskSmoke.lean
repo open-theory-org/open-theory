@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.MLPRisk
+import Theory.Learning.MLPRisk
 
 open OpenTheory
 

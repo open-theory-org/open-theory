@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.RidgeRisk
+import Theory.Learning.RidgeRisk
 
 open OpenTheory
 

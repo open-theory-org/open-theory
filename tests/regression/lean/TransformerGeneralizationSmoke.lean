@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.TransformerGeneralization
+import Theory.Learning.TransformerGeneralization
 
 noncomputable section
 

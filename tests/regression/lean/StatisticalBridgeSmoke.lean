@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.StatisticalBridge
+import Theory.Learning.StatisticalBridge
 
 open OpenTheory
 

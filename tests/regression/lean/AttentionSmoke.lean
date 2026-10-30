@@ -1,4 +1,4 @@
-import Foundations.Models.Attention
+import Models.Attention
 
 open TorchLean OpenTheory.Attention
 

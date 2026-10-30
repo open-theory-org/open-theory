@@ -1,4 +1,4 @@
-import Interpretability.AttentionLogitStability
+import Theory.Function.AttentionLogitStability
 
 noncomputable section
 

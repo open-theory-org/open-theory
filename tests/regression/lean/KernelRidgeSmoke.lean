@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.KernelRidge
+import Theory.Learning.KernelRidge
 
 open OpenTheory
 

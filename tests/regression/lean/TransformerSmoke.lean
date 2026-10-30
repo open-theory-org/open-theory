@@ -1,4 +1,4 @@
-import Foundations.Models.Transformer
+import Models.Transformer
 
 open OpenTheory.Transformer TorchLean
 

@@ -1,5 +1,5 @@
 import CertifiedDigits.PACBayesMLPDigits
-import Verification.Statistical.BinomialTail
+import Foundations.Probability.BinomialTail
 
 /-! # Exact binomial certificate for the 64–16–10 two-bit MLP on held-out digits
 

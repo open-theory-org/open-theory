@@ -1,4 +1,4 @@
-import LearningTheory.Dynamics.MLPBatchBounds
+import Theory.Training.Dynamics.MLPBatchBounds
 
 open OpenTheory
 

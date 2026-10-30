@@ -1,5 +1,5 @@
-import Representations.Alignment
-import Representations.FeatureLearningAdvantage
+import Theory.Representation.Alignment
+import Theory.Representation.FeatureLearningAdvantage
 
 open OpenTheory
 open OpenTheory.FeatureStep

@@ -1,5 +1,5 @@
-import LearningTheory.Singular.NormalCrossing
-import LearningTheory.Singular.AnalyticRLCT
+import Theory.Training.Singular.NormalCrossing
+import Theory.Training.Singular.AnalyticRLCT
 import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
 
 open OpenTheory.Singular

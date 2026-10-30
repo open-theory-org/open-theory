@@ -1,4 +1,4 @@
-import Verification.Statistical.QuantizedMLPPACBayes
+import Specs.QuantizedMLP.PACBayes
 
 /-! # PAC-Bayes certificate for a 64–16–10 two-bit MLP on held-out digits
 

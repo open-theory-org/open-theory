@@ -7,7 +7,7 @@ are unchanged.
 
 ## Implemented increment
 
-`formal/core/LearningTheory/Dynamics/MLPTrajectory.lean` defines first-layer displacement `U`
+`formal/core/Theory/Training/Dynamics/MLPTrajectory.lean` defines first-layer displacement `U`
 from initialization, keeps the readout fixed, and adds decay `−ηλU` to the
 existing squared-loss gradient step. Thus the regularizer is centered at
 initialization. The data term is still one fixed example, not a minibatch.
@@ -37,7 +37,7 @@ residual envelope. The constant is M, not the optional M/2 sharpening.
 
 ## Independently trained linearized trajectory
 
-`formal/core/LearningTheory/Dynamics/MLPComparison.lean` now defines separate GD on the affine
+`formal/core/Theory/Training/Dynamics/MLPComparison.lean` now defines separate GD on the affine
 initial Taylor model and proves its predictions obey the frozen-kernel scalar
 recurrence. Its weights are not equated with the nonlinear weights.
 
@@ -65,7 +65,7 @@ envelope R remains a premise.
 
 ## Centered ridge endpoint
 
-`formal/core/LearningTheory/Dynamics/MLPEndpoint.lean` constructs the actual initial-Jacobian
+`formal/core/Theory/Training/Dynamics/MLPEndpoint.lean` constructs the actual initial-Jacobian
 feature vector, indexed by `(neuron, input coordinate)`, and proves its squared
 norm is K₀. Its one-row design is the inner product with that vector.
 Reusing `Ridge.stationary_minimizes` proves that
@@ -95,7 +95,7 @@ now complete below; the general multi-input guarantee is not.
 
 ## Multi-observation initial features
 
-`formal/core/LearningTheory/Generalization/MLPFixedDesign.lean` constructs the initial-Jacobian
+`formal/core/Theory/Learning/MLPFixedDesign.lean` constructs the initial-Jacobian
 design for any fixed collection of inputs. `predict_flatten` proves that its
 affine predictions equal the MLP Taylor model, including the initial output.
 With labels centered by that output and loss normalized by the sample count,
@@ -133,7 +133,7 @@ their D/R envelopes, or prove a new statistical risk guarantee.
 
 ## Multi-input nonlinear trajectory and fixed-design statistical risk
 
-`formal/core/LearningTheory/Dynamics/MLPBatchTrajectory.lean` and `formal/core/LearningTheory/Generalization/MLPBatchRisk.lean`
+`formal/core/Theory/Training/Dynamics/MLPBatchTrajectory.lean` and `formal/core/Theory/Learning/MLPBatchRisk.lean`
 complete the full multi-observation chain:
 
 1. **Derived multi-input envelopes (`batch_norm_le`, `batch_shift_le`, `batch_residual_le`)**:

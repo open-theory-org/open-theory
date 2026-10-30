@@ -1,4 +1,4 @@
-import LearningTheory.Dynamics.PreconditionedDescent
+import Theory.Training.Dynamics.PreconditionedDescent
 
 open OpenTheory
 open OpenTheory.PreconditionedDescent

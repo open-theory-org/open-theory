@@ -1,4 +1,4 @@
-import LearningTheory.Dynamics.MLPLocalSharpness
+import Theory.Training.Dynamics.MLPLocalSharpness
 
 open OpenTheory
 

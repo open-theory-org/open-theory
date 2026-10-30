@@ -1,4 +1,4 @@
-import Verification.Computation.QuantizedMLPPacked
+import Models.QuantizedMLP.Packed
 
 open OpenTheory.Kronecker OpenTheory.QuantizedMLP
 

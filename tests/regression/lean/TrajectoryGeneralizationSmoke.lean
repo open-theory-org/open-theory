@@ -1,9 +1,9 @@
-import LearningTheory.Generalization.Bounds
-import LearningTheory.Generalization.TrajectoryGeneralization
+import Theory.Learning.Bounds
+import Theory.Learning.TrajectoryGeneralization
 
 open MeasureTheory StatLean.StatisticalLearning OpenTheory
 
--- Part A: Input Lipschitz certificates in formal/core/LearningTheory/Generalization/Bounds.lean
+-- Part A: Input Lipschitz certificates in formal/core/Theory/Learning/Bounds.lean
 #check OpenTheory.l2Norm_nonneg
 #check OpenTheory.l2Norm_sq
 #check OpenTheory.l2Norm_eq_euclideanNorm

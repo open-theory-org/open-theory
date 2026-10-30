@@ -43,7 +43,7 @@ file actually uses:
 
 ```lean
 import Foundations.Data.Sample
-import Representations.Gram
+import Theory.Representation.Gram
 
 namespace OpenTheory
 
@@ -67,8 +67,8 @@ open OpenTheory
 
 The import path follows the file path with `/` replaced by `.` and `.lean`
 removed. For example,
-`formal/core/Representations/Gram.lean` becomes
-`import Representations.Gram`.
+`formal/core/Theory/Representation/Gram.lean` becomes
+`import Theory.Representation.Gram`.
 
 ## Mathlib modules to use now
 
@@ -500,7 +500,7 @@ Useful checks are:
 - `#print Name` to inspect its definition or theorem statement.
 - Ctrl/Cmd-click in the Lean editor to open its source.
 - `lake env lean path/to/File.lean` for a focused compile.
-- `lake build Representations.Gram` for a focused Lake target.
+- `lake build Theory.Representation.Gram` for a focused Lake target.
 
 Avoid `import Mathlib` in core files merely to make an unknown name appear. It
 is fine for exploration, but once the needed declaration is known, use the

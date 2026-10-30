@@ -149,7 +149,7 @@ def export_lean(artifact, output):
         raise ValueError("No non-vacuous certificate to export")
     k0 = T_GRID.index(num["t"])
     a = ARCH
-    parts = [f"""import Verification.Statistical.QuantizedMLPPACBayes
+    parts = [f"""import Specs.QuantizedMLP.PACBayes
 
 /-! # PAC-Bayes certificate for a 64–16–10 two-bit MLP on held-out digits
 

@@ -1,5 +1,5 @@
-import LearningTheory.Dynamics.Contraction
-import LearningTheory.Dynamics.DeepResidualScaling
+import Theory.Training.Dynamics.Contraction
+import Theory.Training.Dynamics.DeepResidualScaling
 
 open OpenTheory
 open OpenTheory.DeepResidualScaling

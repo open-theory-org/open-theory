@@ -34,7 +34,7 @@ def emit(out, name, rows1, rest, ones, rows, errs):
     a = ARCH
     r1 = ",\n  ".join(hex(r) for r in rows1)
     body = ",\n  ".join(f"({hex(x)}, {y})" for x, y in rows)
-    (out / name).write_text(f"""import Verification.Computation.QuantizedMLPPacked
+    (out / name).write_text(f"""import Models.QuantizedMLP.Packed
 
 set_option maxRecDepth 100000
 set_option maxHeartbeats 0

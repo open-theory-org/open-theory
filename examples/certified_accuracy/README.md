@@ -42,7 +42,7 @@ The same claim as a v0.1 bundle (data only, no Lean source). `ot verify` writes 
    (`decide +kernel`, no `native_decide`, no floating point).
 2. **The statistics are proved, not asserted.** The step from "16 errors in 397" to "population
    error ≤ 6.06% with 95% confidence" is the exact binomial (Clopper–Pearson) tail,
-   proved in `formal/core/Verification/Statistical/BinomialTail.lean` for any data distribution.
+   proved in `formal/core/Foundations/Probability/BinomialTail.lean` for any data distribution.
    For a single fixed model this is the tightest valid bound; no looser approximation is used.
 3. **Only standard axioms.** No `sorry`; checked by `verifier/backends/formal/audit_axioms.lean`.
 
@@ -57,7 +57,7 @@ The same claim as a v0.1 bundle (data only, no Lean source). `ot verify` writes 
 ## Scaling (for questions)
 
 - The same pipeline checked a 203,530-parameter 784–256–10 network at about 0.28 s per example
-  (`formal/core/Verification/Computation/QuantizedMLPPacked.lean`).
+  (`formal/core/Models/QuantizedMLP/Packed.lean`).
 - The same method certifies **any** model's outputs whenever each output's correctness is
   machine-checkable (answers to verifiable questions, code that passes tests, reconciled numbers),
   including generated outputs of large models evaluated outside the kernel and committed by hash.

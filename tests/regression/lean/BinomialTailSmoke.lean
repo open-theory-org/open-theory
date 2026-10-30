@@ -1,5 +1,5 @@
 import CertifiedDigits.BinomialMLPDigits
-import LearningTheory.Generalization.OccamBinomial
+import Theory.Learning.OccamBinomial
 
 -- The error count of a fixed set under an IID sample is exactly binomial.
 open MeasureTheory StatLean.StatisticalLearning OpenTheory.BinomialTail

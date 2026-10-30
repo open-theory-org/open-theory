@@ -1,4 +1,4 @@
-import Verification.Statistical.QuantizedMLP
+import Specs.QuantizedMLP.Occam
 
 -- The probability guarantee must cover sample-dependent selection of all 118
 -- parameters. A fixed-model or held-out-only guarantee does not meet this contract.

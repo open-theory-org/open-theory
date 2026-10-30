@@ -5,15 +5,15 @@ package «open_theory» where
   -- Lean / Mathlib 4.34.0. Blueprint lives in blueprint/ (leanblueprint).
 
 -- formal/: the mathematics, the claim templates and the soundness of every check.
--- `OpenTheory` is the root module (formal/OpenTheory.lean); `Core` owns formal/core/<Area>/.
+-- `OpenTheory` is the root module (formal/OpenTheory.lean); `Core` owns formal/core/<Layer>/:
+-- Foundations → Models → Theory → Specs, each importing only the layers before it.
 @[default_target]
 lean_lib «OpenTheory» where
   srcDir := "formal"
 
 lean_lib «Core» where
   srcDir := "formal/core"
-  globs := #[`Foundations, `LearningTheory, `Representations, `Interpretability,
-    `Verification].map .andSubmodules
+  globs := #[`Foundations, `Models, `Theory, `Specs].map .andSubmodules
 
 -- examples/: kernel-checked certificate instances (generated data + one theorem each).
 @[default_target]

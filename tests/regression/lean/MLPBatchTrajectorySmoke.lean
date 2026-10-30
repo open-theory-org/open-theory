@@ -1,4 +1,4 @@
-import LearningTheory.Dynamics.MLPBatchTrajectory
+import Theory.Training.Dynamics.MLPBatchTrajectory
 
 open OpenTheory
 

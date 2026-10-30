@@ -1,6 +1,6 @@
-import LearningTheory.Singular.TruncationRank
-import LearningTheory.Singular.PlateauEndToEnd
-import LearningTheory.Singular.BalancedPlateau
+import Theory.Training.Singular.TruncationRank
+import Theory.Training.Singular.PlateauEndToEnd
+import Theory.Training.Singular.BalancedPlateau
 
 open OpenTheory
 

@@ -1,4 +1,4 @@
-import LearningTheory.Dynamics.InContextRetrieval
+import Theory.Training.Dynamics.InContextRetrieval
 
 noncomputable section
 

@@ -1,4 +1,4 @@
-import LearningTheory.Dynamics.MLPComparison
+import Theory.Training.Dynamics.MLPComparison
 
 open OpenTheory
 

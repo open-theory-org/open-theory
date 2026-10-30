@@ -1,5 +1,5 @@
-import Foundations.Optimization.Convergence
-import LearningTheory.Dynamics.LocalSharpnessDescent
+import Theory.Training.Optimization.Convergence
+import Theory.Training.Dynamics.LocalSharpnessDescent
 
 open OpenTheory
 

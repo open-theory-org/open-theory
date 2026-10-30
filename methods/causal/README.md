@@ -1,3 +1,3 @@
 # causal
 
-Empty. Needs `formal/core/CausalInference/` first.
+Empty. Needs causal models in `formal/core/Theory/Agents/` first.

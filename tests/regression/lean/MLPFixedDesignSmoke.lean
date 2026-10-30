@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.MLPFixedDesign
+import Theory.Learning.MLPFixedDesign
 
 open OpenTheory
 

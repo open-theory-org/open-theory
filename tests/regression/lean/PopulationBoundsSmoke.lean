@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.PopulationBounds
+import Theory.Learning.PopulationBounds
 
 open OpenTheory
 

@@ -1,4 +1,4 @@
-import LearningTheory.Dynamics.MLPTrajectory
+import Theory.Training.Dynamics.MLPTrajectory
 
 open OpenTheory
 

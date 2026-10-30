@@ -50,10 +50,10 @@ one expected value by 1 makes the check fail, as it should.
 
 ## Proved packed inference (done)
 
-`formal/core/Verification/Computation/Kronecker.lean` proves the substitution
+`formal/core/Foundations/Arithmetic/Kronecker.lean` proves the substitution
 (`kronecker_dot`), slot decoding (`pack_slots`) and slot bounds from one
 bitwise `and` (`slot_lt_of_land_eq_zero`).
-`formal/core/Verification/Computation/QuantizedMLPPacked.lean` defines the packed forward
+`formal/core/Models/QuantizedMLP/Packed.lean` defines the packed forward
 pass and proves it equal to the reference decoder (`scoresPacked_eq`), so
 error counts transfer (`errorCount_packed`). The side conditions are a
 length, one comparison and one `and` per packed number.

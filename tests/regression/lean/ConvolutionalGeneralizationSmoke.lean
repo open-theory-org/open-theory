@@ -1,4 +1,4 @@
-import LearningTheory.Generalization.ConvolutionalGeneralization
+import Theory.Learning.ConvolutionalGeneralization
 
 noncomputable section
 

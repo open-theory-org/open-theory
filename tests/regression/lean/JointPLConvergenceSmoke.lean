@@ -1,4 +1,4 @@
-import LearningTheory.Dynamics.JointPLConvergence
+import Theory.Training.Dynamics.JointPLConvergence
 
 open OpenTheory
 open OpenTheory.JointPLConvergence

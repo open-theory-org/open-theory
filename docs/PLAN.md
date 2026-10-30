@@ -137,7 +137,7 @@ Commit the rework on a branch. Add CI (`lake build`, axiom audit, `check_lean_de
 `tests/regression/statement_gate.py --fail`, `check_catalog.py` on new files). Decide on IP before pushing (section 8).
 
 **Phase 1 (weeks 1–4): Certificate v0.1 (C1).**
-- `formal/core/Verification/Templates/HeldOut.lean`: the claim as a fixed template. The verifier rejects any
+- `formal/core/Specs/HeldOut.lean`: the claim as a fixed template. The verifier rejects any
   certificate whose theorem type differs from it, so a prover cannot prove an easier statement.
 - `specs/certificates/schema.json`: subject digests, template id and parameters, evidence commitments,
   attestation method, assumptions from a fixed vocabulary, toolchain pins, validity scope.

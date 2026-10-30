@@ -1,4 +1,4 @@
-import Foundations.Models.Torch
+import Models.Torch
 
 open OpenTheory TorchLean
 

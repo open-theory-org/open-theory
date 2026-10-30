@@ -1,7 +1,7 @@
-import LearningTheory.Singular.PlateauModes
-import LearningTheory.Singular.RRRLearningCoefficient
-import LearningTheory.Singular.PlateauFlow
-import LearningTheory.Singular.ScaleInvariantPrior
+import Theory.Training.Singular.PlateauModes
+import Theory.Training.Singular.RRRLearningCoefficient
+import Theory.Training.Singular.PlateauFlow
+import Theory.Training.Singular.ScaleInvariantPrior
 
 open OpenTheory.Plateau OpenTheory.RRR
 
