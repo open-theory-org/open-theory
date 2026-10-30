@@ -1,6 +1,7 @@
 # Properties
 
-Yes/no tests on one input (or one pair of inputs), stated for any model of the right shape. Empty. Planned:
+Yes/no tests on one model output, stated for any model of the right shape.
 
-- **Correctness, local constancy, equivalence:** the predicates behind the existing specs.
-- **Safety monitors:** monitor soundness and guardedness / LEACE, which `methods/whitebox/` and `methods/runtime/` can certify.
+- [`Prediction`](Prediction.lean): `Predicts y c`, the scores `y` rank class `c` strictly above every other class.
+
+Planned: equivalence of two models, monitor soundness and guardedness / LEACE, which `methods/whitebox/` and `methods/runtime/` can certify.

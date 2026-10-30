@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-27T19:34:20.262108+00:00",
+  "generatedAt": "2026-10-30T22:39:58.379239+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 89,
+  "nodesCount": 95,
   "nodes": [
     {
       "id": "def:sample",
@@ -1943,6 +1943,123 @@
       ],
       "bountyUsd": null,
       "informalSketch": "Resolve $K$ by $\\pi:M\\to U$. Around every $p\\in M$ take a box in the chart at $p$ on which\n$K\\circ\\pi\\asymp|y^{\\alpha}|$, $|\\det D\\pi|\\asymp|y^{\\beta}|$, every centre coordinate is $0$ or\nexceeds the half-width, and $\\varphi\\circ\\pi\\ge\\varphi(\\pi(p))/2$. $\\pi$ is proper, so finitely many\nboxes cover $\\pi^{-1}(\\operatorname{supp}\\varphi)$, and $\\pi$ is onto since its range is closed and\ncontains the dense set $\\{K\\neq0\\}$. Let $\\lambda$ be the least $(\\beta_i+1)/\\alpha_i$ over boxes and\ncoordinates with vanishing centre and $\\alpha_i>0$; a zero of $K$ in the support provides one. By the\nchange of variables formula each piece of $\\int K^{-s}\\varphi$ is between constant multiples of\n$\\int_B\\prod|y_i|^{\\beta_i-s\\alpha_i}$, finite for $s<\\lambda$ by Lemma~\\ref{lem:monomial_box}. The\nzero set of $K$ in the support is null, covered by images of coordinate hyperplanes. At the\nminimizing box $\\varphi$ is bounded below, and the piece diverges for $s\\ge\\lambda$."
+    },
+    {
+      "id": "def:exact_net",
+      "kind": "definition",
+      "title": "Exact primitive and network",
+      "leanName": "OpenTheory.Exact.Prim",
+      "leanNames": [
+        "OpenTheory.Exact.Prim",
+        "OpenTheory.Exact.Net",
+        "OpenTheory.Exact.Net.run",
+        "OpenTheory.Exact.Net.eval",
+        "OpenTheory.Exact.Net.Rules"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": false,
+      "isVerified": true,
+      "dependencies": [],
+      "bountyUsd": null,
+      "informalSketch": null
+    },
+    {
+      "id": "thm:exact_agrees",
+      "kind": "theorem",
+      "title": "Agreement for every network",
+      "leanName": "OpenTheory.Exact.Net.agrees",
+      "leanNames": [
+        "OpenTheory.Exact.Net.agrees"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:exact_net"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Induction on the composition. A primitive is its own agreement proof; for $f$ followed by $g$,\nthe parameter pack splits back into the two packs and the two hypotheses compose."
+    },
+    {
+      "id": "def:interval_rule",
+      "kind": "definition",
+      "title": "Integer boxes and interval rules",
+      "leanName": "OpenTheory.Exact.InBox",
+      "leanNames": [
+        "OpenTheory.Exact.InBox",
+        "OpenTheory.Exact.IntervalRule",
+        "OpenTheory.Exact.Net.box"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": false,
+      "isVerified": true,
+      "dependencies": [
+        "def:exact_net"
+      ],
+      "bountyUsd": null,
+      "informalSketch": null
+    },
+    {
+      "id": "lem:exact_primitives",
+      "kind": "lemma",
+      "title": "Exact linear layer and ReLU",
+      "leanName": "OpenTheory.Exact.linear_agrees",
+      "leanNames": [
+        "OpenTheory.Exact.linear_agrees",
+        "OpenTheory.Exact.linear_box_sound",
+        "OpenTheory.Exact.relu_agrees",
+        "OpenTheory.Exact.relu_box_sound"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:exact_net",
+        "def:interval_rule"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Coordinatewise: TorchLean's matrix--vector product is a sum of products, the integer dot product\nis the same sum, and each weighted term $w x_k$ is bounded by the endpoint chosen by the sign of $w$.\nReLU is monotone."
+    },
+    {
+      "id": "thm:box_sound",
+      "kind": "theorem",
+      "title": "Interval soundness for every network",
+      "leanName": "OpenTheory.Exact.Net.box_sound",
+      "leanNames": [
+        "OpenTheory.Exact.Net.box_sound",
+        "OpenTheory.Exact.reluMLP_box_sound"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:interval_rule",
+        "lem:exact_primitives"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Induction on the composition, as in Theorem~\\ref{thm:exact_agrees}."
+    },
+    {
+      "id": "thm:region_certificate",
+      "kind": "theorem",
+      "title": "Region certificate and local robustness",
+      "leanName": "OpenTheory.Predicts",
+      "leanNames": [
+        "OpenTheory.Predicts",
+        "OpenTheory.OnRegion.certify",
+        "OpenTheory.OnRegion.certify_sound",
+        "OpenTheory.OnRegion.robust_of_certify",
+        "OpenTheory.Exact.inBox_lower",
+        "OpenTheory.OnRegion.inBox_ball"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "thm:box_sound"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Interval soundness puts the output in the propagated box; there the score of $c$ is at least its\nlower bound, which exceeds every other upper bound. The lower corner of a well-formed box lies in\nit."
     }
   ]
 }

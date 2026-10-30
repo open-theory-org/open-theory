@@ -6,14 +6,15 @@ package «open_theory» where
 
 -- formal/: the mathematics, the claim templates and the soundness of every check.
 -- `OpenTheory` is the root module (formal/OpenTheory.lean); `Core` owns formal/core/<Layer>/:
--- Foundations → Models → Theory → Specs, each importing only the layers before it.
+-- Foundations → Models → Properties → Theory → Scopes → Specs, each importing only the layers
+-- before it (tests/regression/check_layers.py).
 @[default_target]
 lean_lib «OpenTheory» where
   srcDir := "formal"
 
 lean_lib «Core» where
   srcDir := "formal/core"
-  globs := #[`Foundations, `Models, `Theory, `Specs].map .andSubmodules
+  globs := #[`Foundations, `Models, `Properties, `Theory, `Scopes, `Specs].map .andSubmodules
 
 -- examples/: kernel-checked certificate instances (generated data + one theorem each).
 @[default_target]

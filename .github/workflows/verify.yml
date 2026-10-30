@@ -39,6 +39,9 @@ jobs:
       - name: Assurance levels (catalog)
         run: python3 tests/regression/check_catalog.py
 
+      - name: Check formal/core layering
+        run: python3 tests/regression/check_layers.py
+
       - name: Fail if committed graph is stale
         run: python3 blueprint/export_blueprint.py --check
 
