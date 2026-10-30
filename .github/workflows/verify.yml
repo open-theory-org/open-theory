@@ -31,40 +31,29 @@ jobs:
         run: lake build
 
       - name: Axiom audit
-        run: lake env lean --run scripts/audit_axioms.lean
+        run: lake env lean --run verifier/backends/formal/audit_axioms.lean
 
       - name: Check blueprint Lean names
-        run: python3 scripts/check_lean_decls.py
+        run: python3 tests/regression/check_lean_decls.py
+
+      - name: Assurance levels (catalog)
+        run: python3 tests/regression/check_catalog.py
 
       - name: Fail if committed graph is stale
-        run: python3 scripts/export_blueprint.py --check
+        run: python3 blueprint/export_blueprint.py --check
 
-      - name: Regression tests
+      - name: Regression and integration tests
         run: |
-          python3 -m unittest discover -s tests -p 'test_*.py'
+          python3 -m unittest discover -s tests/regression -p 'test_*.py'
+          python3 -m unittest discover -s tests/integration -p 'test_*.py'
           lake build audit_axioms
-          lake env lean tests/AuditRegression.lean
-          lake env lean tests/FoundationSmoke.lean
-          lake env lean tests/RidgeSmoke.lean
-          lake env lean tests/ArchitectureSmoke.lean
-          lake env lean tests/OptimizerSmoke.lean
-          lake env lean tests/AttentionSmoke.lean
-          lake env lean tests/TransformerSmoke.lean
-          lake env lean tests/PopulationBoundsSmoke.lean
-          lake env lean tests/StatisticalBridgeSmoke.lean
-          lake env lean tests/FiniteClassSmoke.lean
-          lake env lean tests/CoveringSmoke.lean
-          lake env lean tests/TrainedRidgeSmoke.lean
-          lake env lean tests/RidgeRiskSmoke.lean
-          lake env lean tests/KernelRidgeSmoke.lean
-          lake env lean tests/FeatureStepSmoke.lean
-          lake env lean tests/TangentStepSmoke.lean
-          lake env lean tests/MLPTrajectorySmoke.lean
-          lake env lean tests/MLPComparisonSmoke.lean
-          lake env lean tests/MLPEndpointSmoke.lean
-          lake env lean tests/MLPFixedDesignSmoke.lean
-          lake env lean tests/MLPBatchBoundsSmoke.lean
-          lake env lean tests/MLPRiskSmoke.lean
+          for f in tests/regression/lean/*.lean; do echo "== $f"; lake env lean "$f"; done
+
+      - name: "Conformance: ot verify (1 accept, 14 rejects)"
+        run: python3 tests/conformance/heldout_verify.py
+
+      - name: "Conformance: demo (1 accept, 4 rejects)"
+        run: tests/conformance/certified_accuracy.sh
 
       - name: Upload blueprint graph
         uses: actions/upload-artifact@v4

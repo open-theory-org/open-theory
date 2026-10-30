@@ -1,0 +1,14 @@
+id = "pacbayes-catoni-certificate"
+name = "Catoni PAC-Bayes certificate for a quantized MLP"
+level = "verified"
+mode = "verified-checker"
+kind = "statistical"
+summary = "Prior learned on separate data, Dirac posterior on the saved network; KL and exp/log numerics are checked by the kernel."
+implementation = ["methods/statistical/pacbayes_mlp_certificate.py"]
+assumptions = ["A1-iid", "A2-heldout-independent", "A4-labels"]
+trusted = ["Lean kernel", "statement of OpenTheory.PACBayes.catoni_pacBayes"]
+conformance = ["tests/integration/test_pacbayes_mlp_certificate.py"]
+
+[lean]
+spec = ["OpenTheory.PACBayes.catoni", "OpenTheory.PACBayes.kl"]
+correctness = ["OpenTheory.PACBayes.catoni_pacBayes", "OpenTheory.QuantizedMLP.mlp_pacBayes", "OpenTheory.QuantizedMLP.dirac_certificate"]

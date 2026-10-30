@@ -1,0 +1,2 @@
+r=1 H=1 n= 3000 eps=1e-03  n*G(MLE_r)= 1.78  n*minG= 1.47  n*minD= 0.0000  n*D@bestG= 0.331
+r=1 H=1 n= 3000 eps=1e-05  n*G(MLE_r)= 1.66  n*minG= 1.56  n*minD= 0.0000  n*D@bestG= 0.096

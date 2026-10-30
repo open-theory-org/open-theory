@@ -4,24 +4,46 @@ open Lake DSL
 package «open_theory» where
   -- Lean / Mathlib 4.34.0. Blueprint lives in blueprint/ (leanblueprint).
 
+-- formal/: the mathematics, the claim templates and the soundness of every check.
+-- `OpenTheory` is the root module (formal/OpenTheory.lean); `Core` owns formal/core/<Area>/.
 @[default_target]
 lean_lib «OpenTheory» where
-  -- Library configuration options
+  srcDir := "formal"
+
+lean_lib «Core» where
+  srcDir := "formal/core"
+  globs := #[`Foundations, `LearningTheory, `Representations, `Interpretability,
+    `Verification].map .andSubmodules
+
+-- examples/: kernel-checked certificate instances (generated data + one theorem each).
+@[default_target]
+lean_lib «CertifiedDigits» where
+  srcDir := "examples/certified_accuracy/lean"
 
 require TorchLean from git
   "https://github.com/lean-dojo/TorchLean.git" @ "2d148d85839d97b02b06e8e02be61e3d57be3ad7"
+
+-- Resolution's Hironaka formalization, tag `v4.34.0` (same Mathlib commit as ours).
+-- The whole library is imported by `formal/core/Foundations/Hironaka.lean`.
+require hironaka from git
+  "https://github.com/resolutionorg/hironaka.git" @ "a0d237580a68818b5142b6d404a2670b3fcee697"
 
 -- Keep Mathlib last: its support-package revisions take precedence.
 require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @ "5ed2965256430c3649e86755f9576b54eca72435"
 
 lean_exe audit_axioms where
-  root := `scripts.audit_axioms
+  root := `verifier.backends.formal.audit_axioms
 
 -- Narrow, provenance-recorded FoML port for the pinned Mathlib version.
 lean_lib FoML where
-  srcDir := "vendor/FoML"
+  srcDir := "formal/vendors/FoML"
 
 -- Narrow, provenance-recorded StatLean port for finite-class PAC bounds.
 lean_lib StatLean where
-  srcDir := "vendor/StatLean"
+  srcDir := "formal/vendors/StatLean"
+
+-- Narrow, provenance-recorded SLT port: matrix perturbation infrastructure
+-- (Courant–Fischer, Eckart–Young–Mirsky, Weyl, Davis–Kahan).
+lean_lib SLT where
+  srcDir := "formal/vendors/SLT"

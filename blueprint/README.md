@@ -32,7 +32,7 @@ leanblueprint serve        # http://0.0.0.0:8000/
 Platform JSON (committed, consumed by open-theory-platform):
 
 ```bash
-python3 scripts/export_blueprint.py blueprint/blueprint.json
+python3 blueprint/export_blueprint.py blueprint/blueprint.json
 ```
 
 `isVerified` is true only when the **proof** has `\leanok` (or a definition is `\leanok` with no proof). Statement-only `\leanok` means the claim is in Lean, possibly still `sorry`.

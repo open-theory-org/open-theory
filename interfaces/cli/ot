@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+"""ot: the OpenTheory command line.
+
+  ot verify <bundle> [--json]                     check a certificate
+  ot certify heldout <artifact> --out <bundle>    write a held-out error certificate (untrusted)
+
+Exit codes: 0 accepted, 1 rejected, 2 the verifier could not run (never a verdict).
+"""
+import sys
+from pathlib import Path
+
+if sys.version_info < (3, 11):
+    sys.stderr.write("error: ot needs Python 3.11 or newer. This is not a verdict.\n")
+    sys.exit(2)
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "interfaces" / "python"))
+
+try:
+    from opentheory.cli import main
+except Exception as e:  # noqa: BLE001
+    sys.stderr.write(f"error: could not load the verifier ({type(e).__name__}: {e}). This is not a verdict.\n")
+    sys.exit(2)
+
+sys.exit(main(sys.argv[1:]))

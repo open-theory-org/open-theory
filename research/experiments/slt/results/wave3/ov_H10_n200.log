@@ -1,0 +1,1 @@
+H=10 n=  200 params= 200  bayes=   0.218±0.004  gd_conv=   0.270±0.004  gd_early_fair=   0.135±0.005  gd_best_on_path=   0.091±0.002  conv=0.99  (863s)

@@ -1,0 +1,14 @@
+id = "occam-code-certificate"
+name = "Occam bound for a model selected from a finite code space"
+level = "verified"
+mode = "verified-checker"
+kind = "statistical"
+summary = "Training may pick any code; the union bound over 4^p codes is proved, and the numerical tail is checked by the kernel."
+implementation = ["methods/statistical/quantized_mlp_certificate.py"]
+assumptions = ["A1-iid", "A4-labels"]
+trusted = ["Lean kernel", "statement of OpenTheory.QuantizedMLP.selected_code_certificate"]
+conformance = ["tests/integration/test_quantized_mlp_certificate.py"]
+
+[lean]
+spec = ["OpenTheory.QuantizedMLP.classificationLoss"]
+correctness = ["OpenTheory.QuantizedMLP.selected_code_certificate", "OpenTheory.QuantizedMLP.digits_certificate"]

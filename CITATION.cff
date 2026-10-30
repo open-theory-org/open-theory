@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Moullec"
+  given-names: "Matthieu"
+title: "OpenTheory"
+date-released: 2026-10-27
+url: "https://github.com/matthieu-perso/open-theory"

@@ -1,0 +1,9 @@
+id = "rrr-learning-coefficient-estimate"
+name = "Monte Carlo generalization error of reduced-rank regression"
+level = "experimental"
+kind = "statistical"
+summary = "Gibbs-sampled Bayes predictive vs. MLE vs. truncated SVD; compares n·E[G] with the learning coefficient. Empirical evidence for the plateau paper."
+implementation = ["research/experiments/slt/rrr.py"]
+assumptions = []
+trusted = ["Python/NumPy implementation", "MCMC convergence"]
+conformance = []

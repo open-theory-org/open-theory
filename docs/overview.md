@@ -1,79 +1,54 @@
-# OpenTheory core (math)
 
-OpenTheory formalizes pieces of deep learning theory in **Lean 4**. This directory is the math repository: Lean, the Massot blueprint, CI, and a local MCP server.
 
-The web dashboard is a **different** GitHub repo. It fetches `blueprint/blueprint.json` from this repository (GitHub raw or Pages). Core does not expose an HTTP API.
+Verifying AI Models: a taxonomy of specifications.
 
----
 
-## Architecture
+# Introduction 
 
-```
-OpenTheory/Data/             sample, spectral gap, spiked model
-OpenTheory/Architectures/    activation, two-layer net, residual step, expressivity
-OpenTheory/Parameterization/ µP and NTK scale factors
-OpenTheory/Representation/   features, Gram matrix, alignment
-OpenTheory/Optimization/     empirical risk, descent path, convergence rate
-OpenTheory/Generalization/   Lipschitz bounds, operator norm, Rademacher
-OpenTheory/Dynamics/         contraction, spectral bias, feature-learning conjecture
-OpenTheory/EndToEnd.lean     population risk ≤ ε_approx + ε_opt + ε_gen
-blueprint/src/               leanblueprint (web.tex, print.tex, content.tex)
-scripts/                     axiom audit, JSON export, \lean name check
-mcp/                         stdio MCP for local agents
-home_page/                   Jekyll landing page for GitHub Pages
-```
+AI verifiability and safety has been 
 
-See [`lean-libraries.md`](lean-libraries.md) for the reusable Mathlib and
-external Lean libraries relevant to each part of this architecture, including
-import and Lake dependency examples.
+Guarantees as to the behavior of AI systems. Guarantees that fit a set of 
 
----
+Scalable oversight [], 
+alignment, 
+capability control 
+AI safety. 
 
-## Blueprint convention
+A specified and guaranteed ojutput.  
 
-Patrick Massot / `leanblueprint`:
+In the case of AI, empirical guarantees are not enough. Provable and formal guarantees, that are not only independantly verifiablem, but scalable. 
 
-- `\lean{Name}` — declaration in this library or Mathlib
-- `\leanok` on a definition or statement — the statement is formalized
-- `\leanok` inside `proof` — the proof is formalized (no `sorry`)
-- `\uses{labels}` — dependency graph
 
-CI refuses `\lean` names that are not declarations.
 
----
+A first approach is ot identify what formal guarantees would. The right mathematical formalisms for tractable, and scalable. The field of formal verification has [], [] 
 
-## Genesis tree
+The missing step is An initial step is the clarification of the claims that we . Formalization as a prerequisite for the verification.   
 
-### Formalized definitions and elementary lemmas (proof `\leanok`)
+At OpenTheory we  become a framework for turning knowledge about AI systems into independently verifiable guarantees, a taxonomy, as a map of the claims that can be verified, and can serve as the stepping stone for AI verification. 
 
-- Data: `def:sample`, `def:spectral_gap`, `def:spiked_model`
-- Architectures: `def:activation`, `def:two_layer_net`, `def:residual`, `def:approx_error`, `lem:approx_error_pointwise`
-- Parameterization: `def:mup_scaling`, `def:ntk_scaling`
-- Representation: `def:features`, `def:gram`, `def:alignment`, `lem:alignment_nonneg`
-- Optimization: `def:empirical_risk`, `def:descent`
-- Generalization: `lem:lipschitz_gelu`, `lem:bounded_mean`
-- End-to-end: `def:end_to_end`, `lem:population_risk`
 
-### Statements in Lean, proofs open (`sorry`)
+# What can we verify ? 
 
-- `lem:expressivity_subspace` — finite-sample approximation on the spike
-- `lem:alignment_le_one`, `lem:alignment_certificate`
-- `lem:risk_exponential` — Grönwall bound under a descent rate
-- `lem:layer_lipschitz`, `lem:forward_lipschitz`
-- `lem:rademacher_bound` — symmetrization scaffold
-- `lem:gaussian_operator_norm` — Gaussian operator-norm tails
-- `lem:spectral_bias_mup` — spectral bias under µP (bounty)
-- `lem:representation_contraction` — residual contraction (bounty)
-- `conj:grand_feature_learning` — global alignment (apex bounty)
+In our case 
 
----
 
-## Local commands
+# Properties 
 
-```bash
-lake exe cache get
-lake build
-lake env lean --run scripts/audit_axioms.lean
-python3 scripts/check_lean_decls.py
-python3 scripts/export_blueprint.py
-```
+
+# A Taxonomy of properties 
+
+# References 
+
+
+That connects deep learning theory, mechanistic interpretability, formal verification, and AI alignment. But these are different disciplines, and the crucial opportunity is to build the connections between them.
+
+I would organise the whole strategy around four questions:
+1. What can we know about an AI system? — Deep learning theory and interpretability.
+2. What guarantees can we derive from that knowledge? — Mathematical and statistical verification.
+3. How can anyone independently check those guarantees? — Formal proofs, cryptography, and evidence protocols.
+4. What makes those guarantees desirable? — Alignment, safety, human intentions, and decision theory.
+OpenTheory can provide the shared scientific foundation. Structure can make it commercially valuable through verifiable decision-making.
+
+
+
+

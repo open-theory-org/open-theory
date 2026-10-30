@@ -4,7 +4,7 @@ Modern analyses of deep networks mix high-dimensional probability, gradient-flow
 
 OpenTheory is a dual-track project in the sense of Massot's Lean blueprints~\cite{tao2023pfr}: every claim below is written for humans in \LaTeX{} and, when a Lean name is given, mapped to a declaration in the \texttt{OpenTheory} library. Border colour on the dependency graph records whether the \emph{statement} is in Lean (\texttt{\textbackslash leanok} on the environment). Fill colour records whether the \emph{proof} is kernel-checked (\texttt{\textbackslash leanok} inside \texttt{proof}).
 
-The chapters follow the dependency order of the library. Data states the hypotheses. Architectures define the network and what it can represent. Parameterization fixes how width enters initialization and learning rates. Representation defines features, the data Gram matrix, and alignment. Optimization is the training dynamics of the loss. Generalization passes from empirical risk to population risk. Dynamics describes how representations move. The last chapter adds the three error budgets.
+The chapters follow the dependency order of the library. Data states the hypotheses. Architectures define the network and what it can represent. Parameterization fixes how width enters initialization and learning rates. Representation defines features, the data Gram matrix, and alignment. Optimization is the training dynamics of the loss. Generalization passes from empirical risk to population risk. Dynamics describes how representations move.
 
 The only axioms permitted besides Mathlib's \texttt{propext}, \texttt{Classical.choice}, and \texttt{Quot.sound} are \texttt{sorryAx} on explicitly open targets. Custom axioms fail CI.
 
@@ -94,7 +94,7 @@ The average of numbers each at most $\varepsilon$ is at most $\varepsilon$. Mult
 \end{proof}
 
 \begin{lemma}[Finite-sample expressivity on the spike]\label{lem:expressivity_subspace}
-\lean{OpenTheory.exists_subspace_approximation, OpenTheory.forward_zero_of_act_zero, OpenTheory.biasless_zero_sample_obstruction, OpenTheory.subspaceLiftNet, OpenTheory.subspaceLiftNet_forward_eq, OpenTheory.empiricalApproxError_subspaceLiftNet, OpenTheory.exists_exact_sample_interpolator_of_anchor, OpenTheory.exists_subspace_approximation_of_signal_net}
+\lean{OpenTheory.forward_zero_of_act_zero, OpenTheory.biasless_zero_sample_obstruction, OpenTheory.subspaceLiftNet, OpenTheory.subspaceLiftNet_forward_eq, OpenTheory.empiricalApproxError_subspaceLiftNet, OpenTheory.exists_exact_sample_interpolator_of_anchor, OpenTheory.exists_subspace_approximation_of_signal_net}
 \leanok
 \uses{def:spiked_model, def:approx_error, def:activation}
 Let the target be a function of the first $k = \mathrm{signalRank}$ coordinates of a spiked model. Embedding a signal-subspace network $\mathrm{net}_{\mathrm{sig}}$ into $\R^d$ via \texttt{subspaceLiftNet} (zeroing the $d-k$ bulk coordinates of $W_1$) satisfies $(\mathrm{subspaceLiftNet}\,\mathrm{net}_{\mathrm{sig}})(x) = \mathrm{net}_{\mathrm{sig}}(x_{1:k})$ for all $x\in\R^d$, preserving empirical approximation error exactly while eliminating all bulk-coordinate sensitivity. Moreover, when dual separating directions exist on the signal coordinates with $\sigma(0)=0$ and $\sigma(c)\ne 0$, a width-$n$ lifted network achieves exact zero empirical error (\texttt{exists\_exact\_sample\_interpolator\_of\_anchor}); conversely, for biasless networks with $\sigma(0)=0$ on a zero sample, we record the exact obstruction $\mathrm{empiricalApproxError} = |\mathrm{target}(0)|$ (\texttt{biasless\_zero\_sample\_obstruction}).
@@ -283,8 +283,8 @@ Let $n\ge 1$ and $a_1,\dots,a_n\in\R$ with $|a_i|\le 1$ for all $i$. Then
 Triangle inequality for finite sums and $|a_i|\le 1$ give $\bigl|\sum a_i\bigr|\le n$. Multiply by the positive scalar $n^{-1}$.
 \end{proof}
 
-\begin{lemma}[Rademacher symmetrization]\label{lem:rademacher_bound}
-\lean{OpenTheory.rademacher_symmetrization, OpenTheory.rademacherAvg, OpenTheory.symmetrization_ghost_decomp, OpenTheory.symmetrization_pointwise_diff_le, OpenTheory.symmetrization_two_mul_bound, OpenTheory.linear_rademacher_avg_le, OpenTheory.twoLayer_rademacher_avg_le}
+\begin{lemma}[Deterministic ghost-sample and Rademacher-average inequalities]\label{lem:rademacher_bound}
+\lean{OpenTheory.rademacherAvg, OpenTheory.symmetrization_ghost_decomp, OpenTheory.symmetrization_pointwise_diff_le, OpenTheory.symmetrization_two_mul_bound, OpenTheory.linear_rademacher_avg_le, OpenTheory.twoLayer_rademacher_avg_le}
 \leanok
 \uses{def:two_layer_net, lem:bounded_mean, lem:layer_lipschitz}
 For any two samples $X, X'$ and sign vector $\varepsilon\in\{-1,+1\}^n$, the signed ghost-sample empirical difference decomposes as $\frac{1}{n}\sum_{i=1}^n \varepsilon_i(f(X_i)-f(X'_i)) = \widehat{\mathcal{R}}_X(\varepsilon,f) + \widehat{\mathcal{R}}_{X'}(-\varepsilon,f)$ and is bounded in absolute value by $|\widehat{\mathcal{R}}_X(\varepsilon,f)| + |\widehat{\mathcal{R}}_{X'}(-\varepsilon,f)| \le 2 B$ when $|\widehat{\mathcal{R}}|\le B$~\cite{bartlett2002rademacher}. Furthermore, linear predictors satisfy $|\widehat{\mathcal{R}}_X(\varepsilon, \langle w,\cdot\rangle)| \le \|w\|_2\,\|\frac{1}{n}\sum_i \varepsilon_i X_i\|_2$, and two-layer networks with $|W_{2,k}|\le A$ satisfy $|\widehat{\mathcal{R}}_X(\varepsilon, f_{\mathrm{net}})| \le A\sum_{k=1}^m |\widehat{\mathcal{R}}_X(\varepsilon, h_k)|$.
@@ -294,21 +294,21 @@ For any two samples $X, X'$ and sign vector $\varepsilon\in\{-1,+1\}^n$, the sig
 Split $\varepsilon_i(f(X_i)-f(X'_i)) = \varepsilon_i f(X_i) + (-\varepsilon_i)f(X'_i)$ and apply the triangle inequality to obtain the factor-$2$ ghost-sample bound. Exchange the sample and coordinate sums for linear predictors and apply Cauchy--Schwarz; expand the readout layer for two-layer networks.
 \end{proof}
 
-\begin{lemma}[Spectral norm of Gaussian projections]\label{lem:gaussian_operator_norm}
-\lean{OpenTheory.gaussian_operator_norm_bound, OpenTheory.matVec_l2Norm_le_frobenius, OpenTheory.sqrt_frobeniusSq_le_of_entry_abs_le, OpenTheory.frobenius_norm_RandomInit_expectation_bound, OpenTheory.gordonThreshold_pos, OpenTheory.subGaussianOpTail_mono, OpenTheory.subGaussianOpTail_pos_of_gt}
+\begin{lemma}[Deterministic Frobenius bounds on weight matrices]\label{lem:gaussian_operator_norm}
+\lean{OpenTheory.matVec_l2Norm_le_frobenius, OpenTheory.sqrt_frobeniusSq_le_of_entry_abs_le, OpenTheory.sqrt_frobeniusSq_le_of_fanIn_entry_bound}
 \leanok
 \uses{def:two_layer_net, def:alignment}
-Every matrix $W\in\R^{m\times d}$ satisfies $\|Wx\|_2 \le \|W\|_F\|x\|_2$, with $\|W\|_F \le \sqrt{md}\,B$ under entrywise bound $|W_{ij}|\le B$ and $\|W\|_F \le \sqrt{m} \le \sqrt{m}+\sqrt{d}$ under fan-in scaling $|W_{ij}|\le 1/\sqrt{d}$. The Gordon--Vershynin threshold $C(m,d,t) = \sqrt{m}+\sqrt{d}+t$~\cite{vershynin2018high} is strictly positive and monotone in $t\ge 0$, and the sub-Gaussian tail confidence $1 - 2e^{-t^2/2}$ is strictly increasing on $t\ge 0$ and positive for $t > \sqrt{2\log 2}$.
+Every matrix $W\in\R^{m\times d}$ satisfies $\|Wx\|_2 \le \|W\|_F\|x\|_2$, with $\|W\|_F \le \sqrt{md}\,B$ under entrywise bound $|W_{ij}|\le B$ and $\|W\|_F \le \sqrt{m} \le \sqrt{m}+\sqrt{d}$ under fan-in scaling $|W_{ij}|\le 1/\sqrt{d}$. The probabilistic statement for Gaussian matrices, $\|W\|_{\mathrm{op}} \le \sqrt{m}+\sqrt{d}+t$ with probability at least $1-2e^{-t^2/2}$~\cite{vershynin2018high}, is \emph{not} formalized here.
 \end{lemma}
 \begin{proof}
 \leanok
-Bound each row inner product $(Wx)_i = \langle W_{i,\cdot}, x\rangle$ via Cauchy--Schwarz, square and sum over $i\in\mathrm{Fin}\,m$ to obtain $\|Wx\|_2 \le \|W\|_F\|x\|_2$, and verify monotonicity of the threshold and Gaussian tail expression.
+Bound each row inner product $(Wx)_i = \langle W_{i,\cdot}, x\rangle$ via Cauchy--Schwarz, square and sum over $i\in\mathrm{Fin}\,m$ to obtain $\|Wx\|_2 \le \|W\|_F\|x\|_2$.
 \end{proof}
 
 \chapter{Dynamics}
 
-\begin{lemma}[Spectral bias in $\mup$ scaling]\label{lem:spectral_bias_mup}
-\lean{OpenTheory.spectral_bias_mup_alignment, OpenTheory.spectral_bias_mup_gap_alignment_cont, OpenTheory.spectral_bias_mup_gap_alignment_disc, OpenTheory.MultiStepSpectralBias.hasDerivAt_modeAmpCont, OpenTheory.MultiStepSpectralBias.modeAmpDisc_step, OpenTheory.MultiStepSpectralBias.signal_to_bulk_ratio_cont, OpenTheory.MultiStepSpectralBias.signal_to_bulk_ratio_disc, OpenTheory.MultiStepSpectralBias.alignment_lower_bound_of_signal_bulk, OpenTheory.MultiStepSpectralBias.spectral_bias_alignment_cont_ge, OpenTheory.MultiStepSpectralBias.spectral_bias_alignment_disc_ge, OpenTheory.MultiStepSpectralBias.spiked_model_alignment_cont_ge, OpenTheory.MultiStepSpectralBias.multistep_kernel_growth_improves_ridge_mse}
+\begin{lemma}[Conditional spectral bias in $\mup$ scaling]\label{lem:spectral_bias_mup}
+\lean{OpenTheory.spectral_bias_mup_gap_alignment_cont, OpenTheory.spectral_bias_mup_gap_alignment_disc, OpenTheory.MultiStepSpectralBias.hasDerivAt_modeAmpCont, OpenTheory.MultiStepSpectralBias.modeAmpDisc_step, OpenTheory.MultiStepSpectralBias.signal_to_bulk_ratio_cont, OpenTheory.MultiStepSpectralBias.signal_to_bulk_ratio_disc, OpenTheory.MultiStepSpectralBias.alignment_lower_bound_of_signal_bulk, OpenTheory.MultiStepSpectralBias.spectral_bias_alignment_cont_ge, OpenTheory.MultiStepSpectralBias.spectral_bias_alignment_disc_ge, OpenTheory.MultiStepSpectralBias.spiked_model_alignment_cont_ge, OpenTheory.MultiStepSpectralBias.multistep_kernel_growth_improves_ridge_mse}
 \leanok
 \uses{def:mup_scaling, def:alignment, lem:alignment_certificate, def:spectral_gap, lem:feature_learning_advantage}
 Under $\mup$ feature-learning scaling on a data Gram matrix with spectral gap $\gamma_{\mathrm{lead}} \ge \gamma_{\mathrm{bulk}} + \Delta\gamma$ ($\Delta\gamma > 0$), eigenmodes along eigenspace $\gamma$ evolve at continuous rate $e^{\gamma t}$ and discrete rate $(1 + \eta\gamma)^T$~\cite{rahaman2019spectral}:
@@ -329,7 +329,7 @@ Combine $e^{2\gamma_{\mathrm{bulk}}t} = e^{2(\gamma_{\mathrm{bulk}}-\gamma_{\mat
 \end{proof}
 
 \begin{lemma}[Representation contraction in residual blocks]\label{lem:representation_contraction}
-\lean{OpenTheory.resnet_representation_contraction, OpenTheory.resnet_step_contraction_le, OpenTheory.resnet_representation_contraction_lipschitz, OpenTheory.DeepResidualScaling.branchOutput_l2Norm_le, OpenTheory.DeepResidualScaling.residualStep_l2Norm_le, OpenTheory.DeepResidualScaling.residualStep_sqrt_depth_scaling, OpenTheory.DeepResidualScaling.deepResidual_l2Norm_le, OpenTheory.DeepResidualScaling.one_add_div_pow_le_exp, OpenTheory.DeepResidualScaling.deepResidualChain_depth_independent_exp_bound, OpenTheory.DeepResidualScaling.deepResidual_norm_window}
+\lean{OpenTheory.resnet_step_contraction_le, OpenTheory.resnet_representation_contraction_lipschitz, OpenTheory.DeepResidualScaling.branchOutput_l2Norm_le, OpenTheory.DeepResidualScaling.residualStep_l2Norm_le, OpenTheory.DeepResidualScaling.residualStep_sqrt_depth_scaling, OpenTheory.DeepResidualScaling.deepResidual_l2Norm_le, OpenTheory.DeepResidualScaling.one_add_div_pow_le_exp, OpenTheory.DeepResidualScaling.deepResidualChain_depth_independent_exp_bound, OpenTheory.DeepResidualScaling.deepResidual_norm_window}
 \leanok
 \uses{lem:lipschitz_gelu, def:residual, lem:layer_lipschitz}
 For a residual branch $h \mapsto h + \alpha\,\sigma(Wh)$ with $L_\sigma$-Lipschitz activation and $L_\sigma\|W\|_F \le c$:
@@ -351,37 +351,6 @@ and when $\sigma(0)=0$, representation norms satisfy the two-sided non-collapse 
 \begin{proof}
 \leanok
 Bound each coordinate of $\sigma(Wx)-\sigma(Wy)$ via Cauchy--Schwarz and $L_\sigma$-Lipschitzness, square and sum over rows to obtain $\|\sigma(Wx)-\sigma(Wy)\|_2 \le L_\sigma\|W\|_F\|x-y\|_2$, and apply the Euclidean triangle inequality to $x + \alpha\sigma(Wx)$. Induct over $L$ layers and apply $(1+c/L)^L \le (e^{c/L})^L = e^c$.
-\end{proof}
-
-\begin{conjecture}[Global feature-learning alignment]\label{conj:grand_feature_learning}
-\lean{OpenTheory.feature_learning_resnet_alignment, OpenTheory.alignmentHorizon, OpenTheory.exp_decay_le_eps_of_ge_alignmentHorizon, OpenTheory.mup_spectral_alignment_reaches_one_sub_eps, OpenTheory.mup_spectral_alignment_of_ge_horizon, OpenTheory.deep_resnet_mup_feature_alignment_certificate}
-\leanok
-\uses{lem:spectral_bias_mup, lem:representation_contraction, lem:gaussian_operator_norm, def:alignment, def:ntk_scaling}
-Deep residual networks trained under $\mup$ scaling with spectral gap $\Delta\gamma > 0$ achieveboth depth-independent $e^c$-Lipschitz representation stability across arbitrary depth $L\ge 1$ (under $1/L$ branch scaling) and quantitative subspace alignment $a(H_t, P) \ge 1 - \varepsilon$ with relative unaligned feature energy $\lVert H_t - H_t P\rVert_F^2 \le \varepsilon\lVert H_t\rVert_F^2$ for all training times $t \ge T_{\mathrm{align}}(\eta_{W_1}, \Delta\gamma, S_0, B_0, \varepsilon) = \max\bigl(0, \frac{\log((B_0 + S_0\varepsilon)/(S_0\varepsilon))}{2\eta_{W_1}\Delta\gamma}\bigr)$, strictly beyond the frozen-feature Neural Tangent Kernel regime~\cite{jacot2018neural,arora2019exact}.
-\end{conjecture}
-\begin{proof}
-\leanok
-For $t \ge T_{\mathrm{align}}$, $\frac{B_0}{S_0}\exp(-2\eta_{W_1}\Delta\gamma\,t) \le \frac{B_0}{B_0 + S_0\varepsilon}\varepsilon \le \varepsilon$. Combining with \cref{lem:spectral_bias_mup} and \cref{lem:representation_contraction} yields both $a(H_t, P) \ge 1 - \varepsilon$ and the depth-independent $e^c$-Lipschitz residual propagation bound.
-\end{proof}
-
-\chapter{End-to-end guarantee}
-
-\begin{definition}[Error budget]\label{def:end_to_end}
-\lean{OpenTheory.EndToEndError, OpenTheory.populationRiskBound}
-\leanok
-\uses{lem:expressivity_subspace, lem:risk_exponential, lem:rademacher_bound, conj:grand_feature_learning}
-An error budget is a triple $(\varepsilon_{\mathrm{approx}},\varepsilon_{\mathrm{opt}},\varepsilon_{\mathrm{gen}})$ of non-negative reals. The population-risk bound is their sum. Expressivity supplies $\varepsilon_{\mathrm{approx}}$, optimization supplies $\varepsilon_{\mathrm{opt}}$, and generalization supplies $\varepsilon_{\mathrm{gen}}$. Alignment is what makes the approximation term available for the features training actually reaches.
-\end{definition}
-
-\begin{lemma}[Population risk adds]\label{lem:population_risk}
-\lean{OpenTheory.population_risk_le_sum}
-\leanok
-\uses{def:end_to_end}
-If the empirical risk is at most $\varepsilon_{\mathrm{approx}}+\varepsilon_{\mathrm{opt}}$ and the population risk is at most the empirical risk plus $\varepsilon_{\mathrm{gen}}$, then the population risk is at most $\varepsilon_{\mathrm{approx}}+\varepsilon_{\mathrm{opt}}+\varepsilon_{\mathrm{gen}}$.
-\end{lemma}
-\begin{proof}
-\leanok
-Add the two inequalities.
 \end{proof}
 
 \chapter{Checked reuse foundation}
@@ -790,7 +759,7 @@ Specialize `FeatureStep.preactivation_step` to $f_0(x)=0$, $W_{2,i}=s_i/m$, and 
 \begin{lemma}[Multi-head attention ablation fidelity, residual propagation, and risk transfer]\label{lem:attention_ablation}
 \lean{OpenTheory.AttentionAblation.headContribution_norm_le, OpenTheory.AttentionAblation.ablation_diff_eq, OpenTheory.AttentionAblation.subset_ablation_norm_le, OpenTheory.AttentionAblation.single_head_ablation_norm_le, OpenTheory.AttentionAblation.multiHead_value_perturbation, OpenTheory.AttentionAblation.residual_block_ablation_bound, OpenTheory.AttentionAblation.multilayer_residual_perturbation, OpenTheory.AttentionAblation.ablation_pointwise_sq_error_le, OpenTheory.AttentionAblation.ablation_population_mse_le, OpenTheory.AttentionAblation.single_head_ablation_population_mse_le}
 \leanok
-\uses{lem:attention_convex, lem:population_envelope, lem:tangent_step}
+\uses{lem:tangent_step}
 Consider an $H$-head hard-masked attention layer $\mathrm{MHA}(x) = \sum_{h=1}^H W_{O,h}\,\mathrm{rowOutput}(s_h, m_h, v_h)$ and the head-ablation intervention $\mathrm{MHA}_{\mathrm{keep}}(x) = \sum_{h\in\mathrm{keep}} W_{O,h}\,\mathrm{rowOutput}(s_h, m_h, v_h)$ that zeros out heads in $\mathrm{keep}^c$ without rescaling remaining heads:
 \begin{enumerate}
 \item \textbf{Head-ablation fidelity:} If every ablated head $h\in\mathrm{keep}^c$ has at least one unmasked key and value norm bounded by $\|v_{h,i}\|\le B_{V,h}$, then
@@ -836,7 +805,7 @@ Complete the square in $\eta$ to prove optimality of $\eta^\star = 1/S_{\mathrm{
 \begin{lemma}[Trajectory-localized out-of-sample generalization bound]\label{lem:trajectory_generalization}
 \lean{OpenTheory.TrajectoryGeneralization.forward_param_diff_le, OpenTheory.TrajectoryGeneralization.paramLoss_lipschitz, OpenTheory.TrajectoryGeneralization.clippedSqLoss_lipschitz, OpenTheory.TrajectoryGeneralization.clippedSqLoss_param_lipschitz, OpenTheory.TrajectoryGeneralization.trajectoryBall_loss_cover, OpenTheory.TrajectoryGeneralization.trajectory_uniform_deviation_tail, OpenTheory.TrajectoryGeneralization.contractive_trajectory_in_ball, OpenTheory.TrajectoryGeneralization.contractive_trajectory_generalization_tail, OpenTheory.TrajectoryGeneralization.approx_erm_trajectory_excess_risk_tail}
 \leanok
-\uses{lem:ball_cover_oracle, lem:mlp_contractive, lem:forward_lipschitz}
+\uses{lem:mlp_contractive, lem:forward_lipschitz}
 For a two-layer network with $|W_{2,i}|\le A$, $|\sigma'|\le L$, inputs with $\|x\|_2^2\le E$, and an $L_\ell$-Lipschitz $[0,1]$-bounded loss $\ell$ (such as the clipped squared loss $\min(1, ((p-y)/B)^2)$ with $L_\ell = 2/B$), the parameter-to-loss map $u\mapsto \ell(f_{u}(x), y)$ is $L_{\mathrm{param}}$-Lipschitz on $\mathbb{R}^{md}$ with $L_{\mathrm{param}} = L_\ell m A L\sqrt{E}$. Consequently, for any trajectory radius $R\ge 0$ (such as the contractive radius $U_\infty$ or coercive radius $S/\sqrt{n\lambda}$) and grid resolution $\delta>0$, the parameter ball $B_{md}(R) = \{u\in\mathbb{R}^{md} : \|u\|_2\le R\}$ admits an explicit finite loss cover of cardinality $N(R,\delta) \le (\mathrm{coverAxis}(R,\delta,md)+1)^{md}$ such that for every $n\ge 1$ and $\varepsilon>0$:
 \[
 \mathbb{P}_{s\sim P^n}\!\left(\sup_{u\in B_{md}(R)} \bigl|\widehat{R}_s(u) - R_P(u)\bigr| > \varepsilon + 2 L_{\mathrm{param}}\delta\right)
@@ -852,7 +821,7 @@ Write $f_u(x) - f_v(x)$ as the forward change from base network $\mathrm{atDispl
 \begin{lemma}[Softmax score sensitivity, joint Q/K/V stability, and logit-margin concentration]\label{lem:attention_logit_stability}
 \lean{OpenTheory.AttentionLogitStability.rowOutput_sub_eq_centered_sum, OpenTheory.AttentionLogitStability.rowOutput_score_perturbation_l1, OpenTheory.AttentionLogitStability.rowOutput_score_perturbation_centered, OpenTheory.AttentionLogitStability.rowOutput_joint_qkv_perturbation, OpenTheory.AttentionLogitStability.multiHead_joint_qkv_perturbation, OpenTheory.AttentionLogitStability.tail_mass_eq_of_focused, OpenTheory.AttentionLogitStability.focused_rowOutput_approx_dominant, OpenTheory.AttentionLogitStability.focused_weight_l1_bound, OpenTheory.AttentionLogitStability.focused_score_perturbation_stability, OpenTheory.AttentionLogitStability.logit_margin_implies_focused, OpenTheory.AttentionLogitStability.logit_margin_output_stability}
 \leanok
-\uses{lem:attention_convex, lem:attention_ablation}
+\uses{lem:attention_ablation}
 Let $p(s, m) = \mathrm{rowWeights}(s, m)$ denote the hard-masked softmax attention distribution on $\mathrm{Fin}\,n$ when at least one key is unmasked:
 \begin{enumerate}
 \item \textbf{Centered value-dispersion & joint Q/K/V perturbation:} For any reference vector $\bar{v}\in E$ with $\|v_i - \bar{v}\|\le \Delta_V$ on unmasked keys and value shift $\|v_{1,i} - v_{2,i}\|\le \delta_V$, perturbing scores $s_1\to s_2$ and values $v_1\to v_2$ satisfies
@@ -931,28 +900,6 @@ For the unregularized empirical MSE $\mathcal{L}_0(u) = \frac{1}{2n}\|F(u)-y\|_2
 Square $\|\nabla\mathcal{L}_0(u)\|_2 = \frac{1}{n}\|J_u^* r_u\|_2 \ge \frac{\sigma_{\min}}{n}\|r_u\|_2$ and substitute $\|r_u\|_2^2 = 2n\mathcal{L}_0(u)$. Induct on $T$: at step $T$, $\|r_{u_T}\|_2\le S$ activates \cref{lem:mlp_derived_sharpness} at $\lambda=0$ with sharpness $S_{\mathrm{MLP}}(0,S)$, giving $\mathcal{L}_0(u_{T+1}) \le (1 - \frac{\sigma_{\min}^2}{n S_{\mathrm{MLP}}(0,S)})\mathcal{L}_0(u_T) \le \mathcal{L}_0(0)$, which preserves $\|r_{u_{T+1}}\|_2\le S$.
 \end{proof}
 
-\begin{lemma}[Mini-batch SGD under local sharpness, critical batch size, and noise horizon]\label{lem:stochastic_sharpness_sgd}
-\lean{OpenTheory.StochasticSharpnessSGD.sgd_local_sharpness_one_step, OpenTheory.StochasticSharpnessSGD.sgd_pointwise_pythagorean_step, OpenTheory.StochasticSharpnessSGD.sgd_optimal_lr_with_noise, OpenTheory.StochasticSharpnessSGD.sgdNetProgress_noiseAwareStep_eq, OpenTheory.StochasticSharpnessSGD.sgdNetProgress_sub_eq_sq, OpenTheory.StochasticSharpnessSGD.noiseAwareStep_maximizes_sgdNetProgress, OpenTheory.StochasticSharpnessSGD.optimal_sgd_progress_vs_full_batch, OpenTheory.StochasticSharpnessSGD.critical_batch_half_efficiency, OpenTheory.StochasticSharpnessSGD.linear_scaling_regime_progress, OpenTheory.StochasticSharpnessSGD.batch_size_doubling_speedup, OpenTheory.StochasticSharpnessSGD.sgd_pl_noise_ball_convergence, OpenTheory.StochasticSharpnessSGD.mlp_sgd_noise_floor_proportional_to_inv_batch}
-\leanok
-\uses{lem:local_sharpness_descent, lem:mlp_derived_sharpness}
-For mini-batch SGD with batch size $B\ge 1$, squared gradient signal $G = \|g\|_2^2$, and mini-batch variance $\sigma^2/B$ under local sharpness $S_{\mathrm{loc}} > 0$:
-\begin{enumerate}
-\item \textbf{Noise-aware optimal step and critical batch size:} Net one-step progress $\mathrm{sgdNetProgress}(\eta, S_{\mathrm{loc}}, G, \sigma^2, B) = \eta(1 - \eta S_{\mathrm{loc}}/2)G - \frac{\eta^2 S_{\mathrm{loc}}}{2}\frac{\sigma^2}{B}$ is uniquely maximized by $\eta_{\mathrm{opt}} = \frac{1}{S_{\mathrm{loc}}}\frac{G}{G + \sigma^2/B} = \frac{1}{S_{\mathrm{loc}}}\frac{B}{B + B_{\mathrm{crit}}}$ where $B_{\mathrm{crit}} = \sigma^2/G$, achieving
-\[
-\mathrm{sgdNetProgress}(\eta_{\mathrm{opt}}) = \frac{G}{2 S_{\mathrm{loc}}}\cdot\frac{B}{B + B_{\mathrm{crit}}},
-\]
-which scales linearly with $B$ for $B\le B_{\mathrm{crit}}$ and achieves exactly $50\%$ of full-batch progress at $B = B_{\mathrm{crit}}$.
-\item \textbf{Multi-step PL convergence to the $1/B$ noise floor:} Under $G_t \ge 2\mu(E_t - F)$ and $0 < \eta \le 1/S_{\mathrm{loc}}$, mini-batch SGD satisfies for all $T\in\mathbb{N}$:
-\[
-E_T - F \le (1 - \eta\mu)^T(E_0 - F) + \frac{\eta\,S_{\mathrm{loc}}\,\sigma^2}{2\mu B}.
-\]
-\end{enumerate}
-\end{lemma}
-\begin{proof}
-\leanok
-Complete the square in $\eta$ against total second moment $G + \sigma^2/B$ to establish optimality of $\eta_{\mathrm{opt}}$, divide numerator and denominator by $G/B$ to obtain the batch efficiency factor $B/(B + B_{\mathrm{crit}})$, and induct on $E_t - F - \mathrm{sgdNoiseFloor}$ for the multi-step PL horizon bound.
-\end{proof}
-
 \begin{lemma}[In-context associative retrieval dynamics and step complexity]\label{lem:in_context_retrieval}
 \lean{OpenTheory.InContextRetrieval.logitMargin_after_step, OpenTheory.InContextRetrieval.logitMargin_trajectory_ge, OpenTheory.InContextRetrieval.bilinearScore_step_eq, OpenTheory.InContextRetrieval.queryStep_score_separation, OpenTheory.InContextRetrieval.bilinearQueryStep_margin_growth, OpenTheory.InContextRetrieval.icl_attention_weight_convergence_real_sub, OpenTheory.InContextRetrieval.icl_retrieval_error_exponential_decay, OpenTheory.InContextRetrieval.icl_step_complexity_certificate, OpenTheory.InContextRetrieval.icl_population_risk_bound}
 \leanok
@@ -987,15 +934,15 @@ For an $L$-layer Transformer residual stack $\mathrm{residualTrajectory}(L, \mat
 Factor $\|u-v\|_2$ out of `residualPerturbationEnvelope` by induction on $L$ (`transformerPerturbationEnvelope_smul`) and apply `multilayer_residual_perturbation`. Under $1/L$ depth scaling, bound the recurrence by $L_0(1+c_0/L)^L \le L_0 e^{c_0}$. Combine with `BallCover.euclideanBall_net` and `Covering.uniform_deviation_tail` for the generalization tail. For safety interventions, combine `multilayer_residual_perturbation` and `PredictionGap.sq_norm_le_double` under `P.risk_le_envelope`, and use linearity of $P_{\mathrm{unsafe}}$ over `keep`.
 \end{proof}
 
-\begin{lemma}[Convolutional translation equivariance, receptive-field locality, and CNN vs.\ MLP sample complexity separation]\label{lem:convolutional_generalization}
+\begin{lemma}[Convolutional translation equivariance, receptive-field locality, and a comparison of CNN vs.\ MLP covering upper bounds]\label{lem:convolutional_generalization}
 \lean{OpenTheory.ConvolutionalGeneralization.cyclicPatch_shift, OpenTheory.ConvolutionalGeneralization.convPreactivation_shift_equivariant, OpenTheory.ConvolutionalGeneralization.convFeatureMap_shift_equivariant, OpenTheory.ConvolutionalGeneralization.convForward_shift_invariant, OpenTheory.ConvolutionalGeneralization.patchEnergy_le_inputEnergy, OpenTheory.ConvolutionalGeneralization.conv_param_diff_le, OpenTheory.ConvolutionalGeneralization.convParamLoss_lipschitz, OpenTheory.ConvolutionalGeneralization.convBall_loss_cover, OpenTheory.ConvolutionalGeneralization.conv_uniform_deviation_tail, OpenTheory.ConvolutionalGeneralization.conv_approx_erm_excess_risk_tail, OpenTheory.ConvolutionalGeneralization.cnn_lip_le_mlp_lip, OpenTheory.ConvolutionalGeneralization.cnn_lip_lt_mlp_lip, OpenTheory.ConvolutionalGeneralization.cnn_covering_strictly_smaller_than_mlp, OpenTheory.ConvolutionalGeneralization.cnn_vs_mlp_sample_complexity_ratio}
 \leanok
-\uses{lem:trajectory_generalization, lem:ball_cover_oracle}
+\uses{lem:trajectory_generalization}
 For a $c$-channel convolutional layer with filter width $k \le d$, shared weights $W\in\mathbb{R}^{c\times k}$, activation $\sigma$ ($|\sigma'|\le L$), and readout weights $|\alpha_{\mathrm{ch}}|\le A$ over spatial dimension $d$:
 \begin{enumerate}
 \item \textbf{Exact translation equivariance and pooling invariance:} For every cyclic spatial shift $s\in\mathrm{Fin}\,d$, the convolutional feature map satisfies $\Phi_{\mathrm{ch}}(\mathrm{shift}_s(x)) = \mathrm{shift}_s(\Phi_{\mathrm{ch}}(x))$, and the global average-pooled predictor is strictly translation invariant: $\mathrm{convForward}(\mathrm{shift}_s(x)) = \mathrm{convForward}(x)$.
 \item \textbf{Receptive-field locality vs.\ ambient dimension:} When local patch energy satisfies $\|x_{\mathrm{patch}(p)}\|_2^2 \le E_{\mathrm{patch}} \le E_{\mathrm{global}}$, the parameter-to-loss Lipschitz constant of the CNN is $L_{\mathrm{CNN}} = L_\ell c A L\sqrt{E_{\mathrm{patch}}} \le L_{\mathrm{MLP}} = L_\ell c A L\sqrt{E_{\mathrm{global}}}$ (strictly smaller whenever $E_{\mathrm{patch}} < E_{\mathrm{global}}$).
-\item \textbf{Strict covering number and sample complexity separation ($O(ck)$ vs.\ $O(cd)$):} Whenever $0 < k < d$, the CNN parameter-ball covering bound $(\mathrm{coverAxis}(R,\delta,ck)+1)^{ck}$ is strictly smaller than the dense MLP covering bound $(\mathrm{coverAxis}(R,\delta,cd)+1)^{cd}$, and the ratio of log-covering sample complexities is exactly $k/d < 1$.
+\item \textbf{Comparison of covering upper bounds ($O(ck)$ vs.\ $O(cd)$):} Whenever $0 < k < d$, the CNN parameter-ball covering bound $(\mathrm{coverAxis}(R,\delta,ck)+1)^{ck}$ is strictly smaller than the dense MLP covering bound $(\mathrm{coverAxis}(R,\delta,cd)+1)^{cd}$, and the ratio of log-covering sample complexities is exactly $k/d < 1$. This compares two \emph{upper} bounds; it is not a lower bound for the MLP and does not prove that CNNs need fewer samples.
 \end{enumerate}
 \end{lemma}
 \begin{proof}
@@ -1003,308 +950,553 @@ For a $c$-channel convolutional layer with filter width $k \le d$, shared weight
 Equivariance follows from associativity and commutativity of index addition in $\mathrm{Fin}\,d$, and pooling invariance follows by reindexing the spatial sum along `Equiv.addRight s`. Cauchy--Schwarz on each $k$-dimensional patch bounds the parameter perturbation by $c A L\sqrt{E_{\mathrm{patch}}}\|u-v\|_2$ uniformly across spatial positions. Monotonicity of `coverAxis` in the parameter dimension $ck < cd$ together with strict power growth yields the strict covering and $k/d$ sample complexity separation.
 \end{proof}
 
-\begin{lemma}[EMA momentum variance damping, AdamW weight-decay radius, and optimizer regime selection]\label{lem:momentum_adam_trajectory}
-\lean{OpenTheory.MomentumAdamTrajectory.emaWeightSum_succ, OpenTheory.MomentumAdamTrajectory.emaTrajectory_const_grad, OpenTheory.MomentumAdamTrajectory.biasCorrectedEMA_const_grad, OpenTheory.MomentumAdamTrajectory.emaTrajectory_norm_le, OpenTheory.MomentumAdamTrajectory.biasCorrectedEMA_norm_le, OpenTheory.MomentumAdamTrajectory.emaVariance_fixed_point, OpenTheory.MomentumAdamTrajectory.emaVarianceTrajectory_eq, OpenTheory.MomentumAdamTrajectory.emaVarianceTrajectory_le_stationary, OpenTheory.MomentumAdamTrajectory.ema_variance_strictly_smaller_than_sgd, OpenTheory.MomentumAdamTrajectory.momentum_pl_noise_floor_strict_improvement, OpenTheory.MomentumAdamTrajectory.momentum_pl_noise_ball_convergence, OpenTheory.MomentumAdamTrajectory.adamw_step_preserves_ball, OpenTheory.MomentumAdamTrajectory.adamw_trajectory_norm_envelope, OpenTheory.MomentumAdamTrajectory.adamw_mlp_generalization_tail, OpenTheory.MomentumAdamTrajectory.adam_momentum_dominates_preconditioned_no_momentum, OpenTheory.MomentumAdamTrajectory.adam_momentum_strictly_beats_scalar_sgd}
+\chapter{Certified generalization of a trained network}
+
+This chapter is the flagship certificate: a concrete trained network, its exact error count re-computed by the kernel, and a distribution-free bound on its population error. The only unchecked assumption is that the held-out rows are IID and were not used for training.
+
+\begin{lemma}[Finite-code generalization for a trained quantized MLP]\label{lem:quantized_mlp_certificate}
+\lean{OpenTheory.QuantizedMLP.uniform_code_tail, OpenTheory.QuantizedMLP.selected_code_tail, OpenTheory.QuantizedMLP.mlp_tail, OpenTheory.QuantizedMLP.numerical_tail_le, OpenTheory.QuantizedMLP.digits_certificate, OpenTheory.QuantizedMLP.empiricalRisk_eq_errorCount, OpenTheory.QuantizedMLPDigits.training_errors, OpenTheory.QuantizedMLPDigits.empirical_error}
 \leanok
-\uses{lem:preconditioned_descent, lem:stochastic_sharpness_sgd, lem:trajectory_generalization}
-For exponential moving average (EMA) first-moment momentum $m_{t+1} = \beta m_t + (1-\beta)g_t$ ($0 \le \beta < 1$) and decoupled weight decay (AdamW) $u_{t+1} = (1-\eta\lambda_w)u_t - \eta d_t$:
-\begin{enumerate}
-\item \textbf{Unbiased stationary recovery and norm stability:} For constant gradient $g$, $m_T = (1-\beta^T)g$ and the Adam bias-corrected moment $\hat{m}_T = (1-\beta^T)^{-1}m_T$ equals $g$ identically for all $T\ge 1$; if $\|g_t\|_2\le G_{\max}$, both $\|m_T\|_2$ and $\|\hat{m}_T\|_2$ remain bounded by $G_{\max}$.
-\item \textbf{EMA variance damping and $(1-\beta)/(1+\beta)$ PL noise-floor reduction:} Under mini-batch variance $\sigma^2/B$, the EMA variance recurrence $v_{t+1} = \beta^2 v_t + (1-\beta)^2(\sigma^2/B)$ has closed form $v_T = (1-\beta^{2T})\frac{1-\beta}{1+\beta}\frac{\sigma^2}{B} \le \frac{1-\beta}{1+\beta}\frac{\sigma^2}{B} < \frac{\sigma^2}{B}$ (for $\beta>0$), strictly reducing the asymptotic PL noise floor from $\frac{\eta S_{\mathrm{loc}}\sigma^2}{2\mu B}$ to $\frac{1-\beta}{1+\beta}\frac{\eta S_{\mathrm{loc}}\sigma^2}{2\mu B}$.
-\item \textbf{AdamW horizon-free trajectory ball and generalization:} When $\|d_t\|_2 \le D_{\max}$ (e.g.\ $D_{\max}=\sqrt{p}$ for normalized/sign steps) and $\eta\lambda_w \le 1$, the ball $B_p(D_{\max}/\lambda_w)$ is forward-invariant for all $T\in\mathbb{N}$, yielding an immediate horizon-free out-of-sample generalization bound for AdamW-trained MLPs.
-\item \textbf{Joint preconditioning + momentum dominance:} Combining coordinate preconditioning $\eta_i^\star = 1/S_i$ with EMA variance damping $(1-\beta)/(1+\beta)$ strictly dominates both memoryless preconditioned descent and scalar-step SGD under anisotropic curvature and gradient noise.
-\end{enumerate}
+\uses{lem:reuse_finite_class}
+Fix a decoder with $p$ parameters taking $q$ possible values each, a measurable
+loss in $[0,1]$, and an arbitrary probability distribution $P$ on observations.
+For $n\ge1$ IID observations and any sample-dependent learner $A$ returning a
+code, the population risk satisfies
+\[
+ \Pr_{S\sim P^n}\{R(A(S))>\widehat R_S(A(S))+\varepsilon\}
+ \le 2q^p\exp(-2n\varepsilon^2),\qquad \varepsilon>0.
+\]
+The executable one-hidden-layer ReLU decoder includes both weight matrices and
+both biases, so $p=dh+h+hc+c$. For the fixed $16$--$4$--$10$ architecture with
+four levels per parameter, $p=118$ and the description length is $236$ bits.
+At $n=1400$ and $\varepsilon=1/4$, the failure probability is at most $1/20$.
+The saved trained network has exactly $325$ errors on its $1400$ saved training
+observations. Its resulting IID-conditional population-error certificate is
+$325/1400+1/4=27/56<1/2$.
+This is a classical finite-class bound, independent of the optimizer. The
+benchmark's IID sampling assumption is external and is not certified by the
+saved observations; no guarantee for new writers or distribution shifts is
+asserted.
 \end{lemma}
 \begin{proof}
 \leanok
-Induct on $T$ using $\beta(1-\beta^T) + (1-\beta) = 1-\beta^{T+1}$ for the first moment and $\beta^2(1-\beta^{2T}) + (1-\beta^2) = 1-\beta^{2(T+1)}$ with $(1-\beta)^2 = (1-\beta^2)\frac{1-\beta}{1+\beta}$ for the variance recurrence. For AdamW, triangle inequality gives $\|u_{t+1}\|_2 \le (1-\eta\lambda_w)\frac{D_{\max}}{\lambda_w} + \eta D_{\max} = \frac{D_{\max}}{\lambda_w}$. Combine with \cref{lem:preconditioned_descent,lem:stochastic_sharpness_sgd,lem:trajectory_generalization}.
+Apply the checked finite-class Hoeffding bound to all $q^p$ codes and take the
+one-sided bad-event subset. The simultaneous guarantee permits arbitrary
+sample-dependent code selection. Exact exponential bounds discharge the
+numerical tail. Integer inference and ordinary kernel reduction check the
+saved network's training errors; the empirical-risk bridge identifies that
+count with the empirical mean appearing in the probability theorem.
 \end{proof}
 
-\begin{lemma}[Spiked-covariance effective dimension collapse and $\mup$ vs.\ NTK sample complexity separation]\label{lem:spiked_sample_complexity}
-\lean{OpenTheory.SpikedSampleComplexity.signalKernel_add_bulkKernel, OpenTheory.SpikedSampleComplexity.bulkKernel_eq_frobeniusSq_residual, OpenTheory.SpikedSampleComplexity.spikedExpectedMSE_mono_in_bulk, OpenTheory.SpikedSampleComplexity.spikedExpectedMSE_strict_decrease_of_signal_and_bulk, OpenTheory.SpikedSampleComplexity.spikedEffectiveDim_bounds, OpenTheory.SpikedSampleComplexity.unaligned_effectiveDim_scales_with_d_bulk, OpenTheory.SpikedSampleComplexity.mup_aligned_effectiveDim_le_rank_add_eps, OpenTheory.SpikedSampleComplexity.spikedVariance_le_of_sample_ge, OpenTheory.SpikedSampleComplexity.mup_vs_ntk_sample_complexity_separation, OpenTheory.SpikedSampleComplexity.mup_spiked_covariance_master_guarantee}
+\begin{theorem}[Catoni's PAC-Bayes bound on a finite hypothesis space]\label{thm:catoni_pac_bayes}
+\lean{OpenTheory.PACBayes.catoni_pacBayes, OpenTheory.PACBayes.catoni_grid, OpenTheory.PACBayes.occam_catoni, OpenTheory.PACBayes.exp_moment_le, OpenTheory.PACBayes.expect_le_kl_add_log, OpenTheory.PACBayes.catoni_convexOn, OpenTheory.PACBayes.catoni_le_iff, OpenTheory.PACBayes.kl_prodDist, OpenTheory.PACBayes.kl_uniformOn}
 \leanok
-\uses{lem:feature_learning_advantage, conj:grand_feature_learning, lem:ridge_fixed_design_mse}
-Consider a spiked-covariance learning problem with an $r$-dimensional signal subspace and a $d_{\mathrm{bulk}}$-dimensional orthogonal bulk ($d = r + d_{\mathrm{bulk}}$), where a representation has signal kernel energy $K_{\mathrm{sig}}$ and per-mode bulk leakage $K_{\mathrm{bulk}}$:
-\begin{enumerate}
-\item \textbf{Spiked risk and effective dimension:} The expected ridge test MSE decomposes into signal bias $\bigl(\frac{\lambda}{K_{\mathrm{sig}}+\lambda}\bigr)^2\Delta y^2$ plus variance $\bigl(r(\frac{K_{\mathrm{sig}}}{K_{\mathrm{sig}}+\lambda})^2 + d_{\mathrm{bulk}}(\frac{K_{\mathrm{bulk}}}{K_{\mathrm{bulk}}+\lambda})^2\bigr)\frac{\sigma^2}{n}$, with effective degrees of freedom $\mathrm{df}(\lambda) = r\frac{K_{\mathrm{sig}}}{K_{\mathrm{sig}}+\lambda} + d_{\mathrm{bulk}}\frac{K_{\mathrm{bulk}}}{K_{\mathrm{bulk}}+\lambda} \in [0, r + d_{\mathrm{bulk}}]$.
-\item \textbf{Frozen NTK ambient-dimension bottleneck vs.\ $\mup$ collapse to intrinsic rank $r$:} Under unaligned isotropic initialization ($K_{\mathrm{bulk}} = c_0 > 0$), $\mathrm{df}(\lambda) \ge d_{\mathrm{bulk}}\frac{c_0}{c_0+\lambda}$ scales linearly with the ambient bulk dimension $d_{\mathrm{bulk}}$. By contrast, after $t \ge \mathrm{alignmentHorizon}(\eta_{W_1}, \Delta, S_0, B_0, \varepsilon)$ of $\mup$ feature learning, $\mathrm{alignment}(H_t, P) \ge 1-\varepsilon$ and $\|H_t - H_t P\|_F^2 \le \varepsilon\|H_t\|_F^2$, collapsing $\mathrm{df}(\lambda)$ to at most $r + d_{\mathrm{bulk}}\varepsilon\frac{K_{\mathrm{total}}}{\lambda}$ and strictly reducing the required sample complexity from $O(r + d_{\mathrm{bulk}})$ toward the intrinsic spike complexity $O(r\sigma^2/\varepsilon_{\mathrm{var}})$.
-\end{enumerate}
-\end{lemma}
+Let $D$ be any probability law, let $\ell$ be a measurable loss in $[0,1]$ on a
+finite hypothesis space $\mathcal H$, and let $\pi>0$ be a prior fixed
+independently of the sample. Write
+$\Phi_t(p)=-\log(1-(1-e^{-t})p)$. For every $t\in\mathbb R$ and $\delta>0$,
+with probability at least $1-\delta$ over $S\sim D^n$, every posterior $Q$
+(possibly depending on $S$) satisfies
+\[
+ n\,\Phi_t(R(Q)) \le t\,n\,\widehat R_S(Q) + \mathrm{KL}(Q\,\|\,\pi) + \log(1/\delta),
+\]
+where $R(Q)$ and $\widehat R_S(Q)$ are the population and empirical risks of
+the Gibbs predictor. Choosing $t$ from a finite grid $T$ costs $\log|T|$.
+A point mass at the output of an arbitrary learner gives the Occam bound with
+code length $\log(1/\pi(h))$. For product priors and posteriors on codes, the
+relative entropy is the sum of the per-coordinate divergences.
+\end{theorem}
 \begin{proof}
 \leanok
-Establish strict monotonicity of the ridge shrinkage factor $K\mapsto K/(K+\lambda)$ on $[0,\infty)$ for $\lambda>0$ by cross-multiplying. Combine with `FeatureLearningAdvantage.ridge_mse_strict_improvement_of_kernel_growth` on the signal subspace and `mup_spectral_alignment_of_ge_horizon` on the bulk residual $\|H_t - H_t P\|_F^2$ to bound both $\mathrm{df}(\lambda)$ and the sample complexity threshold `requiredSampleScale`.
+Convexity of $\exp$ dominates each $[0,1]$ loss by a Bernoulli variable, so the
+product measure gives $\mathbb E\exp(n\Phi_t(R(h))-t\sum_i\ell(h,z_i))\le1$
+for each $h$. Averaging over $\pi$ and Markov's inequality bound the
+probability that the $\pi$-average exceeds $1/\delta$. On the complement, the
+finite Donsker--Varadhan inequality (Jensen for $\log$) and convexity of
+$\Phi_t$ transfer the bound to every $Q$. A union bound handles the grid.
 \end{proof}
 
-\begin{lemma}[Variational optimizer optimality, Residual-Preconditioned Momentum (RPM), and exact regime classification]\label{lem:residual_preconditioned_momentum}
-\lean{OpenTheory.ResidualPreconditionedMomentum.coordResidualSharpness_pos, OpenTheory.ResidualPreconditionedMomentum.coordResidualSharpness_sub_eq, OpenTheory.ResidualPreconditionedMomentum.coordResidualSharpness_mono_in_residual, OpenTheory.ResidualPreconditionedMomentum.coordResidualSharpness_strict_mono_in_residual, OpenTheory.ResidualPreconditionedMomentum.coordResidualSharpness_eq_mlpLocalSharpness, OpenTheory.ResidualPreconditionedMomentum.mlp_residual_drop_strictly_flattens_landscape, OpenTheory.ResidualPreconditionedMomentum.optimizerNetProgress_eq_coord_sum, OpenTheory.ResidualPreconditionedMomentum.optimizerNetProgress_rpmOptimalStep_eq, OpenTheory.ResidualPreconditionedMomentum.rpm_variational_sub_eq_sum_sq, OpenTheory.ResidualPreconditionedMomentum.rpm_variational_global_optimality, OpenTheory.ResidualPreconditionedMomentum.rpm_variational_strict_optimality, OpenTheory.ResidualPreconditionedMomentum.rpmOptimalStep_zero_noise_eq_optimalDiagStep, OpenTheory.ResidualPreconditionedMomentum.rpmOptimalStep_isotropic_zero_noise_eq_scalar, OpenTheory.ResidualPreconditionedMomentum.rpm_strict_speedup_from_residual_drop, OpenTheory.ResidualPreconditionedMomentum.rpmResidualStep_strict_speedup, OpenTheory.ResidualPreconditionedMomentum.rpm_momentum_strictly_increases_optimal_progress, OpenTheory.ResidualPreconditionedMomentum.rpm_dynamic_pl_contraction_strict_improvement, OpenTheory.ResidualPreconditionedMomentum.rpm_residual_drop_pl_contraction_strict_improvement}
+\begin{lemma}[PAC-Bayes certificate for a trained MLP with a learned prior]\label{lem:pacbayes_mlp_certificate}
+\lean{OpenTheory.QuantizedMLP.mlp_pacBayes, OpenTheory.QuantizedMLP.kl_dirac_centre_le, OpenTheory.QuantizedMLP.dirac_certificate, OpenTheory.QuantizedMLP.errorCount_codeOfList, OpenTheory.PACBayesMLPDigits.heldout_errors, OpenTheory.PACBayesMLPDigits.heldout_empirical_error, OpenTheory.PACBayesMLPDigits.heldout_pacBayes, OpenTheory.PACBayesMLPDigits.heldout_certificate, OpenTheory.PACBayesMLPDigits.heldoutSample_fails_iff}
 \leanok
-\uses{lem:momentum_adam_trajectory, lem:preconditioned_descent, lem:mlp_derived_sharpness}
-For coordinate-wise residual-coupled local sharpness $S_i(R) = \lambda + J_i^2 + \frac{2R}{\sqrt{n}}C_i$ and EMA-damped second moment $M_i = g_i^2 + \frac{1-\beta}{1+\beta}\frac{\sigma_i^2}{B}$:
-\begin{enumerate}
-\item \textbf{Variational global optimality of Residual-Preconditioned Momentum (RPM):} The coordinate learning-rate rule $\eta_i^\star = \frac{g_i^2}{S_i(R)\,M_i}$ uniquely maximizes expected net progress $\mathrm{optimizerNetProgress}(\eta, S, g, \beta, \sigma, B)$ over all $\eta\in\mathbb{R}^p$, achieving $\sum_{i=1}^p \frac{g_i^4}{2 S_i(R) M_i}$ with exact completion-of-squares suboptimality gap $\sum_{i=1}^p \frac{S_i(R) M_i}{2}(\eta_i - \eta_i^\star)^2$.
-\item \textbf{Exact four-regime optimizer classification:} (I) At $\sigma = 0$, $\eta_i^\star$ reduces to diagonal preconditioning $1/S_i$; (II) at isotropic $S_i = S_0$ and $\sigma = 0$, $\eta_i^\star$ reduces to scalar GD $1/S_0$; (III) as training reduces the prediction residual $R_t < R_0$, the landscape strictly flattens ($S_i(R_t) < S_i(R_0)$), so residual-adapted $\eta^\star(R_t)$ strictly beats static preconditioning $\eta^\star(R_0)$ and accelerates the PL contraction factor $1 - \mu/S_i(R_t) < 1 - \mu/S_i(R_0)$; (IV) under mini-batch noise $\sigma_{i_0}\ne 0$, EMA momentum $\beta\in(0,1)$ strictly increases the variational progress ceiling over $\beta=0$.
-\end{enumerate}
+\uses{thm:catoni_pac_bayes}
+The prior is a product over the $1210$ two-bit parameters of a
+$64$--$16$--$10$ ReLU network: each coordinate keeps the level of a reference
+network with mass $1-3\cdot2^{-20}$. The reference network was trained, and the
+architecture selected, using the $1400$ training rows only. On the $397$
+held-out rows the network makes exactly $16$ errors. With $t$ chosen from
+$\{1/4,\dots,2\}$ and $\delta=1/20$: with probability at least $95\%$ over IID
+held-out observations independent of the training rows, every posterior obeys
+Catoni's inequality relative to this prior, and the reference network's
+population error is at most $799/10000<8\%$.
+The IID assumption and the independence of the two splits are external and
+are not certified by the saved observations.
 \end{lemma}
 \begin{proof}
 \leanok
-Decompose `optimizerNetProgress` into a coordinate sum of quadratics in $\eta_i$ and complete the square against $S_i M_i / 2$. Specialize to $\sigma=0$, constant $S_0$, residual drop $R_t < R_0$, and momentum $0 < \beta < 1$.
+Instantiate Theorem~\ref{thm:catoni_pac_bayes} with the centred product prior
+and the Dirac posterior at the reference network, whose relative entropy is at
+most $1210\cdot x/(1-x)$ for $x=3\cdot2^{-20}$. Kernel reduction checks the
+held-out error count through a linear-time list evaluation of the network.
+Rational Taylor bounds on $\exp$ and Mathlib's bounds on $\log 2$ and $e$ invert
+$\Phi_t$.
 \end{proof}
 
-\begin{lemma}[Spectral-Equivariant Sparse Circuits (SESC), 4-tier architectural dominance, and sample-size crossover]\label{lem:spectral_sparse_circuit}
-\lean{OpenTheory.SpectralSparseCircuit.sescUnitMap_shift_equivariant, OpenTheory.SpectralSparseCircuit.sescFullForward_shift_invariant, OpenTheory.SpectralSparseCircuit.sescCircuitForward_shift_invariant, OpenTheory.SpectralSparseCircuit.sesc_orthogonal_bulk_invariance, OpenTheory.SpectralSparseCircuit.sesc_circuit_pruning_error_le, OpenTheory.SpectralSparseCircuit.four_tier_dimension_strict_hierarchy, OpenTheory.SpectralSparseCircuit.four_tier_covering_strict_hierarchy, OpenTheory.SpectralSparseCircuit.four_tier_sample_complexity_and_flop_hierarchy, OpenTheory.SpectralSparseCircuit.minimal_invariant_architecture_optimal, OpenTheory.SpectralSparseCircuit.sesc_strictly_optimal_under_sparse_spectral_shift_geometry, OpenTheory.SpectralSparseCircuit.under_parameterized_architecture_suboptimal_of_large_sample, OpenTheory.SpectralSparseCircuit.archTotalExcessRisk_crossover_iff, OpenTheory.SpectralSparseCircuit.cnn_mlp_transformer_covering_hierarchy, OpenTheory.SpectralSparseCircuit.cnn_vs_transformer_vs_mlp_regime_dichotomy}
+\begin{theorem}[Exact binomial test-set bound (Clopper--Pearson)]\label{thm:binomial_test_set}
+\lean{OpenTheory.BinomialTail.sampleLaw_count_le, OpenTheory.BinomialTail.derivative_sum_bernstein, OpenTheory.BinomialTail.binomCdf_antitoneOn, OpenTheory.BinomialTail.count_testSet_bound, OpenTheory.BinomialTail.count_clopperPearson, OpenTheory.BinomialTail.testSet_bound, OpenTheory.BinomialTail.clopperPearson, OpenTheory.BinomialTail.mem_clopperPearson_event, OpenTheory.BinomialTail.binomCdf_div_eq}
 \leanok
-\uses{lem:convolutional_generalization, lem:spiked_sample_complexity, lem:attention_ablation, lem:transformer_generalization}
-For a Spectral-Equivariant Sparse Circuit ($\mathrm{SESC}$) projecting $k$-local patches onto a rank-$r$ spectral basis $B_{\mathrm{spec}}\in\mathbb{R}^{r\times k}$ and retaining an active circuit $A\subset\mathrm{Fin}\,m$ of size $s = |A|$:
-\begin{enumerate}
-\item \textbf{Dual structural invariance and circuit distillation:} $\mathrm{SESC}$ is simultaneously shift-invariant under cyclic translations and identically invariant under any additive perturbation $\eta_{\mathrm{bulk}}$ in the orthogonal spectral bulk ($B_{\mathrm{spec}}\,\mathrm{patch}_p(\eta_{\mathrm{bulk}}) = 0$), while pruning inactive units $A^c$ changes the pooled output by at most $\varepsilon_{\mathrm{circuit}}$.
-\item \textbf{Strict 4-tier architectural hierarchy ($\mathrm{SESC} < \mathrm{SubspaceNet} < \mathrm{CNN} < \mathrm{MLP}$):} Whenever $0 < s < m$ and $0 < r < k < d$, the effective dimensions $sr < mr < mk < md$, metric-entropy covering bounds $N(sr) < N(mr) < N(mk) < N(md)$, and log-covering sample complexities satisfy a strict 4-tier hierarchy with overall compression ratio $\frac{sr}{md} < 1$.
-\item \textbf{Bidirectional conditional architecture optimality and CNN vs.\ Transformer vs.\ MLP dichotomy:} Under well-specification ($\varepsilon_{\mathrm{struct}} = 0$), minimal invariant dimension strictly minimizes $\mathcal{E}(p,n) = \varepsilon_{\mathrm{struct}} + p c_{\mathrm{gen}}/n$; conversely, an under-parameterized architecture $p_{\mathrm{small}} < p_{\mathrm{true}}$ with structural bias $\varepsilon_{\mathrm{struct}} > 0$ is strictly outperformed by $p_{\mathrm{true}}$ if and only if $n > (p_{\mathrm{true}} - p_{\mathrm{small}})c_{\mathrm{gen}}/\varepsilon_{\mathrm{struct}}$. In particular, when $mk < p_{\mathrm{Trans}} < md$, the local CNN strictly dominates both Transformer and MLP on local shift-invariant tasks ($\varepsilon_{\mathrm{nonlocal}}=0$), whereas on long-range associative retrieval tasks ($\varepsilon_{\mathrm{nonlocal}}>0$), the global-attention Transformer strictly beats the local CNN for $n > (p_{\mathrm{Trans}}-mk)c_{\mathrm{gen}}/\varepsilon_{\mathrm{nonlocal}}$ and beats the dense MLP for all $n>0$.
-\end{enumerate}
-\end{lemma}
+Let $D$ be any probability law and $\ell(h,\cdot)\in\{0,1\}$ a measurable loss
+of one hypothesis $h$ fixed independently of the sample, with population error
+$R$. Write $F_{n,p}(k)=\sum_{i\le k}\binom ni p^i(1-p)^{n-i}$. Under
+$S\sim D^n$ the error count $K$ satisfies $\Pr(K\le k)=F_{n,R}(k)$ exactly.
+Consequently: if $F_{n,p}(k)\le\delta$ then
+$\Pr(K\le k \wedge R>p)\le\delta$; and, uniformly in the observed count,
+$\Pr(F_{n,R}(K)\le\delta)\le\delta$, while any realized sample with at most
+$k$ errors lies in this event whenever $R>p$ and $F_{n,p}(k)\le\delta$.
+\end{theorem}
 \begin{proof}
 \leanok
-Combine `Equiv.addRight` spatial reindexing with linearity of `patchProject` for the dual invariances. Apply `covering_bound_strict_mono` across $sr < mr < mk < md$, and solve the linear crossover inequality $p_{\mathrm{true}} c_{\mathrm{gen}}/n < \varepsilon_{\mathrm{struct}} + p_{\mathrm{small}} c_{\mathrm{gen}}/n$.
+The event $K\le k$ is the disjoint union, over sets $A$ of at most $k$
+positions, of the measurable rectangles on which the errors fall exactly on
+$A$; each has product probability $R^{|A|}(1-R)^{n-|A|}$, and grouping by
+$|A|$ gives $F_{n,R}(k)$. In Bernstein polynomials,
+$\frac{d}{dp}F_{n,p}(k)=-n\,b_{n-1,k}(p)\le0$ on $[0,1]$, so $F_{n,p}(k)$
+decreases in $p$. For the uniform statement let $k^*$ be the largest $k\le n$
+with $F_{n,R}(k)\le\delta$; the event is contained in $K\le k^*$.
 \end{proof}
 
-\begin{lemma}[First-principles spectral feature emergence from raw weight gradients]\label{lem:gradient_spectral_emergence}
-\lean{OpenTheory.GradientSpectralEmergence.vecDot_gramAct_symm, OpenTheory.GradientSpectralEmergence.vecDot_gramAct_eigenpair, OpenTheory.GradientSpectralEmergence.rawWeightGradStep_eigenmode_step, OpenTheory.GradientSpectralEmergence.rawWeightTrajectory_eigenmode_eq, OpenTheory.GradientSpectralEmergence.modalSubspaceEnergy_trajectory_eq, OpenTheory.GradientSpectralEmergence.signal_subspace_energy_lower_bound_from_gradients, OpenTheory.GradientSpectralEmergence.bulk_subspace_energy_upper_bound_from_gradients, OpenTheory.GradientSpectralEmergence.first_principles_gradient_signal_to_bulk_ratio, OpenTheory.GradientSpectralEmergence.first_principles_gradient_alignment_convergence}
+\begin{lemma}[Exact binomial certificate for the trained MLP]\label{lem:binomial_mlp_certificate}
+\lean{OpenTheory.BinomialMLPDigits.tailNumerator_le, OpenTheory.BinomialMLPDigits.binomCdf_le, OpenTheory.BinomialMLPDigits.heldout_numErrors, OpenTheory.BinomialMLPDigits.heldout_testSet_certificate, OpenTheory.BinomialMLPDigits.heldoutSample_fails_iff, OpenTheory.BinomialMLPDigits.heldout_clopperPearson, OpenTheory.BinomialMLPDigits.heldoutSample_fails_of_risk_gt}
 \leanok
-\uses{lem:multistep_spectral_bias, lem:spiked_sample_complexity}
-Along the raw first-layer weight gradient trajectory $w_{t+1} = w_t + \eta c_\sigma G w_t$ driven by a symmetric empirical Gram matrix $G$:
-\begin{enumerate}
-\item \textbf{Exact eigenmode power-iteration law:} For any eigenpair $G v = \gamma v$, $\langle w_T, v\rangle = (1 + \eta c_\sigma\gamma)^T \langle w_0, v\rangle$ and the modal subspace energy across eigenmodes $(v_l, \gamma_l)$ equals $\sum_l (1 + \eta c_\sigma\gamma_l)^{2T}\langle w_0, v_l\rangle^2$.
-\item \textbf{First-principles alignment and effective dimension collapse:} When signal eigenmodes satisfy $\gamma_{\mathrm{sig},l} \ge \lambda_{\mathrm{lead}}$ and bulk eigenmodes satisfy $0 \le \gamma_{\mathrm{bulk},l} \le \lambda_{\mathrm{bulk}}$ under a `SpectralGap`, the bulk-to-signal energy ratio decays geometrically as $\frac{B_0}{S_0}\bigl(\frac{1+\eta c_\sigma\lambda_{\mathrm{bulk}}}{1+\eta c_\sigma\lambda_{\mathrm{lead}}}\bigr)^{2T}$, discharging the energy-growth hypotheses of \cref{lem:multistep_spectral_bias,lem:spiked_sample_complexity} directly from the weight updates.
-\end{enumerate}
+\uses{thm:binomial_test_set, lem:pacbayes_mlp_certificate}
+For the same saved $64$--$16$--$10$ network and the same $397$ held-out rows
+($16$ errors), with $\delta=1/20$: with probability at least $95\%$ over IID
+held-out observations independent of the training rows, the population error
+is at most $303/5000=6.06\%$ (the PAC-Bayes certificate gives $7.99\%$). The
+same number follows from the Clopper--Pearson event, with no error threshold
+fixed in advance. The IID assumption and the independence of the two splits
+are external and are not certified by the saved observations.
 \end{lemma}
 \begin{proof}
 \leanok
-Use self-adjointness of `gramAct` on symmetric $G$ to prove $\langle G w, v\rangle = \gamma\langle w, v\rangle$, induct on $T$, sum over the signal and bulk eigenfamilies, and feed the resulting modal energy bounds into `spectral_bias_alignment_disc_ge` and `mup_aligned_effectiveDim_le_rank_add_eps`.
+Apply Theorem~\ref{thm:binomial_test_set} with $n=397$, $k=16$,
+$p=303/5000$. Writing $F_{397,p}(16)=N/5000^{397}$ with $N$ a natural number,
+the inequality $20N\le5000^{397}$ is checked by kernel reduction with
+linear-time binomial coefficients.
 \end{proof}
 
-\begin{lemma}[Variational Chinchilla compute allocation, critical batch optimality, and co-design synthesis]\label{lem:compute_optimal_synthesis}
-\lean{OpenTheory.ComputeOptimalSynthesis.optimalCapacity_mul_optimalData_eq_compute, OpenTheory.ComputeOptimalSynthesis.scalingRisk_at_optimal_eq_pareto, OpenTheory.ComputeOptimalSynthesis.chinchilla_completion_of_squares, OpenTheory.ComputeOptimalSynthesis.chinchilla_variational_global_optimality, OpenTheory.ComputeOptimalSynthesis.paretoComputeRisk_strict_mono_in_arch_and_opt, OpenTheory.ComputeOptimalSynthesis.optimal_capacity_to_data_ratio_shift, OpenTheory.ComputeOptimalSynthesis.optimalAllocation_directional_shifts, OpenTheory.ComputeOptimalSynthesis.stepProgress_eq_optimal_sgd, OpenTheory.ComputeOptimalSynthesis.stepProgress_strict_mono_in_batch, OpenTheory.ComputeOptimalSynthesis.flopEfficiency_strict_anti_in_batch, OpenTheory.ComputeOptimalSynthesis.critical_batch_variational_optimality, OpenTheory.ComputeOptimalSynthesis.critical_batch_global_maximizer, OpenTheory.ComputeOptimalSynthesis.momentum_reduces_critical_batch_size, OpenTheory.ComputeOptimalSynthesis.codesign_compute_saving_factor, OpenTheory.ComputeOptimalSynthesis.master_codesign_compute_dominance}
+\begin{theorem}[Binomial Occam bound for countable hypothesis spaces]\label{thm:occam_binomial}
+\lean{OpenTheory.BinomialTail.occam_binomial, OpenTheory.BinomialTail.mem_occamEvent, OpenTheory.BinomialTail.tsum_sigma_mul_le_one, OpenTheory.BinomialTail.tsum_uniformWeight}
 \leanok
-\uses{lem:end_to_end_sum, lem:stochastic_sharpness_sgd, lem:momentum_adam_trajectory, lem:spectral_sparse_circuit, lem:residual_preconditioned_momentum}
-Under the parametric scaling law $R(N,D) = R_\infty + \frac{A}{N} + \frac{B_{\mathrm{opt}}}{D}$ with compute constraint $N D = C > 0$:
-\begin{enumerate}
-\item \textbf{Variational Chinchilla optimality:} For every feasible $(N,D)$ with $ND=C$, completing the square yields $R(N,D) - R^\star(C) = \frac{(\sqrt{AD} - \sqrt{B_{\mathrm{opt}}N})^2}{C} \ge 0$, proving that $N^\star(C) = \sqrt{AC/B_{\mathrm{opt}}}$ and $D^\star(C) = \sqrt{B_{\mathrm{opt}}C/A}$ uniquely achieve the Pareto frontier $R^\star(C) = R_\infty + \frac{2\sqrt{A B_{\mathrm{opt}}}}{\sqrt{C}}$ with ratio $N^\star/D^\star = A/B_{\mathrm{opt}}$.
-\item \textbf{Critical batch size variational optimality:} Per-step progress increases with batch size $B$ while per-FLOP efficiency decreases; their balanced product is uniquely maximized at $B = B_{\mathrm{crit}} = \sigma^2/G$ via $\mathcal{J}(B_{\mathrm{crit}}) - \mathcal{J}(B) = \frac{G}{2S_{\mathrm{loc}}}\frac{(B - B_{\mathrm{crit}})^2}{4(B + B_{\mathrm{crit}})^2}$, and EMA momentum $\beta\in(0,1)$ strictly shrinks $B_{\mathrm{crit}}$ by $\frac{1-\beta}{1+\beta}$.
-\item \textbf{Master co-design dominance:} Combining the 4-tier architecture hierarchy $p_{\mathrm{SESC}} < p_{\mathrm{Subspace}} < p_{\mathrm{CNN}} < p_{\mathrm{MLP}}$ with the 3-tier optimizer hierarchy $B_{\mathrm{RPM}} < B_{\mathrm{Adam}} < B_{\mathrm{SGD}}$ yields a strict 4-step Pareto compute risk chain and reduces the compute required to match $(\mathrm{MLP}, \mathrm{SGD})$ by the exact factor $\frac{p_{\mathrm{SESC}}}{p_{\mathrm{MLP}}}\frac{B_{\mathrm{RPM}}}{B_{\mathrm{SGD}}} < 1$.
-\end{enumerate}
-\end{lemma}
+\uses{thm:binomial_test_set}
+Let $\mathcal H$ be countable, each $\ell(h,\cdot)\in\{0,1\}$ measurable, and
+$w:\mathcal H\to[0,\infty]$ with $\sum_h w(h)\le1$ (for a prefix-free code,
+$w(h)=2^{-L(h)}$). With probability at least $1-\delta$ over $S\sim D^n$, for
+every $h$ simultaneously, $F_{n,R_h}(K_h)>\delta\,w(h)$. A realized sample on
+which $h$ makes at most $k$ errors, with $F_{n,p}(k)\le\delta\,w(h)$ and
+$R_h>p$, lies in the failure event. Weights compose over two-part codes, and
+uniform weights on a finite set sum to one.
+\end{theorem}
 \begin{proof}
 \leanok
-Expand $(\sqrt{AD} - \sqrt{B_{\mathrm{opt}}N})^2 / C$ using $ND=C$ for the Chinchilla identity, expand $(B - B_{\mathrm{crit}})^2 / (4(B+B_{\mathrm{crit}})^2)$ for the critical batch identity, and substitute $C_{\mathrm{co}} = (A_{\mathrm{co}}/A_{\mathrm{base}})(B_{\mathrm{co}}/B_{\mathrm{base}})C_{\mathrm{base}}$ into $R^\star(C)$.
+A countable union bound over Theorem~\ref{thm:binomial_test_set} at level
+$\delta\,w(h)$, and $\sum_h\delta\,w(h)\le\delta$.
 \end{proof}
 
-\begin{lemma}[Non-linear multi-index information exponent, grokking saddle plateaus, and hierarchical vs.\ shallow separation]\label{lem:hierarchical_multi_index}
-\lean{OpenTheory.HierarchicalMultiIndex.tensorAlignmentDrift_eq_zero_of_lt, OpenTheory.HierarchicalMultiIndex.linear_gram_drift_zero_of_exponent_ge_two, OpenTheory.HierarchicalMultiIndex.multiIndexTrajectory_exponent_one_eq, OpenTheory.HierarchicalMultiIndex.nonlinear_drift_lt_linear_drift_on_plateau, OpenTheory.HierarchicalMultiIndex.grokking_escape_time_strict_mono_in_exponent, OpenTheory.HierarchicalMultiIndex.grokking_escape_time_ratio_eq, OpenTheory.HierarchicalMultiIndex.multiIndex_slow_plateau_upper_bound, OpenTheory.HierarchicalMultiIndex.multiIndex_post_threshold_exponential_growth, OpenTheory.HierarchicalMultiIndex.hierarchical_vs_shallow_sample_complexity_separation, OpenTheory.HierarchicalMultiIndex.hierarchical_stagewise_escape_time_lt_shallow, OpenTheory.HierarchicalMultiIndex.optimal_depth_and_horizon_for_multi_index}
+\begin{lemma}[Exact dot products by Kronecker substitution]\label{lem:kronecker_dot}
+\lean{OpenTheory.Kronecker.ofDigits_conv, OpenTheory.Kronecker.getD_conv, OpenTheory.Kronecker.getD_conv_le, OpenTheory.Kronecker.ofDigits_div_pow_mod, OpenTheory.Kronecker.kronecker_dot, OpenTheory.Kronecker.pack_slots, OpenTheory.Kronecker.slot_lt_of_land_eq_zero, OpenTheory.Kronecker.slots_lt_of_land_eq_zero}
 \leanok
-\uses{lem:multistep_spectral_bias, lem:gradient_spectral_emergence}
-For a non-linear multi-index target with information exponent $s \ge 1$ and alignment recursion $\alpha_{t+1} = \alpha_t + \eta c_s \alpha_t^s$:
-\begin{enumerate}
-\item \textbf{Vanishing low-order correlations and two-stage grokking dynamics:} Every correlation of order $m < s$ (including linear Gram drift $m=1$ when $s \ge 2$) vanishes identically; on the initial plateau $\alpha_t \le \alpha_{\mathrm{plateau}} < 1$, progress is bounded linearly by $\alpha_T - \alpha_0 \le T\eta c_s\alpha_{\mathrm{plateau}}^s$ with escape time scale $T_{\mathrm{esc}}(s) = (\eta c_s\alpha_0^{s-1})^{-1}$ growing strictly as $(1/\alpha_0)^{s_2 - s_1}$ for $s_2 > s_1$, followed by exponential blowup $\alpha_{T_0+K} \ge (1 + \eta c_s\alpha_{\mathrm{thresh}}^{s-1})^K\alpha_{T_0}$ once $\alpha_{T_0} \ge \alpha_{\mathrm{thresh}}$.
-\item \textbf{Hierarchical vs.\ shallow complexity and horizon separation:} Decomposing an $s_{\mathrm{total}}$-degree target into an $L$-layer hierarchy of local exponent $s_{\mathrm{local}}$ reduces sample complexity from $d^{s_{\mathrm{total}}}$ to $L d^{s_{\mathrm{local}}}$ and reduces total grokking escape time from $(\eta c_s\alpha_0^{s_{\mathrm{total}}-1})^{-1}$ to $L(\eta c_s\alpha_0^{s_{\mathrm{local}}-1})^{-1}$ whenever $L < \min(d^{s_{\mathrm{total}}-s_{\mathrm{local}}}, (1/\alpha_0)^{s_{\mathrm{total}}-s_{\mathrm{local}}})$.
-\end{enumerate}
+For natural lists $c,x$ of length $d$, write
+$\mathrm{pack}_B(L)=\sum_k L_k2^{Bk}$. If $x_i\le M$ for all $i$ and
+$(\sum_i c_i)M<2^B$, then slot $d-1$ of
+$\mathrm{pack}_B(c)\cdot\mathrm{pack}_B(\mathrm{rev}\,x)$ is
+$\sum_i c_ix_i$. A number below $2^{Bd}$ is the packing of its first $d$
+slots, and if $r\wedge H=0$ for the mask $H$ with bits $m,\dots,B-1$ set in
+each of $d$ slots, every one of those slots of $r$ is below $2^m$.
 \end{lemma}
 \begin{proof}
 \leanok
-Induct on $T$ for the slow plateau bound and post-threshold geometric growth, factor $\alpha_0^{s_2-1} = \alpha_0^{s_1-1}\alpha_0^{s_2-s_1}$ for the escape-time ratio, and compare $L d^{s_{\mathrm{local}}}$ against $d^{s_{\mathrm{total}}}$.
+The product is the evaluation at $2^B$ of the carry-free convolution of the
+digit lists, whose $k$-th coefficient is $\sum_{i\le k}c_ix_{k-i}\le(\sum c)M$.
+Digits below the base are recovered by division and remainder, and the
+coefficient at $d-1$ against the reversed list is the dot product. The mask
+statement compares bits slot by slot.
 \end{proof}
 
-\begin{lemma}[Endogenous Polyak-Łojasiewicz conditioning, strict saddle escape under SGD noise, and two-phase non-convex convergence]\label{lem:global_saddle_pl}
-\lean{OpenTheory.GlobalSaddlePL.endogenous_pl_inequality_from_gram_margin, OpenTheory.GlobalSaddlePL.endogenous_pl_inequality_sample_normalized, OpenTheory.GlobalSaddlePL.dual_feature_and_residual_pl_acceleration, OpenTheory.GlobalSaddlePL.mlp_dual_feature_and_residual_pl_acceleration, OpenTheory.GlobalSaddlePL.saddle_deterministic_trapped, OpenTheory.GlobalSaddlePL.saddleUnstableVarTrajectory_closed_form, OpenTheory.GlobalSaddlePL.saddle_noise_exponential_escape, OpenTheory.GlobalSaddlePL.saddle_escape_loss_drop, OpenTheory.GlobalSaddlePL.two_phase_global_nonconvex_convergence, OpenTheory.GlobalSaddlePL.two_phase_global_nonconvex_from_recurrence, OpenTheory.GlobalSaddlePL.optimal_two_phase_noise_schedule}
+\begin{theorem}[Packed inference equals the reference decoder]\label{thm:packed_mlp_inference}
+\lean{OpenTheory.QuantizedMLP.dot_packed, OpenTheory.QuantizedMLP.scoresPacked_eq, OpenTheory.QuantizedMLP.errorCount_packed}
 \leanok
-\uses{lem:joint_pl_convergence, lem:stochastic_sharpness_sgd, lem:residual_preconditioned_momentum}
-Along a non-convex training trajectory transitioning from a strict saddle point to a feature-conditioned basin:
-\begin{enumerate}
-\item \textbf{Endogenous PL inequality and dual acceleration:} Whenever the feature Jacobian Gram matrix satisfies $\|\nabla L(W)\|^2 \ge \lambda_{\min}(G)\|f(W)-y\|^2$ on $L = \frac{1}{2}\|f(W)-y\|^2$, the loss obeys the endogenous PL inequality $2\lambda_{\min}(G)L \le \|\nabla L(W)\|^2$, and simultaneous feature conditioning ($\lambda_{\min}(G_t) > \lambda_{\min}(G_0)$) plus residual flattening ($S(R_t) < S(R_0)$) strictly improves the contraction factor $1 - \lambda_{\min}(G_t)/S(R_t)$.
-\item \textbf{Exponential strict-saddle escape via SGD noise and optimal two-phase schedule:} At an exact strict saddle ($V_0 = 0$) with negative curvature $-\gamma_{\mathrm{neg}} < 0$, deterministic GD ($\sigma_-^2 = 0$) remains permanently trapped ($V_T = 0$), whereas stochastic variance $\sigma_-^2 > 0$ drives exact geometric growth $V_T = \eta^2\sigma_-^2\frac{(1+\eta\gamma_{\mathrm{neg}})^{2T}-1}{(1+\eta\gamma_{\mathrm{neg}})^2-1}$ and drops loss below $L_{\mathrm{saddle}} - \frac{1}{2}\gamma_{\mathrm{neg}}r_{\mathrm{esc}}^2$; consequently, small batch size $B_1 < B_2$ strictly accelerates Phase~I saddle escape while EMA momentum $\beta\in(0,1)$ and larger batch size $B_2 > B_1$ strictly shrink the Phase~II PL noise floor.
-\end{enumerate}
-\end{lemma}
+\uses{lem:kronecker_dot}
+Store each first-layer row of a two-bit MLP as one natural with $B$-bit slots
+and each input as one natural holding its pixels in reverse slot order. If the
+rows and the all-ones vector are valid packings ($d$ slots, codes below $4$),
+inputs are valid packings of pixels in $[0,255]$, and $3\cdot255\,d<2^B$, then
+the packed forward pass, with one natural product per hidden unit and the
+identity $\sum(c_i-2)x_i=\sum c_ix_i-2\sum x_i$, returns exactly the scores of
+the reference decoder, and the error counts agree.
+\end{theorem}
 \begin{proof}
 \leanok
-Substitute $R_{\mathrm{sq}} = 2L$ into the Gram spectral margin for the endogenous PL bound, induct on $T$ for the geometric series of `saddleUnstableVarTrajectory`, and chain the saddle loss drop with $K$-step PL basin contraction.
+Lemma~\ref{lem:kronecker_dot} for each hidden unit and for the pixel sum; the
+reference decoder's row split of the weight list reduces to the packed rows,
+and the remaining layers are unchanged.
 \end{proof}
 
-\begin{lemma}[Nonlinear softmax logit-margin dynamics, 1-hot induction head sparsification, and logarithmic vs.\ linear context scaling]\label{lem:induction_head_dynamics}
-\lean{OpenTheory.InductionHeadDynamics.softmaxDistractorMass_eq, OpenTheory.InductionHeadDynamics.softmaxDistractorMass_le_exp_neg_margin, OpenTheory.InductionHeadDynamics.softmaxTargetProb_strict_mono_in_margin, OpenTheory.InductionHeadDynamics.logitMarginLogLossStep_strict_increase, OpenTheory.InductionHeadDynamics.induction_head_exponential_sparsification, OpenTheory.InductionHeadDynamics.softmax_vs_linear_attention_distractor_suppression, OpenTheory.InductionHeadDynamics.softmax_logarithmic_margin_sufficiency, OpenTheory.InductionHeadDynamics.linear_attention_requires_linear_margin, OpenTheory.InductionHeadDynamics.long_context_margin_scaling, OpenTheory.InductionHeadDynamics.trained_induction_head_retrieval_error, OpenTheory.InductionHeadDynamics.trained_induction_head_rowOutput_retrieval_error}
+\chapter{Gradient-descent plateau and singular learning}
+
+\begin{theorem}[The gradient-descent plateau: exact mode dynamics]\label{thm:plateau_modes}
+\lean{OpenTheory.Plateau.mode_zero, OpenTheory.Plateau.hasDerivAt_mode, OpenTheory.Plateau.sub_mode_le, OpenTheory.Plateau.mode_le, OpenTheory.Plateau.signal_learned, OpenTheory.Plateau.noise_off, OpenTheory.Plateau.plateau}
 \leanok
-\uses{lem:attention_logit_stability, lem:in_context_retrieval}
-For an attention head over $1 + m_{\mathrm{dist}}$ context tokens with query-key logit margin $\Delta = z_{\mathrm{target}} - z_{\mathrm{dist}}$:
-\begin{enumerate}
-\item \textbf{Nonlinear margin growth and 1-hot induction head sparsification:} Each log-loss or squared-loss gradient step strictly increases $\Delta$, and along $\Delta_T = \Delta_0 + T\delta_{\mathrm{step}}$ ($\delta_{\mathrm{step}} > 0$), distractor attention mass decays exponentially as $\mathrm{softmaxDistractorMass}(m_{\mathrm{dist}}, \Delta_T) \le m_{\mathrm{dist}} e^{-\Delta_0 - T\delta_{\mathrm{step}}}$, driving the retrieval error $\|v_{\mathrm{out}}(T) - v_{\mathrm{target}}\|$ to zero exponentially fast.
-\item \textbf{Exponential SNR separation over Linear Attention:} For all $\Delta > 0$ and $m_{\mathrm{dist}} \ge 1$, nonlinear Softmax attention achieves strictly lower distractor leakage than Linear Attention ($\frac{m_{\mathrm{dist}} e^{-\Delta}}{1 + m_{\mathrm{dist}} e^{-\Delta}} < \frac{m_{\mathrm{dist}}}{\Delta + m_{\mathrm{dist}}}$), requiring only a logarithmic margin $\Delta \ge \log(m_{\mathrm{dist}}/\varepsilon)$ for leakage $\le \varepsilon$ whereas Linear Attention requires a linear margin $\Delta \ge m_{\mathrm{dist}}(1-\varepsilon)/\varepsilon$.
-\end{enumerate}
-\end{lemma}
+For $0<\varepsilon^2<\sigma$, $w(t)=\sigma/(1+(\sigma/\varepsilon^2-1)e^{-2\sigma t})$
+satisfies $w(0)=\varepsilon^2$ and $\dot w=2w(\sigma-w)$; this is the strength of one
+singular mode of a two-layer linear network trained by gradient flow on whitened
+data from a balanced initialization of scale $\varepsilon$ aligned with the data.
+For finitely many modes $\sigma_i>0$ and $c_1<c_2$ with $\sigma_ic_1>1$ for signal
+modes and $\sigma_ic_2<1$ for noise modes, for every $\delta>0$ and all small
+enough $\varepsilon>0$, uniformly for $t\in[c_1\log(1/\varepsilon),c_2\log(1/\varepsilon)]$,
+every signal mode is within $\delta$ of $\sigma_i$ and every noise mode is within
+$\delta$ of $0$.
+\end{theorem}
 \begin{proof}
 \leanok
-Use `Real.add_one_le_exp` to obtain $\Delta < e^\Delta$ for $\Delta > 0$, cross-multiply the softmax and linear distractor ratios, and bound the value retrieval discrepancy via convex combination weights.
+Explicit bounds $0\le\sigma-w(t)\le\sigma(\sigma/\varepsilon^2)e^{-2\sigma t}$ and
+$0\le w(t)\le\sigma/((\sigma/\varepsilon^2-1)e^{-2\sigma t})$; at
+$t=c\log(1/\varepsilon)$, $e^{-2\sigma t}=\varepsilon^{2\sigma c}$, and the bounds are
+monotone in $t$ on the window.
 \end{proof}
 
-\begin{lemma}[Autoregressive rollout compounding, contractive Chain-of-Thought stability, and OOD compositional generalization]\label{lem:autoregressive_ood}
-\lean{OpenTheory.AutoregressiveOOD.autoregressiveRolloutError_unit_lip, OpenTheory.AutoregressiveOOD.autoregressiveRolloutError_closed_form, OpenTheory.AutoregressiveOOD.cot_contractive_rollout_horizon_free_bound, OpenTheory.AutoregressiveOOD.unstable_rollout_strict_mono_and_exceeds_contractive, OpenTheory.AutoregressiveOOD.cot_strictly_dominates_direct_prediction, OpenTheory.AutoregressiveOOD.cot_contractive_dominates_direct_for_all_horizons, OpenTheory.AutoregressiveOOD.sesc_zero_ood_shift_penalty, OpenTheory.AutoregressiveOOD.sesc_ood_strictly_dominates_dense_mlp, OpenTheory.AutoregressiveOOD.dense_mlp_ood_risk_floor_as_n_infty}
+\begin{theorem}[Mode decoupling for a two-layer linear network]\label{thm:plateau_flow}
+\lean{OpenTheory.Plateau.unique_of_contDiff, OpenTheory.Plateau.gradField_eq_matrix, OpenTheory.Plateau.gradField_contDiff, OpenTheory.Plateau.diagSol_solves, OpenTheory.Plateau.flow_exists, OpenTheory.Plateau.flow_decouples, OpenTheory.Plateau.flow_plateau, OpenTheory.Plateau.gradField_rotate, OpenTheory.Plateau.rotate_solves}
 \leanok
-\uses{lem:transformer_generalization, lem:spectral_sparse_circuit}
-Along an $H$-step autoregressive rollout $E_{h+1} = \Lambda E_h + \varepsilon_{\mathrm{token}}$ ($E_0 = 0$) and under out-of-distribution (OOD) shift energy $\Delta_{\mathrm{OOD}}^2 > 0$:
-\begin{enumerate}
-\item \textbf{Horizon-free contractive CoT vs.\ unstable rollout blowup:} When $\Lambda \ne 1$, $E_H = \varepsilon_{\mathrm{token}}\frac{\Lambda^H - 1}{\Lambda - 1}$; in the contractive Chain-of-Thought verification regime ($0 \le \Lambda < 1$), rollout error is uniformly bounded by $E_H \le \frac{\varepsilon_{\mathrm{token}}}{1-\Lambda}$ for all horizons $H \in \mathbb{N}$ and strictly beats direct 1-step prediction whenever $H d^{s_{\mathrm{step}}} < d^{s_{\mathrm{total}}}$, whereas unanchored rollout ($\Lambda > 1$) blows up super-linearly ($E_H > H\varepsilon_{\mathrm{token}}$ for $H \ge 2$).
-\item \textbf{Exact OOD shift immunity of $\mathrm{SESC}$ vs.\ irreducible MLP floor:} Because $\mathrm{SESC}$ is invariant to orthogonal bulk perturbations, its pointwise OOD shift discrepancy is identically zero and its OOD excess risk strictly beats any spurious-sensitive dense MLP ($w_{\mathrm{spurious}} > 0$), which suffers an irreducible OOD error floor $\ge w_{\mathrm{spurious}}\Delta_{\mathrm{OOD}}^2 > 0$ even as $n \to \infty$.
-\end{enumerate}
-\end{lemma}
+\uses{thm:plateau_modes}
+Gradient flow of $\tfrac12\|BA-C\|^2$ is $\dot A=B^\top(C-BA)$,
+$\dot B=(C-BA)A^\top$. For diagonal data $C=\operatorname{diag}(\sigma_i)$ with
+$\varepsilon^2<\sigma_i$, width $H\le\min(M,N)$, and initialization
+$A(0)=\varepsilon I$, $B(0)=\varepsilon I$, every solution on $[0,T]$ satisfies
+$(BA)(t)_{ij}=\delta_{ij}\,[i<H]\,w_i(t)$ with $w_i$ the logistic mode of
+Theorem~\ref{thm:plateau_modes}; such a solution exists. Consequently, on the
+window $[c_1\log(1/\varepsilon),c_2\log(1/\varepsilon)]$, every entry of $BA$ is
+within $\delta$ of the best fit keeping exactly the signal modes, for all small
+$\varepsilon$. The field is equivariant under $(A,B)\mapsto(AV,U^\top B)$ for
+orthogonal $U,V$, so with an SVD $C=U\Sigma V^\top$ the general case reduces to
+the diagonal one.
+\end{theorem}
 \begin{proof}
 \leanok
-Induct on $H$ for the geometric rollout identity, bound $1 - \Lambda^H \le 1$ when $0 \le \Lambda < 1$, and invoke `sesc_orthogonal_bulk_invariance` for the zero OOD shift penalty.
+The diagonal candidate with $a_k=b_k=\sqrt{w_k}$ solves the flow entrywise;
+uniqueness holds because the field is $C^1$, both solutions are bounded on the
+compact interval, and a $C^1$ field is Lipschitz on a closed ball.
 \end{proof}
 
-\begin{lemma}[Master predictive task-to-model synthesis compiler]\label{lem:predictive_model_prescription}
-\lean{OpenTheory.PredictiveModelPrescription.predictiveTaskRisk_nonneg, OpenTheory.PredictiveModelPrescription.predictiveTaskRisk_mono, OpenTheory.PredictiveModelPrescription.predictiveTaskRisk_strict_mono_in_each_factor, OpenTheory.PredictiveModelPrescription.prescribed_architecture_dominance_hierarchy, OpenTheory.PredictiveModelPrescription.criticalSampleThreshold, OpenTheory.PredictiveModelPrescription.adaptive_architecture_selection_by_sample_size, OpenTheory.PredictiveModelPrescription.hierarchical_cot_softmax_strictly_dominates_shallow_linear, OpenTheory.PredictiveModelPrescription.endToEndComputeRisk_at_optimal_eq_prescribed, OpenTheory.PredictiveModelPrescription.master_predictive_model_prescription}
+\begin{theorem}[Bayes second moment for a scale-invariant prior]\label{thm:bayes_scale_invariant}
+\lean{OpenTheory.BayesToy.integrable_abs_rpow_mul_exp, OpenTheory.BayesToy.hasDerivAt_q, OpenTheory.BayesToy.hasDerivAt_q1, OpenTheory.BayesToy.integral_Fode', OpenTheory.BayesToy.ode, OpenTheory.BayesToy.q1_sq_le, OpenTheory.BayesToy.abs_L1_le, OpenTheory.BayesToy.gaussian_ibp, OpenTheory.BayesToy.moment_identity, OpenTheory.BayesToy.postMean_eq, OpenTheory.BayesToy.bayes_second_moment}
 \leanok
-\uses{lem:compute_optimal_synthesis, lem:spectral_sparse_circuit, lem:residual_preconditioned_momentum, lem:hierarchical_multi_index, lem:global_saddle_pl, lem:induction_head_dynamics, lem:autoregressive_ood}
-Given a task specification (`TaskSignature`) with ambient dimension $d$, local patch size $k$, spectral rank $r$, active circuit size $s < m$, compositional degree $s_{\mathrm{total}} = H s_{\mathrm{step}}$, OOD shift $\Delta_{\mathrm{OOD}}^2$, and compute budget $C > 0$:
-\begin{enumerate}
-\item \textbf{Exact sample-size capacity-expansion threshold:} When pruning from $\mathrm{SubspaceNet}$ ($mr$) to $\mathrm{SESC}$ ($sr$) incurs residual bias $\varepsilon_{\mathrm{prune}} > 0$, the exact crossover threshold is $n_{\mathrm{crit}} = \frac{(mr - sr)c_{\mathrm{gen}}}{\varepsilon_{\mathrm{prune}}}$: $\mathrm{SESC}$ strictly dominates for $n < n_{\mathrm{crit}}$ and $\mathrm{SubspaceNet}$ strictly dominates for $n > n_{\mathrm{crit}}$.
-\item \textbf{Master 4-axis task-to-model prescription:} Combining ($\mathrm{SESC}$ architecture, $\mathrm{RPM}$ optimizer, Chinchilla allocation $(N^\star(C), D^\star(C))$, contractive $\mathrm{CoT}$ + Softmax induction heads) strictly dominates any mismatched baseline across all four axes, achieving identical in-distribution Pareto risk at the exact fraction $\kappa_{\mathrm{save}} = \frac{sr}{md}\frac{B_{\mathrm{RPM}}}{B_{\mathrm{SGD}}} < 1$ of total training compute while eliminating the OOD error floor $w_{\mathrm{MLP}}\Delta_{\mathrm{OOD}}^2 > 0$.
-\end{enumerate}
-\end{lemma}
+Let $\alpha>0$, observe $z\sim N(u,1)$ with the improper prior $|u|^{\alpha-1}du$, and let
+$m(z)$ be the posterior mean. Under the truth $u=0$, i.e.\ $z\sim N(0,1)$,
+$\mathbb E[m(z)^2]=\alpha$. For the toy models $y=ab^kx$ ($\alpha=1/k$) this is the
+Bayes generalization coefficient $\alpha/2=1/(2k)$, the learning coefficient $\lambda$.
+\end{theorem}
 \begin{proof}
 \leanok
-Combine the linear crossover equivalence for $n_{\mathrm{crit}}$, the compositional CoT + Softmax risk decomposition, and the Chinchilla completion-of-squares identity scaled by the contractive rollout factor $1/(1-\Lambda_{\mathrm{CoT}})$.
+With $q=\int|u|^{\alpha-1}e^{-(z-u)^2/2}du$, differentiation under the integral sign
+and integration by parts in $u$ (split at $0$) give $q''+zq'=(\alpha-1)q$. With
+$L=\log q$, $m=z+L'$ and $L'^2=(\alpha-1)-zL'-L''$; a posterior Cauchy--Schwarz
+inequality and the equation give $|L'|\le|z|+\sqrt\alpha$, and Gaussian integration by
+parts gives $\mathbb E[L'']=\mathbb E[zL']$ and $\mathbb E[z^2]=1$, hence
+$\mathbb E[m^2]=\alpha$.
 \end{proof}
 
-\begin{lemma}[Plug-in estimator quadratic regret, upper-confidence safe descent, and the self-tuning CertiRPM optimizer]\label{lem:certi_rpm}
-\lean{OpenTheory.CertiRPM.plugin_step_quadratic_regret_identity, OpenTheory.CertiRPM.plugin_step_uniform_error_regret_bound, OpenTheory.CertiRPM.pluginSharpnessStep_sub_oracle_eq, OpenTheory.CertiRPM.pluginSharpness_exact_progress_ratio, OpenTheory.CertiRPM.upper_confidence_sharpness_interval, OpenTheory.CertiRPM.upper_confidence_multiplier_bounds, OpenTheory.CertiRPM.upper_confidence_sharpness_guarantees_positive_progress, OpenTheory.CertiRPM.upper_confidence_progress_lower_bound, OpenTheory.CertiRPM.pluginSharpnessStep_strict_accel_from_sharpness_drop, OpenTheory.CertiRPM.certiRPM_master_self_tuning_guarantee}
+\begin{lemma}[Bayes pays more than the true dimension in reduced-rank regression]\label{lem:rrr_rlct_gain}
+\lean{OpenTheory.RRR.rlct8, OpenTheory.RRR.rlct8_gain}
 \leanok
-\uses{lem:residual_preconditioned_momentum, lem:global_saddle_pl}
-When the oracle sharpness $S_i$ is replaced by a finite-sample plug-in estimate $\hat{S}_i > 0$ in `pluginSharpnessStep` $\hat{\eta}_i = \frac{g_i^2}{\hat{S}_i M_i}$:
-\begin{enumerate}
-\item \textbf{Zero first-order loss and exact multiplicative quadratic regret:} Because $\eta_i^\star$ is an interior variational maximum, the suboptimality gap has zero linear sensitivity to estimation error and equals $\sum_i \frac{g_i^4}{2S_i M_i}\bigl(\frac{\hat{S}_i - S_i}{\hat{S}_i}\bigr)^2$, achieving exact progress $\sum_i \frac{g_i^4}{2S_i M_i}\frac{2\hat{S}_i S_i - S_i^2}{\hat{S}_i^2}$.
-\item \textbf{Upper-confidence safe descent and `CertiRPM` self-tuning:} Using an upper-confidence bound $\hat{S}_i^+ = S_{\mathrm{emp},i} + \delta_{S,i} \ge S_i$ guarantees $\frac{S_i}{\hat{S}_i^+} \le \frac{2\hat{S}_i^+ S_i - S_i^2}{(\hat{S}_i^+)^2} \le 1$ (100\% non-divergent descent), while `CertiRPM` automatically switches between small-batch saddle escape at $\hat{\kappa} < 0$ and self-accelerating, low-noise-floor PL basin descent at $\hat{\kappa} \ge 0$.
-\end{enumerate}
+With the learning coefficient $\lambda(M,N,H,r)$ of reduced-rank regression
+(Aoyagi--Watanabe 2005, cited), whenever $r<\min(M,N)$ and $r<H$,
+$\lambda\ge r(M+N-r)/2+1/2$.
 \end{lemma}
 \begin{proof}
 \leanok
-Substitute $\hat{\eta}_i - \eta_i^\star = \frac{S_i - \hat{S}_i}{\hat{S}_i}\eta_i^\star$ into `rpm_variational_sub_eq_sum_sq`, bound $\frac{2\hat{S}_i S_i - S_i^2}{\hat{S}_i^2} \ge \frac{S_i}{\hat{S}_i}$ for $\hat{S}_i \ge S_i > 0$, and combine the $\hat{\kappa} < 0$ and $\hat{\kappa} \ge 0$ branches of `certiRPMStep` and `certiRPMBatchSize`.
+Three branches of the formula reduce to $(H-r)(M-r)/2$, $(H-r)(N-r)/2$ and
+$(M-r)(N-r)/2$. In the main branch, $8\lambda-4r(M+N-r)=2g(S-h)+g^2-D^2+\pi$ with
+$g=H-r$, $h=H+r$, $S=M+N$, $D=M-N$ and parity $\pi$; case analysis on $S-h$.
 \end{proof}
 
-\begin{lemma}[Joint pre-training vs.\ test-time compute scaling, Best-of-$K$ verification, and small reasoning model dominance]\label{lem:test_time_scaling}
-\lean{OpenTheory.TestTimeScaling.bestOfKFailureProb_strict_anti_in_K, OpenTheory.TestTimeScaling.bestOfK_exponential_bound, OpenTheory.TestTimeScaling.bestOfK_sample_sufficiency, OpenTheory.TestTimeScaling.optimalInferenceModelSize_mul_optimalReasoningBudget, OpenTheory.TestTimeScaling.inferenceScalingRisk_at_optimal_eq_pareto, OpenTheory.TestTimeScaling.test_time_scaling_completion_of_squares, OpenTheory.TestTimeScaling.test_time_scaling_variational_optimality, OpenTheory.TestTimeScaling.small_reasoning_model_beats_giant_one_step_at_equal_inference_flops, OpenTheory.TestTimeScaling.cot_best_of_K_joint_error_bound, OpenTheory.TestTimeScaling.deployment_queries_shift_optimal_model_size_down}
+\begin{lemma}[Second-order perturbation of the truncated SVD]\label{lem:truncation_second_order}
+\lean{OpenTheory.HilbertSchmidt.hs, OpenTheory.HilbertSchmidt.hs_comp_left_le, OpenTheory.HilbertSchmidt.hs_comp_right_le, OpenTheory.HilbertSchmidt.opNorm_le_hs, OpenTheory.RankTruncation.projL_comp, OpenTheory.Perturbation.opn_gramL_sub_le, OpenTheory.Perturbation.second_order_bound}
 \leanok
-\uses{lem:compute_optimal_synthesis, lem:autoregressive_ood}
-Under test-time inference compute budget $C_{\mathrm{inf}} = N \cdot T_{\mathrm{inf}} > 0$ and Best-of-$K$ verification over single-rollout failure probability $p_{\mathrm{fail}} \in [0,1]$:
-\begin{enumerate}
-\item \textbf{Exponential Best-of-$K$ decay and variational inference scaling:} All-$K$ failure decays as $p_{\mathrm{fail}}^K \le \exp(-K(1 - p_{\mathrm{fail}}))$, and completing the square on $R_{\mathrm{inf}}(N, T_{\mathrm{inf}}) = R_\infty + \frac{\alpha_{\mathrm{model}}}{N} + \frac{\beta_{\mathrm{reason}}}{T_{\mathrm{inf}}}$ proves that $N^\star_{\mathrm{inf}} = \sqrt{\alpha_{\mathrm{model}}C_{\mathrm{inf}}/\beta_{\mathrm{reason}}}$ and $T^\star_{\mathrm{inf}} = \sqrt{\beta_{\mathrm{reason}}C_{\mathrm{inf}}/\alpha_{\mathrm{model}}}$ uniquely achieve the Pareto frontier $R_\infty + \frac{2\sqrt{\alpha_{\mathrm{model}}\beta_{\mathrm{reason}}}}{\sqrt{C_{\mathrm{inf}}}}$.
-\item \textbf{When a small reasoning model beats an $M\times$ giant 1-step model:} At matched inference FLOPs $C_{\mathrm{inf}} = M N_{\mathrm{small}}$ ($M > 1$), a small model $(N_{\mathrm{small}}, T_{\mathrm{inf}} = M)$ strictly beats an $M\times$ larger 1-step model $(M N_{\mathrm{small}}, T_{\mathrm{inf}} = 1)$ if and only if $\frac{\alpha_{\mathrm{model}}}{N_{\mathrm{small}}} < \beta_{\mathrm{reason}}$; furthermore, under total lifecycle compute $C_{\mathrm{total}} = N(D + Q T_{\mathrm{inf}})$, higher query volume $Q$ strictly shifts optimal model size $N$ downward and increases the over-training ratio $D/N$.
-\end{enumerate}
+Let $W,C:E\to F$, $D=C-W$, suppose every nonzero eigenvalue of $WW^\top$ and $W^\top W$ is
+at least $s_2$, and let $0<\tau<s_2$, $\delta=s_2-\tau$. With $P,Q$ the spectral
+projections of $WW^\top,W^\top W$ onto $[s_2,\infty)$, $P_T(D)=D-P^\perp DQ^\perp$,
+$h_L=\|CC^\top-WW^\top\|$, $h_R=\|C^\top C-W^\top W\|$,
+\[\|P_{[\tau,\infty)}(CC^\top)C-W-P_T(D)\|_{HS}\le\tfrac{h_Lh_R}{\delta^2}\|W\|_{HS}
++\big(\tfrac{h_L+h_R}{\delta}+\tfrac{h_L+h_R}{\tau}\big)\|D\|_{HS}.\]
 \end{lemma}
 \begin{proof}
 \leanok
-Bound $p_{\mathrm{fail}} = 1 - (1 - p_{\mathrm{fail}}) \le e^{-(1-p_{\mathrm{fail}})}$ and raise to the $K$-th power; factor the difference $R_{\mathrm{inf}}(M N_{\mathrm{small}}, 1) - R_{\mathrm{inf}}(N_{\mathrm{small}}, M) = \frac{M-1}{M}(\beta_{\mathrm{reason}} - \frac{\alpha_{\mathrm{model}}}{N_{\mathrm{small}}})$.
+Exact identity $\widehat W-W-P_T(D)=-[P_C^\perp P_W WQ_WQ_C^\perp+(P_C^\perp-P_W^\perp)DQ_C^\perp
++P_W^\perp D(Q_C^\perp-Q_W^\perp)]$ from the intertwining $P_C C=CQ_C$; each projection
+product is bounded by Davis--Kahan (vendored SLT library); Hilbert--Schmidt norms by
+operator norm times Hilbert--Schmidt norm.
 \end{proof}
 
-\begin{lemma}[Pre-training zero-shot architecture and compute compiler from noisy empirical observables]\label{lem:zero_shot_compiler}
-\lean{OpenTheory.ZeroShotCompiler.zero_shot_certified_threshold_brackets_oracle, OpenTheory.ZeroShotCompiler.zero_shot_architecture_compiler_soundness, OpenTheory.ZeroShotCompiler.zero_shot_plug_in_architecture_regret_le_two_delta, OpenTheory.ZeroShotCompiler.compiledCapacity_mul_compiledData_eq_compute, OpenTheory.ZeroShotCompiler.compiledAllocation_eq_optimal_of_exact_ratio, OpenTheory.ZeroShotCompiler.compiled_chinchilla_exact_regret, OpenTheory.ZeroShotCompiler.zero_shot_compiler_end_to_end_guarantee}
+\begin{lemma}[Gaussian trace identity]\label{lem:gaussian_trace}
+\lean{OpenTheory.GaussianQuadratic.integral_inner_mul_inner, OpenTheory.GaussianQuadratic.integral_norm_sq_map, OpenTheory.GaussianQuadratic.integrable_one_add_norm_pow}
 \leanok
-\uses{lem:predictive_model_prescription, lem:compute_optimal_synthesis}
-Given an empirical pruning residual $\hat{\varepsilon}_{\mathrm{prune}}$ satisfying $|\hat{\varepsilon}_{\mathrm{prune}} - \varepsilon_{\mathrm{prune}}| \le \delta_\varepsilon < \hat{\varepsilon}_{\mathrm{prune}}$ and an empirical scaling ratio $\hat{\rho} = \hat{A}/\hat{B}_{\mathrm{opt}} > 0$:
-\begin{enumerate}
-\item \textbf{Certified sample-size thresholds and bounded transition regret:} The observable interval $\bigl[\frac{(mr-sr)c_{\mathrm{gen}}}{\hat{\varepsilon}_{\mathrm{prune}}+\delta_\varepsilon}, \frac{(mr-sr)c_{\mathrm{gen}}}{\hat{\varepsilon}_{\mathrm{prune}}-\delta_\varepsilon}\bigr]$ brackets the true oracle threshold $n_{\mathrm{crit}}$, certifying strict population optimality of $\mathrm{SESC}$ below the lower bound, strict optimality of $\mathrm{SubspaceNet}$ above the upper bound, and worst-case plug-in regret $\le 2\cdot\mathrm{horizonAmp}\cdot\delta_\varepsilon$ inside the transition band.
-\item \textbf{Budget-feasible compiled Chinchilla allocation:} The compiled pair $(N_{\mathrm{comp}}, D_{\mathrm{comp}}) = (\sqrt{\hat{\rho}C}, \sqrt{C/\hat{\rho}})$ satisfies $N_{\mathrm{comp}}D_{\mathrm{comp}} = C$ with exact quadratic completion-of-squares regret against `paretoComputeRisk`.
-\end{enumerate}
+For $x$ standard Gaussian on a finite-dimensional space with orthonormal basis $(g_a)$ and
+$L$ linear, $\mathbb E\|Lx\|^2=\sum_a\|Lg_a\|^2$; all moments of $\|x\|$ are finite.
 \end{lemma}
 \begin{proof}
 \leanok
-Use monotonicity of division on $0 < \hat{\varepsilon}_{\mathrm{prune}} - \delta_\varepsilon \le \varepsilon_{\mathrm{prune}} \le \hat{\varepsilon}_{\mathrm{prune}} + \delta_\varepsilon$ to bracket $n_{\mathrm{crit}}$, bound the risk gap at $n \in [n_{\mathrm{low}}, n_{\mathrm{high}}]$ via $|\varepsilon_{\mathrm{prune}} - \hat{\varepsilon}_{\mathrm{prune}}| \le \delta_\varepsilon$, and apply `chinchilla_completion_of_squares`.
+The covariance of Mathlib's \texttt{stdGaussian} is the inner product; Fernique for moments.
 \end{proof}
 
-\begin{lemma}[Certified runtime reasoning and OOD triple-shield safety guardrail]\label{lem:runtime_reasoning_guardrail}
-\lean{OpenTheory.RuntimeReasoningGuardrail.dampedSensitivity_at_requiredAnchorStrength, OpenTheory.RuntimeReasoningGuardrail.dampedSensitivity_le_target_iff, OpenTheory.RuntimeReasoningGuardrail.runtime_damped_rollout_horizon_free_certificate, OpenTheory.RuntimeReasoningGuardrail.upper_confidence_runtime_rollout_soundness, OpenTheory.RuntimeReasoningGuardrail.master_runtime_triple_shield_certificate}
+\begin{theorem}[Asymptotic risk of the truncated SVD is the manifold dimension]\label{thm:truncation_risk}
+\uses{lem:truncation_second_order, lem:gaussian_trace}
+\lean{OpenTheory.TruncationRisk.tendsto_risk, OpenTheory.TruncationRank.rankL_eq_rankR, OpenTheory.TruncationRank.sum_hs_sq_tangent_noise, OpenTheory.TruncationRank.tendsto_risk_iid}
 \leanok
-\uses{lem:autoregressive_ood, lem:transformer_generalization}
-For an autoregressive reasoning agent wrapped in the runtime anchor damping operator $\Lambda_{\mathrm{damped}}(\alpha_{\mathrm{anchor}}) = (1 - \alpha_{\mathrm{anchor}})\Lambda_{\mathrm{raw}}$, $\mathrm{SESC}$ orthogonal-bulk projection, and unsafe-head ablation onto $S_{\mathrm{keep}}$:
-\begin{enumerate}
-\item \textbf{Dynamic rollout stabilization and upper-confidence Jacobian monitoring:} Setting $\alpha_{\mathrm{anchor}} \in [1 - \Lambda_{\max}/\Lambda_{\mathrm{raw}}, 1]$ contracts even an unstable raw step ($\Lambda_{\mathrm{raw}} > 1$) to $\Lambda_{\mathrm{damped}} \le \Lambda_{\max} < 1$, restoring the horizon-free bound $E_H \le \frac{\varepsilon_{\mathrm{token}}}{1 - \Lambda_{\max}}$ for all $H \in \mathbb{N}$; under noisy sensitivity estimates $|\hat{\Lambda} - \Lambda| \le \delta_\Lambda$ with $\hat{\Lambda} + \delta_\Lambda < 1$, $E_H \le \frac{\varepsilon_{\mathrm{token}}}{1 - (\hat{\Lambda} + \delta_\Lambda)}$.
-\item \textbf{Simultaneous Triple-Shield runtime certificate:} In a single unified guarantee, the guardrail certifies (i) horizon-free reasoning error $\le \frac{\varepsilon_{\mathrm{token}}}{1-\Lambda_{\max}}$, (ii) identically zero OOD shift discrepancy under orthogonal bulk perturbations $\eta_{\mathrm{bulk}}$, and (iii) identically zero unsafe subspace output $P_{\mathrm{unsafe}}(\mathrm{MHA}_{S_{\mathrm{keep}}}) = 0$ with benign MSE shift bounded by `ablationExcessRiskShift`.
-\end{enumerate}
-\end{lemma}
+Let $W:\mathbb R^M\to\mathbb R^N$ have its nonzero squared singular values $\ge s_2$, let
+$r$ be their number, $0<\tau<s_2$, and $\widehat W_n$ the singular-value truncation at
+$\tau$ of $W+n^{-1/2}Z$ with $Z$ an $N\times M$ matrix of i.i.d.\ $N(0,1)$ entries. Then
+\[n\,\mathbb E\|\widehat W_n-W\|_F^2\longrightarrow r(M+N-r),\]
+the dimension of the manifold of rank-$r$ matrices (the expectation is a lower Lebesgue
+integral, so no measurability of $\widehat W_n$ is assumed). The counts of eigenvalues
+$\ge s_2$ of $WW^\top$ and $W^\top W$ agree.
+\end{theorem}
 \begin{proof}
 \leanok
-Solve $(1 - \alpha_{\mathrm{anchor}})\Lambda_{\mathrm{raw}} \le \Lambda_{\max}$ for $\alpha_{\mathrm{anchor}} \ge 1 - \Lambda_{\max}/\Lambda_{\mathrm{raw}}$, chain `autoregressiveRolloutError_mono_in_sensitivity` with `cot_contractive_rollout_horizon_free_bound`, and combine with `sesc_zero_ood_shift_penalty` and `orthogonal_circuit_ablation_zero_unsafe_and_risk_bound`.
+Lemma~\ref{lem:truncation_second_order} with $D=n^{-1/2}Z$ gives
+$|\sqrt n(\widehat W_n-W)-P_T(Z)|_{HS}\le K(\|Z\|)/\sqrt n$ with $K$ a polynomial;
+squeeze between two integrals with an integrable envelope $c(1+\|Z\|)^8$; the limit
+$\mathbb E\|P_TZ\|^2=\sum_{k,l}(1-\|P^\perp f_k\|^2\|Q^\perp e_l\|^2)=NM-(N-r)(M-r)$
+by Lemma~\ref{lem:gaussian_trace} and the trace of spectral projections.
 \end{proof}
 
-\begin{lemma}[Proof-carrying neural systems and infinite-horizon closed-loop control barrier invariance]\label{lem:proof_carrying_ai}
-\lean{OpenTheory.ProofCarryingAI.closedLoopStateError_zero_init_eq_autoregressiveRolloutError, OpenTheory.ProofCarryingAI.closedLoopStateError_nonneg, OpenTheory.ProofCarryingAI.IsSafeBarrierInvariant, OpenTheory.ProofCarryingAI.isSafeBarrierInvariant_iff, OpenTheory.ProofCarryingAI.safe_ball_step_invariant, OpenTheory.ProofCarryingAI.trajectory_stays_in_safe_ball_forever, OpenTheory.ProofCarryingAI.observableBarrierMargin, OpenTheory.ProofCarryingAI.observable_barrier_certificate_soundness, OpenTheory.ProofCarryingAI.barrierAnchorStrength, OpenTheory.ProofCarryingAI.damped_controller_satisfies_safe_barrier, OpenTheory.ProofCarryingAI.proof_carrying_ai_master_certificate}
+\begin{lemma}[Small noise fixes the spectral picture]\label{lem:truncation_good_event}
+\lean{OpenTheory.TruncationEvent.le_inner_of_mem', OpenTheory.TruncationEvent.inner_le_of_mem, OpenTheory.TruncationEvent.eigen_split, OpenTheory.TruncationEvent.count_eq_of_close, OpenTheory.TruncationEvent.eigenvalue_split, OpenTheory.TruncationEvent.card_le_count}
 \leanok
-\uses{lem:runtime_reasoning_guardrail, lem:autoregressive_ood, lem:transformer_generalization}
-For a closed-loop safety-critical control system $E_{t+1} = \Lambda_{\mathrm{ctrl}}E_t + \varepsilon_{\mathrm{ctrl}}$ starting from $0 \le E_0 \le B_{\mathrm{safe}}$:
-\begin{enumerate}
-\item \textbf{Infinite-horizon Lyapunov barrier invariance and observable telemetry certificate:} Whenever $\Lambda_{\mathrm{ctrl}}B_{\mathrm{safe}} + \varepsilon_{\mathrm{ctrl}} \le B_{\mathrm{safe}}$ (guaranteed from noisy telemetry $|\hat{\Lambda} - \Lambda_{\mathrm{ctrl}}| \le \delta_\Lambda$, $|\hat{\varepsilon} - \varepsilon_{\mathrm{ctrl}}| \le \delta_\varepsilon$ when $\mathrm{observableBarrierMargin} \ge 0$, or enforced via anchor damping $\alpha_{\mathrm{anchor}} \ge 1 - \frac{B_{\mathrm{safe}}-\varepsilon_{\mathrm{upper}}}{\Lambda_{\mathrm{upper}}B_{\mathrm{safe}}}$), the closed-loop trajectory satisfies $0 \le E_t \le B_{\mathrm{safe}}$ for all $t \in \mathbb{N}$.
-\item \textbf{Master 4-part proof-carrying deployment certificate:} Simultaneously certifies (i) infinite-horizon closed-loop state invariance in $[0, B_{\mathrm{safe}}]$, (ii) identically zero OOD spurious shift error on $\mathrm{SESC}$ circuits, (iii) hard eradication of the unsafe actuator subspace $P_{\mathrm{unsafe}}(\mathrm{MHA}_{S_{\mathrm{keep}}}) = 0$, and (iv) bounded benign MSE performance shift.
-\end{enumerate}
+If $\|CC^\top-WW^\top\|\le h$ and the nonzero eigenvalues of $WW^\top$ are $\ge s_2$, every
+eigenvalue of $CC^\top$ is $\le h$ or $\ge s_2-h$ (Weyl); for $h<\tau<s_2-h$ exactly
+$\operatorname{rank}W$ of them are $\ge\tau$.
 \end{lemma}
 \begin{proof}
 \leanok
-Induct on $t \in \mathbb{N}$ using $\Lambda_{\mathrm{ctrl}}E_t + \varepsilon_{\mathrm{ctrl}} \le \Lambda_{\mathrm{ctrl}}B_{\mathrm{safe}} + \varepsilon_{\mathrm{ctrl}} \le B_{\mathrm{safe}}$, bound the unknown $(\Lambda_{\mathrm{ctrl}}, \varepsilon_{\mathrm{ctrl}})$ by their upper-confidence intervals, and combine with `sesc_zero_ood_shift_penalty` and `orthogonal_circuit_ablation_zero_unsafe_and_risk_bound`.
+Weyl's inequality (vendored SLT), Rayleigh bounds on spectral subspaces, and the dimension
+of a spectral subspace.
 \end{proof}
 
-\begin{lemma}[Verifiable recursive AI self-improvement and zero-GPU symbolic search filtering]\label{lem:verifiable_self_improvement}
-\lean{OpenTheory.VerifiableSelfImprovement.IsVerifiablySafeImprovement, OpenTheory.VerifiableSelfImprovement.verifiably_safe_improvement_guarantees_descent_and_pareto_drop, OpenTheory.VerifiableSelfImprovement.generationComplexityProduct, OpenTheory.VerifiableSelfImprovement.generationParetoRisk, OpenTheory.VerifiableSelfImprovement.generationEquivalentCompute, OpenTheory.VerifiableSelfImprovement.generationParetoRisk_strict_anti_in_generation, OpenTheory.VerifiableSelfImprovement.recursive_self_improvement_exponential_compute_compression, OpenTheory.VerifiableSelfImprovement.empiricalSearchCompute, OpenTheory.VerifiableSelfImprovement.symbolicSearchCompute, OpenTheory.VerifiableSelfImprovement.symbolic_vs_empirical_search_flop_savings}
+\begin{theorem}[The gradient-descent plateau is the truncated SVD and pays the true dimension]\label{thm:gd_plateau_end_to_end}
+\uses{thm:truncation_risk, lem:truncation_good_event, lem:rrr_rlct_gain}
+\lean{OpenTheory.Plateau.trunc_eq_svd, OpenTheory.Plateau.rotated_plateau, OpenTheory.Plateau.plateau_eq_trunc, OpenTheory.Plateau.gd_plateau_end_to_end}
 \leanok
-\uses{lem:certi_rpm, lem:compute_optimal_synthesis}
-When an autonomous AI researcher proposes candidate self-modifications $(A_{\mathrm{cand}}, B_{\mathrm{cand}}, \hat{S}_{\mathrm{cand}})$ filtered symbolically in Lean via `IsVerifiablySafeImprovement`:
-\begin{enumerate}
-\item \textbf{Non-divergent step guarantee and exponential multi-generation compute compression:} Every accepted modification ($\hat{S}_{\mathrm{cand},i} \ge S_i$, $A_{\mathrm{cand}}B_{\mathrm{cand}} \le \gamma_{\mathrm{imp}}A_{\mathrm{curr}}B_{\mathrm{curr}}$ with $\gamma_{\mathrm{imp}} \in (0,1)$) guarantees non-divergent positive loss reduction (`0 ≤ optimizerNetProgress`) and strictly decreases Pareto compute risk; across $G$ verified generations, a model trained with exponentially compressed compute $\gamma_{\mathrm{imp}}^G C_0 < C_0$ achieves the exact same Pareto population risk as the generation-$0$ baseline at full compute $C_0$.
-\item \textbf{Symbolic vs.\ empirical search FLOP savings:} Pre-filtering $M_{\mathrm{cand}} \ge 2$ candidate architectures symbolically at cost $C_{\mathrm{verify}}$ before training the single verified winner saves $(M_{\mathrm{cand}}-1)C_{\mathrm{train}} - M_{\mathrm{cand}}C_{\mathrm{verify}}$ FLOPs per generation, reducing search compute by $M_{\mathrm{cand}}\times$ per generation ($M_{\mathrm{cand}}^G\times$ across $G$ generations) when $C_{\mathrm{verify}} \ll C_{\mathrm{train}}$.
-\end{enumerate}
-\end{lemma}
+Two-layer linear network, whitened design, data $\widehat C_n=W_0+n^{-1/2}Z$ with
+i.i.d.\ $N(0,1)$ noise, $W_0$ with $r$ nonzero squared singular values all $\ge s_2$,
+$r\le H\le\min(M,N)$. Off events of probability $\to0$, for every SVD of $\widehat C_n$
+with positive singular values, gradient flow from the aligned start $\varepsilon$ reaches
+at time $\sqrt{2/s_2}\log(1/\varepsilon)$, as $\varepsilon\to0$, the truncated SVD
+$\widehat W_n$; $n\,\mathbb E\|\widehat W_n-W_0\|_F^2\to r(M+N-r)$; and when $r<\min(M,N,H)$
+the Aoyagi--Watanabe coefficient satisfies $\lambda\ge r(M+N-r)/2+1/2$.
+\end{theorem}
 \begin{proof}
 \leanok
-Invoke `upper_confidence_sharpness_guarantees_positive_progress` for non-divergence, cancel $\gamma_{\mathrm{imp}}^G$ inside $\sqrt{(\gamma_{\mathrm{imp}}^G A_0)B_0} / \sqrt{\gamma_{\mathrm{imp}}^G C_0}$ for exponential compute compression, and expand the linear difference between `empiricalSearchCompute` and `symbolicSearchCompute`.
+In SVD coordinates the spectral projection keeps exactly the columns with $\sigma_k^2\ge\tau$,
+so $\mathrm{trunc}_\tau\widehat C=U\,\mathrm{diag}(\sigma\mathbf 1_{\sigma^2\ge\tau})V^\top$;
+rotate the plateau theorem by $(U,V)$; on the good event the signal modes satisfy
+$\sigma_k^2\ge3s_2/4$ and the noise modes $\sigma_k^2\le s_2/4$, and no mode beyond $H$ passes
+the threshold (too many orthonormal vectors in an $r$-dimensional subspace). Chebyshev for
+the good event; Theorem~\ref{thm:truncation_risk} for the risk; Lemma~\ref{lem:rrr_rlct_gain}.
 \end{proof}
 
-\begin{lemma}[$100\times$ smaller auditable circuit models beating monolithic black-box giants]\label{lem:auditable_small_model_dominance}
-\lean{OpenTheory.AuditableSmallModelDominance.auditComplexitySESC, OpenTheory.AuditableSmallModelDominance.auditComplexityGiant, OpenTheory.AuditableSmallModelDominance.auditCompressionRatio, OpenTheory.AuditableSmallModelDominance.auditCompressionRatio_pos_and_lt_one, OpenTheory.AuditableSmallModelDominance.giantOneStepInferenceFLOPs, OpenTheory.AuditableSmallModelDominance.smallAuditableInferenceFLOPs, OpenTheory.AuditableSmallModelDominance.small_auditable_uses_le_inference_flops, OpenTheory.AuditableSmallModelDominance.sesc_capacity_constant_lt_giant, OpenTheory.AuditableSmallModelDominance.fullDeploymentRisk, OpenTheory.AuditableSmallModelDominance.giant_minus_small_auditable_deployment_risk_gap, OpenTheory.AuditableSmallModelDominance.auditable_small_model_strictly_beats_monolithic_giant, OpenTheory.AuditableSmallModelDominance.symmetry_matched_small_model_unconditional_dominance, OpenTheory.AuditableSmallModelDominance.master_auditable_small_vs_monolithic_giant_theorem}
+\begin{theorem}[A loss-threshold stopping rule provably lands on the plateau]\label{thm:stopping_rule}
+\uses{thm:gd_plateau_end_to_end}
+\lean{OpenTheory.Plateau.trainLoss, OpenTheory.Plateau.hitTime, OpenTheory.Plateau.trainLoss_rotate, OpenTheory.Plateau.rotated_plateau_window, OpenTheory.Plateau.plateauMatrix_eq, OpenTheory.Plateau.stopping_rule, OpenTheory.Plateau.good_event, OpenTheory.Plateau.stopping_rule_end_to_end}
 \leanok
-\uses{lem:test_time_scaling, lem:predictive_model_prescription, lem:spectral_sparse_circuit}
-Compare a compact auditable $\mathrm{SESC}$ circuit model of size $N_{\mathrm{small}}$ with reasoning budget $T_{\mathrm{reason}} \in (1, M]$ against an $M\times$ larger ($M = \frac{md}{sr} > 1$) monolithic 1-step dense model of size $N_{\mathrm{giant}} = M N_{\mathrm{small}}$:
-\begin{enumerate}
-\item \textbf{Unconditional symmetry-matched dominance:} Because the monolithic giant spends its extra $(M-1)N_{\mathrm{small}}$ parameters on non-invariant ambient directions ($\alpha_{\mathrm{giant}} = M\alpha_{\mathrm{small}}$), both models have identical capacity-to-parameter error $\frac{\alpha_{\mathrm{small}}}{N_{\mathrm{small}}} = \frac{\alpha_{\mathrm{giant}}}{N_{\mathrm{giant}}}$; consequently, for every $\beta_{\mathrm{reason}} > 0$ and $1 < T_{\mathrm{reason}} \le M$, the $M\times$ smaller $\mathrm{SESC}$ reasoning model beats the $M\times$ larger 1-step giant unconditionally by $\beta_{\mathrm{reason}}(1 - 1/T_{\mathrm{reason}}) + w_{\mathrm{giant}}\Delta_{\mathrm{OOD}}^2 > 0$.
-\item \textbf{Master 4-way dominance:} The compact $\mathrm{SESC}$ reasoning model simultaneously achieves (i) $M\times$ smaller mechanistic audit complexity ($sr < md$), (ii) $\kappa_{\mathrm{save}} = \frac{sr}{md}\frac{B_{\mathrm{RPM}}}{B_{\mathrm{SGD}}} < 1$ pre-training compute compression, (iii) $\le$ per-query inference FLOPs ($N_{\mathrm{small}}T_{\mathrm{reason}} \le M N_{\mathrm{small}}$), and (iv) strictly lower in-distribution + OOD deployment risk.
-\end{enumerate}
-\end{lemma}
+Let $\hat t$ be the first time the training loss $\tfrac12\|\widehat C-BA\|_F^2$ is at most $\rho$.
+For any fixed $0<\rho\le s_2/4$, off events of probability $\to0$, gradient flow from the
+aligned start $\varepsilon$ stopped at $\tfrac32\hat t$ converges, as $\varepsilon\to0$, to the
+truncated SVD, whose risk is $r(M+N-r)$ (Theorem~\ref{thm:gd_plateau_end_to_end}).
+\end{theorem}
 \begin{proof}
 \leanok
-Cancel $M > 0$ in $(M\alpha_{\mathrm{small}})/(M N_{\mathrm{small}}) = \alpha_{\mathrm{small}}/N_{\mathrm{small}}$, leaving the strictly positive reasoning and OOD risk margin $\beta_{\mathrm{reason}}(1 - 1/T_{\mathrm{reason}}) + w_{\mathrm{giant}}\Delta_{\mathrm{OOD}}^2 > 0$.
+The loss is rotation invariant, so it can be computed in SVD coordinates, where the network
+product is explicit. Before $0.9\log(1/\varepsilon)/\sigma_*$ the weakest signal mode is still off
+and the loss exceeds $\tfrac12(7\sigma_*/8)^2>\rho$. At $1.1\log(1/\varepsilon)/\sigma_*$ the loss is
+at most $\tfrac N2(\sqrt h+\eta)^2<\rho$. Hence $\tfrac32\hat t\in[1.35,1.65]\log(1/\varepsilon)/\sigma_*$,
+which lies inside the plateau window because the noise singular values are below $\sigma_*/\sqrt7$.
 \end{proof}
 
-\begin{lemma}[Universal task--data--architecture--optimizer optimality and No-Free-Lunch conservation]\label{lem:universal_task_taxonomy}
-\lean{OpenTheory.UniversalTaskTaxonomy.TaskModality, OpenTheory.UniversalTaskTaxonomy.UniversalTaskDescriptor, OpenTheory.UniversalTaskTaxonomy.matchedArchDim, OpenTheory.UniversalTaskTaxonomy.denseAmbientDim, OpenTheory.UniversalTaskTaxonomy.archGeneralizationPenalty, OpenTheory.UniversalTaskTaxonomy.totalArchitectureRisk, OpenTheory.UniversalTaskTaxonomy.isotropicSubspaceBias, OpenTheory.UniversalTaskTaxonomy.matched_architecture_strict_dominance_on_structured_tasks, OpenTheory.UniversalTaskTaxonomy.no_free_lunch_unstructured_conservation, OpenTheory.UniversalTaskTaxonomy.universal_variational_architecture_minimum, OpenTheory.UniversalTaskTaxonomy.rpm_global_maximum_over_all_step_vectors, OpenTheory.UniversalTaskTaxonomy.rpm_reduces_to_scalar_sgd_iff_isotropic, OpenTheory.UniversalTaskTaxonomy.universal_task_architecture_optimizer_optimality}
+\begin{lemma}[The matrix Riccati equation in closed form]\label{lem:riccati_closed_form}
+\lean{OpenTheory.Riccati.expS, OpenTheory.Riccati.phi, OpenTheory.Riccati.Gop, OpenTheory.Riccati.Pc, OpenTheory.Riccati.isUnit_Gop, OpenTheory.Riccati.hasDerivAt_Pc, OpenTheory.Riccati.Pc_zero, OpenTheory.Riccati.eq_Pc}
 \leanok
-\uses{lem:predictive_model_prescription, lem:convolutional_generalization, lem:hierarchical_multi_index, lem:residual_preconditioned_momentum}
-Across the 5 canonical task/data symmetry modalities (`SpatialGrid`, `SequentialContext`, `HierarchicalTree`, `SparseSpectral`, and `UnstructuredAmbient`) and all coordinate step-size vectors $\eta \in \mathbb{R}^p$:
-\begin{enumerate}
-\item \textbf{Global variational architecture minimum and No-Free-Lunch conservation:} The symmetry-matched architecture (`matchedArchDim T`, $B = 0$) achieves the global minimum `totalArchitectureRisk` across all candidate architectures $(B_{\mathrm{cand}}, d_{\mathrm{cand}})$ and strictly dominates dense MLPs on every structured modality (`T.modality ≠ .UnstructuredAmbient`), whereas on `UnstructuredAmbient` tasks any subspace compression $d_{\mathrm{sub}} < md$ incurs an irreducible isotropic approximation floor $(md - d_{\mathrm{sub}})\sigma_{\mathrm{iso}}^2 \ge \sigma_{\mathrm{iso}}^2 > 0$.
-\item \textbf{Global optimizer maximum over $\mathbb{R}^p$ and isotropic degeneracy:} `rpmOptimalStep` achieves the unique global maximum of `optimizerNetProgress` over all step-size vectors $\eta \in \mathbb{R}^p$ with exact quadratic suboptimality $\sum_{i=1}^p \frac{S_i M_i}{2}(\eta_i - \eta^{\star}_{\mathrm{RPM},i})^2$, and collapses to scalar SGD + Momentum if and only if the curvature-adjusted spectrum is isotropic.
-\end{enumerate}
+For symmetric $S=\sum_a\lambda_aw_aw_a^\top$ and $Z_0$, $P(t)=Y G^{-1}Y^\top$ with $Y=e^{tS}Z_0$,
+$G=I+\sum_a\varphi(\lambda_a,t)g_ag_a^\top$, $g_a=Z_0^\top w_a$, $\varphi(\lambda,t)=\int_0^te^{2\lambda s}ds$,
+is the unique solution of $\dot P=SP+PS-P^2$, $P(0)=Z_0Z_0^\top$.
 \end{lemma}
 \begin{proof}
 \leanok
-Case-split on `T.modality` for structured dimension reduction vs.\ unstructured isotropic bias conservation, and apply `rpm_variational_sub_eq_sum_sq` with `Finset.sum_eq_zero_iff_of_nonneg` for global coordinate-wise step optimality.
+$\dot Y=SY$, $\dot G=Y^\top Y$ and $\tfrac{d}{dt}G^{-1}=-G^{-1}\dot GG^{-1}$ (derivative of the ring
+inverse); uniqueness from the smooth vector field.
 \end{proof}
 
-\begin{lemma}[Executable telemetry-to-certificate synthesis engine, $O(p)$ algorithmic tractability, and the Grand Unified Theorem of OpenTheory]\label{lem:executable_computable_synthesis}
-\lean{OpenTheory.ExecutableSynthesisEngine.ObservableTelemetry, OpenTheory.ExecutableSynthesisEngine.SynthesizedCertificate, OpenTheory.ExecutableSynthesisEngine.synthesizeSystem, OpenTheory.ExecutableSynthesisEngine.synthesizeSystem_budget_and_compression_sound, OpenTheory.ExecutableSynthesisEngine.synthesizeSystem_runtime_stabilization_sound, OpenTheory.ExecutableSynthesisEngine.grand_unified_open_theory_soundness, OpenTheory.ComputableTractableEngine.certiRPMProbeFLOPs, OpenTheory.ComputableTractableEngine.certiRPMProbeMemory, OpenTheory.ComputableTractableEngine.fullHessianPrecondFLOPs, OpenTheory.ComputableTractableEngine.fullHessianPrecondMemory, OpenTheory.ComputableTractableEngine.tractabilitySpeedupRatio, OpenTheory.ComputableTractableEngine.certiRPM_linear_vs_cubic_tractability, OpenTheory.ComputableTractableEngine.runTractableSynthesisQ, OpenTheory.ComputableTractableEngine.computable_engine_certifies_real_deployment_guarantees}
+\begin{lemma}[Riccati entries on the plateau window]\label{lem:riccati_window}
+\uses{lem:riccati_closed_form}
+\lean{OpenTheory.Riccati.inner_Q_sq_le, OpenTheory.Riccati.inner_Q_signal_le, OpenTheory.Riccati.dual_identity, OpenTheory.Riccati.amp_small, OpenTheory.Riccati.weight_small, OpenTheory.Riccati.signal_ratio, OpenTheory.Riccati.inner_w_Pc, OpenTheory.Riccati.Pc_entries_limit}
 \leanok
-\uses{lem:zero_shot_compiler, lem:certi_rpm, lem:test_time_scaling, lem:runtime_reasoning_guardrail}
-For any empirical probe telemetry profile $t$:
-\begin{enumerate}
-\item \textbf{Grand Unified Soundness of `synthesizeSystem`:} The synthesized certificate `cert := synthesizeSystem t` simultaneously guarantees (i) zero-shot architecture threshold bracketing and budget-feasible Chinchilla allocation with FLOP compression $\kappa_{\mathrm{save}} < 1$, (ii) 100\% non-divergent `CertiRPM` descent with pure quadratic sharpness-estimation regret, (iii) small reasoning model dominance over $M_{\mathrm{giant}}\times$ larger 1-step models at equal inference FLOPs, and (iv) horizon-free rollout stability $\le \mathrm{rolloutErrorCeiling}$ with zero $\mathrm{SESC}$ OOD shift penalty.
-\item \textbf{$O(p)$ vs.\ $O(p^3)$ algorithmic tractability and computable $\mathbb{Q} \to \mathbb{R}$ bridge:} `CertiRPM` directional JVP probes require $2k_{\mathrm{probes}}p$ FLOPs and $3p$ memory vs.\ $p^3$ FLOPs and $p^2$ memory for full Hessian preconditioning (an exact speedup factor of $\frac{p^2}{2k_{\mathrm{probes}}}$, e.g.\ $2.5\times 10^{11}\times$ at $p=10^6, k_{\mathrm{probes}}=2$), and the purely computable rational engine `runTractableSynthesisQ` evaluates by kernel reduction (`rfl`) while certifying the real-valued deployment bounds via `computable_engine_certifies_real_deployment_guarantees`.
-\end{enumerate}
+With $Z_0=\varepsilon Z_1$, if the signal directions $Z_1^\top w_a$ ($\lambda_ac_1>1$) admit dual
+vectors and all other modes have $\lambda_ac_2<1$, then uniformly for
+$t\in[c_1,c_2]\log(1/\varepsilon)$, $\langle w_a,P(t)w_b\rangle\to2\lambda_a\mathbf 1_{a=b\text{ signal}}$.
 \end{lemma}
 \begin{proof}
 \leanok
-Combine `zero_shot_compiler_end_to_end_guarantee`, `upper_confidence_sharpness_guarantees_positive_progress`, `small_reasoning_model_beats_giant_one_step_at_equal_inference_flops`, and `runtime_damped_rollout_horizon_free_certificate`, and cast the rational prescriptions via `Rat.cast` homomorphisms.
+$0\le Q=G^{-1}\le I$, Cauchy--Schwarz for $Q$, the bound $\langle cg,Qcg\rangle\le c^2/\varphi$, and
+the dual identity $\langle h,d\rangle=\langle Qh,d\rangle+\sum_c\varphi_c\langle g_c,Qh\rangle\langle g_c,d\rangle$.
+\end{proof}
+
+\begin{theorem}[The plateau from a balanced, non-aligned initialization]\label{thm:balanced_plateau}
+\uses{lem:riccati_window, thm:gd_plateau_end_to_end}
+\lean{OpenTheory.Plateau.gap_const, OpenTheory.Plateau.Zmat_grad, OpenTheory.Plateau.hasDerivAt_Pop, OpenTheory.Plateau.wD, OpenTheory.Plateau.Sop_wD, OpenTheory.Plateau.target_expand, OpenTheory.Plateau.balanced_plateau_diag, OpenTheory.Plateau.balanced_plateau_eq_trunc}
+\leanok
+Gradient flow of the two-layer linear network from any balanced start $\varepsilon(A_0,B_0)$
+($A_0A_0^\top=B_0^\top B_0$) whose signal directions $A_0v_k+B_0^\top u_k$ are linearly independent
+(dual vectors) reaches, on the good event and at time $\sqrt{2/s_2}\log(1/\varepsilon)$ as
+$\varepsilon\to0$, the truncated SVD. No alignment of the start with the data is assumed.
+\end{theorem}
+\begin{proof}
+\leanok
+Balance is conserved, so $Z=[A^\top;B]$ satisfies $\dot Z=SZ-\tfrac12ZZ^\top Z$ with $S$ the dilation of
+$C$, and $P=ZZ^\top$ solves the Riccati equation; $BA$ is its off-diagonal block. The dilation of
+diagonal data has an explicit eigenbasis; Lemma~\ref{lem:riccati_window} gives the limit; rotate by
+the SVD and identify with the truncated SVD.
+\end{proof}
+
+\chapter{Resolution of singularities and the learning coefficient}
+
+The resolution theorem below is Resolution's formalization of Hironaka's theorem
+(\texttt{resolutionorg/hironaka}, tag \texttt{v4.34.0}), a pinned Lake dependency whose proof is
+checked in this build. The rest of the chapter derives from it the existence and rationality of the
+learning coefficient of every analytic model (Watanabe 2009, Theorem~6.1 in its deterministic form).
+
+\begin{definition}[Real log canonical threshold]\label{def:rlct}
+\lean{OpenTheory.Singular.zetaIntegral, OpenTheory.Singular.IsRLCT, OpenTheory.Singular.IsRLCT.unique}
+\leanok
+For $K,\varphi$ on a measure space, $\lambda$ is the real log canonical threshold of $K$ against
+$\varphi$ if, for every $s\ge0$, $\int K^{-s}\varphi<\infty$ exactly when $s<\lambda$ (the integrand
+is $+\infty$ where $K=0$ and $s>0$). A positive threshold is unique.
+\end{definition}
+
+\begin{theorem}[Resolution in the form used for Bayesian integrals]\label{thm:hironaka_monomial_bounds}
+\lean{OpenTheory.Singular.chartMonomial, OpenTheory.Singular.IsMonomialAt.exists_abs_bounds, OpenTheory.Singular.MonomialBounds, OpenTheory.Singular.exists_resolution_monomial_bounds}
+\leanok
+Let $K$ be real-analytic on an open $U\subseteq\mathbb R^n$, not identically zero near any point.
+There is a proper real-analytic $\pi:M\to U$ from an $n$-dimensional analytic manifold, bijective
+over $\{K\neq0\}$, such that near every $p\in M$, in the chart coordinates $y$ at $p$,
+$c|y^{\alpha}|\le|K\circ\pi|\le C|y^{\alpha}|$ and $c|y^{\beta}|\le|\det D\pi|\le C|y^{\beta}|$ for
+some exponents $\alpha,\beta$ and $0<c\le C$; the preimage of every compact set is covered by
+finitely many such neighbourhoods.
+\end{theorem}
+\begin{proof}
+\leanok
+Atiyah's resolution theorem with the Jacobian clause of Bierstone--Milman,
+\texttt{exists\_proper\_analytic\_monomialization} upstream, gives $K\circ\pi$ and $\det D\pi$ as
+monomials times analytic units near every point; a unit is bounded between two positive constants
+near the point, and $\pi$ is proper.
+\end{proof}
+
+\begin{lemma}[Tonelli for products of one-variable functions]\label{lem:lintegral_fin_prod}
+\lean{OpenTheory.Singular.lintegral_fin_prod_eq_prod}
+\leanok
+For $\sigma$-finite $\mu_i$ on $\mathbb R$ and measurable $f_i\ge0$,
+$\int\prod_if_i(x_i)\,d(\bigotimes_i\mu_i)=\prod_i\int f_i\,d\mu_i$.
+\end{lemma}
+\begin{proof}
+\leanok
+Induction on the number of variables, splitting off the first coordinate.
+\end{proof}
+
+\begin{theorem}[The learning coefficient of a normal-crossing model]\label{thm:normal_crossing_rlct}
+\lean{OpenTheory.Singular.cube, OpenTheory.Singular.monomialLoss, OpenTheory.Singular.monomialPrior, OpenTheory.Singular.lintegral_Ioo_rpow_lt_top_iff, OpenTheory.Singular.lintegral_Ioo_rpow_pos, OpenTheory.Singular.zetaIntegrand_eq_prod, OpenTheory.Singular.zetaIntegral_monomial, OpenTheory.Singular.isRLCT_monomial}
+\leanok
+\uses{def:rlct, lem:lintegral_fin_prod}
+On $(0,1)^d$ with $K(y)=\prod_iy_i^{2k_i}$ and $\varphi(y)=\prod_iy_i^{h_i}$, the real log canonical
+threshold is $\lambda=\min_{k_i>0}(h_i+1)/(2k_i)$.
+\end{theorem}
+\begin{proof}
+\leanok
+$K^{-s}\varphi=\prod_iy_i^{h_i-2k_is}$ factorizes; each factor $\int_0^1y^{a}dy$ is positive and
+finite iff $a>-1$.
+\end{proof}
+
+\begin{theorem}[Zeta function of a normal-crossing model]\label{thm:normal_crossing_zeta}
+\lean{OpenTheory.Singular.monomialLoss_rpow_mul, OpenTheory.Singular.integral_Ioo_rpow, OpenTheory.Singular.zeta_monomial}
+\leanok
+\uses{thm:normal_crossing_rlct}
+For real $z$ with $2k_iz+h_i>-1$ for all $i$,
+$\int_{(0,1)^d}K^z\varphi=\prod_i1/(2k_iz+h_i+1)$; its poles $-(h_i+1)/(2k_i)$ have largest
+element $-\lambda$.
+\end{theorem}
+\begin{proof}
+\leanok
+Fubini and $\int_0^1y^{a}dy=1/(a+1)$.
+\end{proof}
+
+\begin{theorem}[Free energy of a normal-crossing model]\label{thm:normal_crossing_free_energy}
+\lean{OpenTheory.Singular.lintegral_Ioo_pow, OpenTheory.Singular.measurable_monomialLoss, OpenTheory.Singular.measurable_monomialPrior, OpenTheory.Singular.partition_lower, OpenTheory.Singular.partition, OpenTheory.Singular.freeEnergy_le}
+\leanok
+\uses{lem:lintegral_fin_prod}
+If $k_{i_0}>0$ and $n\ge1$, $Z(n)=\int_{(0,1)^d}e^{-nK}\varphi\ge
+e^{-1}n^{-(h_{i_0}+1)/(2k_{i_0})}\prod_i1/(h_i+1)$, so
+$-\log Z(n)\le\frac{h_{i_0}+1}{2k_{i_0}}\log n+1+\sum_i\log(h_i+1)$.
+\end{theorem}
+\begin{proof}
+\leanok
+On the box where $y_{i_0}<n^{-1/(2k_{i_0})}$, $nK\le1$; integrate $\varphi$ over the box.
+\end{proof}
+
+\begin{corollary}[The toy model $y=ab^kx$]\label{cor:toy_rlct}
+\lean{OpenTheory.Singular.isRLCT_toy}
+\leanok
+\uses{thm:normal_crossing_rlct}
+$K(a,b)=a^2b^{2k}$ with a uniform prior on $(0,1)^2$ has $\lambda=1/(2k)$ for $k\ge1$, the Bayes
+coefficient $\alpha/2$ of Theorem~\ref{thm:bayes_scale_invariant} at $\alpha=1/k$.
+\end{corollary}
+\begin{proof}
+\leanok
+$\min(1/2,1/(2k))=1/(2k)$.
+\end{proof}
+
+\begin{lemma}[Monomials on coordinate boxes]\label{lem:monomial_box}
+\lean{OpenTheory.Singular.intervalIntegrable_abs_rpow, OpenTheory.Singular.lintegral_Ioo_abs_rpow_lt_top_iff, OpenTheory.Singular.lintegral_Ioo_abs_rpow_lt_top_of_lt, OpenTheory.Singular.lintegral_Ioo_abs_rpow_pos, OpenTheory.Singular.box, OpenTheory.Singular.box_subset_ball, OpenTheory.Singular.lintegral_box_prod, OpenTheory.Singular.ae_coord_ne_zero, OpenTheory.Singular.lintegral_box_monomial_lt_top_iff, OpenTheory.Singular.lintegral_finset_biUnion_le}
+\leanok
+\uses{lem:lintegral_fin_prod}
+Let $B\subseteq\mathbb R^n$ be the box of half-width $r>0$ around $c$, with every $c_i$ either $0$ or
+of absolute value $>r$. Then $\int_B\prod_i|y_i|^{a_i}dy<\infty$ iff $a_i>-1$ for every $i$ with
+$c_i=0$. Almost every point of $\mathbb R^n$ has no zero coordinate.
+\end{lemma}
+\begin{proof}
+\leanok
+Fubini on the box; $\int_{-r}^{r}|t|^adt<\infty$ iff $a>-1$, and $|t|^a$ is continuous on an
+interval avoiding $0$; every factor is positive.
+\end{proof}
+
+\begin{theorem}[Every analytic model has a rational learning coefficient]\label{thm:analytic_rlct}
+\lean{OpenTheory.Singular.chartMap, OpenTheory.Singular.LocalBox, OpenTheory.Singular.localBox_nonempty, OpenTheory.Singular.surjective_of_resolution, OpenTheory.Singular.abs_monomial_mul_rpow, OpenTheory.Singular.exists_isRLCT}
+\leanok
+\uses{def:rlct, thm:hironaka_monomial_bounds, lem:monomial_box}
+Let $K\ge0$ be real-analytic on an open $U\subseteq\mathbb R^n$, not identically zero near any point,
+and let $\varphi$ be continuous with compact support in $U$, positive at every zero of $K$ in its
+support, with at least one such zero. Then $K$ has a positive rational real log canonical threshold
+against $\varphi$.
+\end{theorem}
+\begin{proof}
+\leanok
+Resolve $K$ by $\pi:M\to U$. Around every $p\in M$ take a box in the chart at $p$ on which
+$K\circ\pi\asymp|y^{\alpha}|$, $|\det D\pi|\asymp|y^{\beta}|$, every centre coordinate is $0$ or
+exceeds the half-width, and $\varphi\circ\pi\ge\varphi(\pi(p))/2$. $\pi$ is proper, so finitely many
+boxes cover $\pi^{-1}(\operatorname{supp}\varphi)$, and $\pi$ is onto since its range is closed and
+contains the dense set $\{K\neq0\}$. Let $\lambda$ be the least $(\beta_i+1)/\alpha_i$ over boxes and
+coordinates with vanishing centre and $\alpha_i>0$; a zero of $K$ in the support provides one. By the
+change of variables formula each piece of $\int K^{-s}\varphi$ is between constant multiples of
+$\int_B\prod|y_i|^{\beta_i-s\alpha_i}$, finite for $s<\lambda$ by Lemma~\ref{lem:monomial_box}. The
+zero set of $K$ in the support is null, covered by images of coordinate hyperplanes. At the
+minimizing box $\varphi$ is bounded below, and the piece diverges for $s\ge\lambda$.
 \end{proof}
 
 \bibliographystyle{alpha}

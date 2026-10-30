@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-15T07:35:30.987375+00:00",
+  "generatedAt": "2026-10-27T19:34:20.262108+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 83,
+  "nodesCount": 89,
   "nodes": [
     {
       "id": "def:sample",
@@ -143,9 +143,8 @@
       "id": "lem:expressivity_subspace",
       "kind": "lemma",
       "title": "Finite-sample expressivity on the spike",
-      "leanName": "OpenTheory.exists_subspace_approximation",
+      "leanName": "OpenTheory.forward_zero_of_act_zero",
       "leanNames": [
-        "OpenTheory.exists_subspace_approximation",
         "OpenTheory.forward_zero_of_act_zero",
         "OpenTheory.biasless_zero_sample_obstruction",
         "OpenTheory.subspaceLiftNet",
@@ -445,10 +444,9 @@
     {
       "id": "lem:rademacher_bound",
       "kind": "lemma",
-      "title": "Rademacher symmetrization",
-      "leanName": "OpenTheory.rademacher_symmetrization",
+      "title": "Deterministic ghost-sample and Rademacher-average inequalities",
+      "leanName": "OpenTheory.rademacherAvg",
       "leanNames": [
-        "OpenTheory.rademacher_symmetrization",
         "OpenTheory.rademacherAvg",
         "OpenTheory.symmetrization_ghost_decomp",
         "OpenTheory.symmetrization_pointwise_diff_le",
@@ -470,16 +468,12 @@
     {
       "id": "lem:gaussian_operator_norm",
       "kind": "lemma",
-      "title": "Spectral norm of Gaussian projections",
-      "leanName": "OpenTheory.gaussian_operator_norm_bound",
+      "title": "Deterministic Frobenius bounds on weight matrices",
+      "leanName": "OpenTheory.matVec_l2Norm_le_frobenius",
       "leanNames": [
-        "OpenTheory.gaussian_operator_norm_bound",
         "OpenTheory.matVec_l2Norm_le_frobenius",
         "OpenTheory.sqrt_frobeniusSq_le_of_entry_abs_le",
-        "OpenTheory.frobenius_norm_RandomInit_expectation_bound",
-        "OpenTheory.gordonThreshold_pos",
-        "OpenTheory.subGaussianOpTail_mono",
-        "OpenTheory.subGaussianOpTail_pos_of_gt"
+        "OpenTheory.sqrt_frobeniusSq_le_of_fanIn_entry_bound"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
@@ -489,15 +483,14 @@
         "def:alignment"
       ],
       "bountyUsd": null,
-      "informalSketch": "Bound each row inner product $(Wx)_i = \\langle W_{i,\\cdot}, x\\rangle$ via Cauchy--Schwarz, square and sum over $i\\in\\mathrm{Fin}\\,m$ to obtain $\\|Wx\\|_2 \\le \\|W\\|_F\\|x\\|_2$, and verify monotonicity of the threshold and Gaussian tail expression."
+      "informalSketch": "Bound each row inner product $(Wx)_i = \\langle W_{i,\\cdot}, x\\rangle$ via Cauchy--Schwarz, square and sum over $i\\in\\mathrm{Fin}\\,m$ to obtain $\\|Wx\\|_2 \\le \\|W\\|_F\\|x\\|_2$."
     },
     {
       "id": "lem:spectral_bias_mup",
       "kind": "lemma",
-      "title": "Spectral bias in $\\mup$ scaling",
-      "leanName": "OpenTheory.spectral_bias_mup_alignment",
+      "title": "Conditional spectral bias in $\\mup$ scaling",
+      "leanName": "OpenTheory.spectral_bias_mup_gap_alignment_cont",
       "leanNames": [
-        "OpenTheory.spectral_bias_mup_alignment",
         "OpenTheory.spectral_bias_mup_gap_alignment_cont",
         "OpenTheory.spectral_bias_mup_gap_alignment_disc",
         "OpenTheory.MultiStepSpectralBias.hasDerivAt_modeAmpCont",
@@ -527,9 +520,8 @@
       "id": "lem:representation_contraction",
       "kind": "lemma",
       "title": "Representation contraction in residual blocks",
-      "leanName": "OpenTheory.resnet_representation_contraction",
+      "leanName": "OpenTheory.resnet_step_contraction_le",
       "leanNames": [
-        "OpenTheory.resnet_representation_contraction",
         "OpenTheory.resnet_step_contraction_le",
         "OpenTheory.resnet_representation_contraction_lipschitz",
         "OpenTheory.DeepResidualScaling.branchOutput_l2Norm_le",
@@ -550,70 +542,6 @@
       ],
       "bountyUsd": null,
       "informalSketch": "Bound each coordinate of $\\sigma(Wx)-\\sigma(Wy)$ via Cauchy--Schwarz and $L_\\sigma$-Lipschitzness, square and sum over rows to obtain $\\|\\sigma(Wx)-\\sigma(Wy)\\|_2 \\le L_\\sigma\\|W\\|_F\\|x-y\\|_2$, and apply the Euclidean triangle inequality to $x + \\alpha\\sigma(Wx)$. Induct over $L$ layers and apply $(1+c/L)^L \\le (e^{c/L})^L = e^c$."
-    },
-    {
-      "id": "conj:grand_feature_learning",
-      "kind": "conjecture",
-      "title": "Global feature-learning alignment",
-      "leanName": "OpenTheory.feature_learning_resnet_alignment",
-      "leanNames": [
-        "OpenTheory.feature_learning_resnet_alignment",
-        "OpenTheory.alignmentHorizon",
-        "OpenTheory.exp_decay_le_eps_of_ge_alignmentHorizon",
-        "OpenTheory.mup_spectral_alignment_reaches_one_sub_eps",
-        "OpenTheory.mup_spectral_alignment_of_ge_horizon",
-        "OpenTheory.deep_resnet_mup_feature_alignment_certificate"
-      ],
-      "statementFormalized": true,
-      "proofFormalized": true,
-      "isVerified": true,
-      "dependencies": [
-        "lem:spectral_bias_mup",
-        "lem:representation_contraction",
-        "lem:gaussian_operator_norm",
-        "def:alignment",
-        "def:ntk_scaling"
-      ],
-      "bountyUsd": null,
-      "informalSketch": "For $t \\ge T_{\\mathrm{align}}$, $\\frac{B_0}{S_0}\\exp(-2\\eta_{W_1}\\Delta\\gamma\\,t) \\le \\frac{B_0}{B_0 + S_0\\varepsilon}\\varepsilon \\le \\varepsilon$. Combining with \\cref{lem:spectral_bias_mup} and \\cref{lem:representation_contraction} yields both $a(H_t, P) \\ge 1 - \\varepsilon$ and the depth-independent $e^c$-Lipschitz residual propagation bound."
-    },
-    {
-      "id": "def:end_to_end",
-      "kind": "definition",
-      "title": "Error budget",
-      "leanName": "OpenTheory.EndToEndError",
-      "leanNames": [
-        "OpenTheory.EndToEndError",
-        "OpenTheory.populationRiskBound"
-      ],
-      "statementFormalized": true,
-      "proofFormalized": false,
-      "isVerified": true,
-      "dependencies": [
-        "lem:expressivity_subspace",
-        "lem:risk_exponential",
-        "lem:rademacher_bound",
-        "conj:grand_feature_learning"
-      ],
-      "bountyUsd": null,
-      "informalSketch": null
-    },
-    {
-      "id": "lem:population_risk",
-      "kind": "lemma",
-      "title": "Population risk adds",
-      "leanName": "OpenTheory.population_risk_le_sum",
-      "leanNames": [
-        "OpenTheory.population_risk_le_sum"
-      ],
-      "statementFormalized": true,
-      "proofFormalized": true,
-      "isVerified": true,
-      "dependencies": [
-        "def:end_to_end"
-      ],
-      "bountyUsd": null,
-      "informalSketch": "Add the two inequalities."
     },
     {
       "id": "def:reuse_data",
@@ -1111,8 +1039,6 @@
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:attention_convex",
-        "lem:population_envelope",
         "lem:tangent_step"
       ],
       "bountyUsd": null,
@@ -1168,7 +1094,6 @@
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:ball_cover_oracle",
         "lem:mlp_contractive",
         "lem:forward_lipschitz"
       ],
@@ -1197,7 +1122,6 @@
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:attention_convex",
         "lem:attention_ablation"
       ],
       "bountyUsd": null,
@@ -1289,35 +1213,6 @@
       "informalSketch": "Square $\\|\\nabla\\mathcal{L}_0(u)\\|_2 = \\frac{1}{n}\\|J_u^* r_u\\|_2 \\ge \\frac{\\sigma_{\\min}}{n}\\|r_u\\|_2$ and substitute $\\|r_u\\|_2^2 = 2n\\mathcal{L}_0(u)$. Induct on $T$: at step $T$, $\\|r_{u_T}\\|_2\\le S$ activates \\cref{lem:mlp_derived_sharpness} at $\\lambda=0$ with sharpness $S_{\\mathrm{MLP}}(0,S)$, giving $\\mathcal{L}_0(u_{T+1}) \\le (1 - \\frac{\\sigma_{\\min}^2}{n S_{\\mathrm{MLP}}(0,S)})\\mathcal{L}_0(u_T) \\le \\mathcal{L}_0(0)$, which preserves $\\|r_{u_{T+1}}\\|_2\\le S$."
     },
     {
-      "id": "lem:stochastic_sharpness_sgd",
-      "kind": "lemma",
-      "title": "Mini-batch SGD under local sharpness, critical batch size, and noise horizon",
-      "leanName": "OpenTheory.StochasticSharpnessSGD.sgd_local_sharpness_one_step",
-      "leanNames": [
-        "OpenTheory.StochasticSharpnessSGD.sgd_local_sharpness_one_step",
-        "OpenTheory.StochasticSharpnessSGD.sgd_pointwise_pythagorean_step",
-        "OpenTheory.StochasticSharpnessSGD.sgd_optimal_lr_with_noise",
-        "OpenTheory.StochasticSharpnessSGD.sgdNetProgress_noiseAwareStep_eq",
-        "OpenTheory.StochasticSharpnessSGD.sgdNetProgress_sub_eq_sq",
-        "OpenTheory.StochasticSharpnessSGD.noiseAwareStep_maximizes_sgdNetProgress",
-        "OpenTheory.StochasticSharpnessSGD.optimal_sgd_progress_vs_full_batch",
-        "OpenTheory.StochasticSharpnessSGD.critical_batch_half_efficiency",
-        "OpenTheory.StochasticSharpnessSGD.linear_scaling_regime_progress",
-        "OpenTheory.StochasticSharpnessSGD.batch_size_doubling_speedup",
-        "OpenTheory.StochasticSharpnessSGD.sgd_pl_noise_ball_convergence",
-        "OpenTheory.StochasticSharpnessSGD.mlp_sgd_noise_floor_proportional_to_inv_batch"
-      ],
-      "statementFormalized": true,
-      "proofFormalized": true,
-      "isVerified": true,
-      "dependencies": [
-        "lem:local_sharpness_descent",
-        "lem:mlp_derived_sharpness"
-      ],
-      "bountyUsd": null,
-      "informalSketch": "Complete the square in $\\eta$ against total second moment $G + \\sigma^2/B$ to establish optimality of $\\eta_{\\mathrm{opt}}$, divide numerator and denominator by $G/B$ to obtain the batch efficiency factor $B/(B + B_{\\mathrm{crit}})$, and induct on $E_t - F - \\mathrm{sgdNoiseFloor}$ for the multi-step PL horizon bound."
-    },
-    {
       "id": "lem:in_context_retrieval",
       "kind": "lemma",
       "title": "In-context associative retrieval dynamics and step complexity",
@@ -1376,7 +1271,7 @@
     {
       "id": "lem:convolutional_generalization",
       "kind": "lemma",
-      "title": "Convolutional translation equivariance, receptive-field locality, and CNN vs.\\ MLP sample complexity separation",
+      "title": "Convolutional translation equivariance, receptive-field locality, and a comparison of CNN vs.\\ MLP covering upper bounds",
       "leanName": "OpenTheory.ConvolutionalGeneralization.cyclicPatch_shift",
       "leanNames": [
         "OpenTheory.ConvolutionalGeneralization.cyclicPatch_shift",
@@ -1398,597 +1293,656 @@
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:trajectory_generalization",
-        "lem:ball_cover_oracle"
+        "lem:trajectory_generalization"
       ],
       "bountyUsd": null,
       "informalSketch": "Equivariance follows from associativity and commutativity of index addition in $\\mathrm{Fin}\\,d$, and pooling invariance follows by reindexing the spatial sum along `Equiv.addRight s`. Cauchy--Schwarz on each $k$-dimensional patch bounds the parameter perturbation by $c A L\\sqrt{E_{\\mathrm{patch}}}\\|u-v\\|_2$ uniformly across spatial positions. Monotonicity of `coverAxis` in the parameter dimension $ck < cd$ together with strict power growth yields the strict covering and $k/d$ sample complexity separation."
     },
     {
-      "id": "lem:momentum_adam_trajectory",
+      "id": "lem:quantized_mlp_certificate",
       "kind": "lemma",
-      "title": "EMA momentum variance damping, AdamW weight-decay radius, and optimizer regime selection",
-      "leanName": "OpenTheory.MomentumAdamTrajectory.emaWeightSum_succ",
+      "title": "Finite-code generalization for a trained quantized MLP",
+      "leanName": "OpenTheory.QuantizedMLP.uniform_code_tail",
       "leanNames": [
-        "OpenTheory.MomentumAdamTrajectory.emaWeightSum_succ",
-        "OpenTheory.MomentumAdamTrajectory.emaTrajectory_const_grad",
-        "OpenTheory.MomentumAdamTrajectory.biasCorrectedEMA_const_grad",
-        "OpenTheory.MomentumAdamTrajectory.emaTrajectory_norm_le",
-        "OpenTheory.MomentumAdamTrajectory.biasCorrectedEMA_norm_le",
-        "OpenTheory.MomentumAdamTrajectory.emaVariance_fixed_point",
-        "OpenTheory.MomentumAdamTrajectory.emaVarianceTrajectory_eq",
-        "OpenTheory.MomentumAdamTrajectory.emaVarianceTrajectory_le_stationary",
-        "OpenTheory.MomentumAdamTrajectory.ema_variance_strictly_smaller_than_sgd",
-        "OpenTheory.MomentumAdamTrajectory.momentum_pl_noise_floor_strict_improvement",
-        "OpenTheory.MomentumAdamTrajectory.momentum_pl_noise_ball_convergence",
-        "OpenTheory.MomentumAdamTrajectory.adamw_step_preserves_ball",
-        "OpenTheory.MomentumAdamTrajectory.adamw_trajectory_norm_envelope",
-        "OpenTheory.MomentumAdamTrajectory.adamw_mlp_generalization_tail",
-        "OpenTheory.MomentumAdamTrajectory.adam_momentum_dominates_preconditioned_no_momentum",
-        "OpenTheory.MomentumAdamTrajectory.adam_momentum_strictly_beats_scalar_sgd"
+        "OpenTheory.QuantizedMLP.uniform_code_tail",
+        "OpenTheory.QuantizedMLP.selected_code_tail",
+        "OpenTheory.QuantizedMLP.mlp_tail",
+        "OpenTheory.QuantizedMLP.numerical_tail_le",
+        "OpenTheory.QuantizedMLP.digits_certificate",
+        "OpenTheory.QuantizedMLP.empiricalRisk_eq_errorCount",
+        "OpenTheory.QuantizedMLPDigits.training_errors",
+        "OpenTheory.QuantizedMLPDigits.empirical_error"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:preconditioned_descent",
-        "lem:stochastic_sharpness_sgd",
-        "lem:trajectory_generalization"
+        "lem:reuse_finite_class"
       ],
       "bountyUsd": null,
-      "informalSketch": "Induct on $T$ using $\\beta(1-\\beta^T) + (1-\\beta) = 1-\\beta^{T+1}$ for the first moment and $\\beta^2(1-\\beta^{2T}) + (1-\\beta^2) = 1-\\beta^{2(T+1)}$ with $(1-\\beta)^2 = (1-\\beta^2)\\frac{1-\\beta}{1+\\beta}$ for the variance recurrence. For AdamW, triangle inequality gives $\\|u_{t+1}\\|_2 \\le (1-\\eta\\lambda_w)\\frac{D_{\\max}}{\\lambda_w} + \\eta D_{\\max} = \\frac{D_{\\max}}{\\lambda_w}$. Combine with \\cref{lem:preconditioned_descent,lem:stochastic_sharpness_sgd,lem:trajectory_generalization}."
+      "informalSketch": "Apply the checked finite-class Hoeffding bound to all $q^p$ codes and take the\none-sided bad-event subset. The simultaneous guarantee permits arbitrary\nsample-dependent code selection. Exact exponential bounds discharge the\nnumerical tail. Integer inference and ordinary kernel reduction check the\nsaved network's training errors; the empirical-risk bridge identifies that\ncount with the empirical mean appearing in the probability theorem."
     },
     {
-      "id": "lem:spiked_sample_complexity",
-      "kind": "lemma",
-      "title": "Spiked-covariance effective dimension collapse and $\\mup$ vs.\\ NTK sample complexity separation",
-      "leanName": "OpenTheory.SpikedSampleComplexity.signalKernel_add_bulkKernel",
+      "id": "thm:catoni_pac_bayes",
+      "kind": "theorem",
+      "title": "Catoni's PAC-Bayes bound on a finite hypothesis space",
+      "leanName": "OpenTheory.PACBayes.catoni_pacBayes",
       "leanNames": [
-        "OpenTheory.SpikedSampleComplexity.signalKernel_add_bulkKernel",
-        "OpenTheory.SpikedSampleComplexity.bulkKernel_eq_frobeniusSq_residual",
-        "OpenTheory.SpikedSampleComplexity.spikedExpectedMSE_mono_in_bulk",
-        "OpenTheory.SpikedSampleComplexity.spikedExpectedMSE_strict_decrease_of_signal_and_bulk",
-        "OpenTheory.SpikedSampleComplexity.spikedEffectiveDim_bounds",
-        "OpenTheory.SpikedSampleComplexity.unaligned_effectiveDim_scales_with_d_bulk",
-        "OpenTheory.SpikedSampleComplexity.mup_aligned_effectiveDim_le_rank_add_eps",
-        "OpenTheory.SpikedSampleComplexity.spikedVariance_le_of_sample_ge",
-        "OpenTheory.SpikedSampleComplexity.mup_vs_ntk_sample_complexity_separation",
-        "OpenTheory.SpikedSampleComplexity.mup_spiked_covariance_master_guarantee"
+        "OpenTheory.PACBayes.catoni_pacBayes",
+        "OpenTheory.PACBayes.catoni_grid",
+        "OpenTheory.PACBayes.occam_catoni",
+        "OpenTheory.PACBayes.exp_moment_le",
+        "OpenTheory.PACBayes.expect_le_kl_add_log",
+        "OpenTheory.PACBayes.catoni_convexOn",
+        "OpenTheory.PACBayes.catoni_le_iff",
+        "OpenTheory.PACBayes.kl_prodDist",
+        "OpenTheory.PACBayes.kl_uniformOn"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
-      "dependencies": [
-        "lem:feature_learning_advantage",
-        "conj:grand_feature_learning",
-        "lem:ridge_fixed_design_mse"
-      ],
+      "dependencies": [],
       "bountyUsd": null,
-      "informalSketch": "Establish strict monotonicity of the ridge shrinkage factor $K\\mapsto K/(K+\\lambda)$ on $[0,\\infty)$ for $\\lambda>0$ by cross-multiplying. Combine with `FeatureLearningAdvantage.ridge_mse_strict_improvement_of_kernel_growth` on the signal subspace and `mup_spectral_alignment_of_ge_horizon` on the bulk residual $\\|H_t - H_t P\\|_F^2$ to bound both $\\mathrm{df}(\\lambda)$ and the sample complexity threshold `requiredSampleScale`."
+      "informalSketch": "Convexity of $\\exp$ dominates each $[0,1]$ loss by a Bernoulli variable, so the\nproduct measure gives $\\mathbb E\\exp(n\\Phi_t(R(h))-t\\sum_i\\ell(h,z_i))\\le1$\nfor each $h$. Averaging over $\\pi$ and Markov's inequality bound the\nprobability that the $\\pi$-average exceeds $1/\\delta$. On the complement, the\nfinite Donsker--Varadhan inequality (Jensen for $\\log$) and convexity of\n$\\Phi_t$ transfer the bound to every $Q$. A union bound handles the grid."
     },
     {
-      "id": "lem:residual_preconditioned_momentum",
+      "id": "lem:pacbayes_mlp_certificate",
       "kind": "lemma",
-      "title": "Variational optimizer optimality, Residual-Preconditioned Momentum (RPM), and exact regime classification",
-      "leanName": "OpenTheory.ResidualPreconditionedMomentum.coordResidualSharpness_pos",
+      "title": "PAC-Bayes certificate for a trained MLP with a learned prior",
+      "leanName": "OpenTheory.QuantizedMLP.mlp_pacBayes",
       "leanNames": [
-        "OpenTheory.ResidualPreconditionedMomentum.coordResidualSharpness_pos",
-        "OpenTheory.ResidualPreconditionedMomentum.coordResidualSharpness_sub_eq",
-        "OpenTheory.ResidualPreconditionedMomentum.coordResidualSharpness_mono_in_residual",
-        "OpenTheory.ResidualPreconditionedMomentum.coordResidualSharpness_strict_mono_in_residual",
-        "OpenTheory.ResidualPreconditionedMomentum.coordResidualSharpness_eq_mlpLocalSharpness",
-        "OpenTheory.ResidualPreconditionedMomentum.mlp_residual_drop_strictly_flattens_landscape",
-        "OpenTheory.ResidualPreconditionedMomentum.optimizerNetProgress_eq_coord_sum",
-        "OpenTheory.ResidualPreconditionedMomentum.optimizerNetProgress_rpmOptimalStep_eq",
-        "OpenTheory.ResidualPreconditionedMomentum.rpm_variational_sub_eq_sum_sq",
-        "OpenTheory.ResidualPreconditionedMomentum.rpm_variational_global_optimality",
-        "OpenTheory.ResidualPreconditionedMomentum.rpm_variational_strict_optimality",
-        "OpenTheory.ResidualPreconditionedMomentum.rpmOptimalStep_zero_noise_eq_optimalDiagStep",
-        "OpenTheory.ResidualPreconditionedMomentum.rpmOptimalStep_isotropic_zero_noise_eq_scalar",
-        "OpenTheory.ResidualPreconditionedMomentum.rpm_strict_speedup_from_residual_drop",
-        "OpenTheory.ResidualPreconditionedMomentum.rpmResidualStep_strict_speedup",
-        "OpenTheory.ResidualPreconditionedMomentum.rpm_momentum_strictly_increases_optimal_progress",
-        "OpenTheory.ResidualPreconditionedMomentum.rpm_dynamic_pl_contraction_strict_improvement",
-        "OpenTheory.ResidualPreconditionedMomentum.rpm_residual_drop_pl_contraction_strict_improvement"
+        "OpenTheory.QuantizedMLP.mlp_pacBayes",
+        "OpenTheory.QuantizedMLP.kl_dirac_centre_le",
+        "OpenTheory.QuantizedMLP.dirac_certificate",
+        "OpenTheory.QuantizedMLP.errorCount_codeOfList",
+        "OpenTheory.PACBayesMLPDigits.heldout_errors",
+        "OpenTheory.PACBayesMLPDigits.heldout_empirical_error",
+        "OpenTheory.PACBayesMLPDigits.heldout_pacBayes",
+        "OpenTheory.PACBayesMLPDigits.heldout_certificate",
+        "OpenTheory.PACBayesMLPDigits.heldoutSample_fails_iff"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:momentum_adam_trajectory",
-        "lem:preconditioned_descent",
-        "lem:mlp_derived_sharpness"
+        "thm:catoni_pac_bayes"
       ],
       "bountyUsd": null,
-      "informalSketch": "Decompose `optimizerNetProgress` into a coordinate sum of quadratics in $\\eta_i$ and complete the square against $S_i M_i / 2$. Specialize to $\\sigma=0$, constant $S_0$, residual drop $R_t < R_0$, and momentum $0 < \\beta < 1$."
+      "informalSketch": "Instantiate Theorem~\\ref{thm:catoni_pac_bayes} with the centred product prior\nand the Dirac posterior at the reference network, whose relative entropy is at\nmost $1210\\cdot x/(1-x)$ for $x=3\\cdot2^{-20}$. Kernel reduction checks the\nheld-out error count through a linear-time list evaluation of the network.\nRational Taylor bounds on $\\exp$ and Mathlib's bounds on $\\log 2$ and $e$ invert\n$\\Phi_t$."
     },
     {
-      "id": "lem:spectral_sparse_circuit",
-      "kind": "lemma",
-      "title": "Spectral-Equivariant Sparse Circuits (SESC), 4-tier architectural dominance, and sample-size crossover",
-      "leanName": "OpenTheory.SpectralSparseCircuit.sescUnitMap_shift_equivariant",
+      "id": "thm:binomial_test_set",
+      "kind": "theorem",
+      "title": "Exact binomial test-set bound (Clopper--Pearson)",
+      "leanName": "OpenTheory.BinomialTail.sampleLaw_count_le",
       "leanNames": [
-        "OpenTheory.SpectralSparseCircuit.sescUnitMap_shift_equivariant",
-        "OpenTheory.SpectralSparseCircuit.sescFullForward_shift_invariant",
-        "OpenTheory.SpectralSparseCircuit.sescCircuitForward_shift_invariant",
-        "OpenTheory.SpectralSparseCircuit.sesc_orthogonal_bulk_invariance",
-        "OpenTheory.SpectralSparseCircuit.sesc_circuit_pruning_error_le",
-        "OpenTheory.SpectralSparseCircuit.four_tier_dimension_strict_hierarchy",
-        "OpenTheory.SpectralSparseCircuit.four_tier_covering_strict_hierarchy",
-        "OpenTheory.SpectralSparseCircuit.four_tier_sample_complexity_and_flop_hierarchy",
-        "OpenTheory.SpectralSparseCircuit.minimal_invariant_architecture_optimal",
-        "OpenTheory.SpectralSparseCircuit.sesc_strictly_optimal_under_sparse_spectral_shift_geometry",
-        "OpenTheory.SpectralSparseCircuit.under_parameterized_architecture_suboptimal_of_large_sample",
-        "OpenTheory.SpectralSparseCircuit.archTotalExcessRisk_crossover_iff",
-        "OpenTheory.SpectralSparseCircuit.cnn_mlp_transformer_covering_hierarchy",
-        "OpenTheory.SpectralSparseCircuit.cnn_vs_transformer_vs_mlp_regime_dichotomy"
+        "OpenTheory.BinomialTail.sampleLaw_count_le",
+        "OpenTheory.BinomialTail.derivative_sum_bernstein",
+        "OpenTheory.BinomialTail.binomCdf_antitoneOn",
+        "OpenTheory.BinomialTail.count_testSet_bound",
+        "OpenTheory.BinomialTail.count_clopperPearson",
+        "OpenTheory.BinomialTail.testSet_bound",
+        "OpenTheory.BinomialTail.clopperPearson",
+        "OpenTheory.BinomialTail.mem_clopperPearson_event",
+        "OpenTheory.BinomialTail.binomCdf_div_eq"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
-      "dependencies": [
-        "lem:convolutional_generalization",
-        "lem:spiked_sample_complexity",
-        "lem:attention_ablation",
-        "lem:transformer_generalization"
-      ],
+      "dependencies": [],
       "bountyUsd": null,
-      "informalSketch": "Combine `Equiv.addRight` spatial reindexing with linearity of `patchProject` for the dual invariances. Apply `covering_bound_strict_mono` across $sr < mr < mk < md$, and solve the linear crossover inequality $p_{\\mathrm{true}} c_{\\mathrm{gen}}/n < \\varepsilon_{\\mathrm{struct}} + p_{\\mathrm{small}} c_{\\mathrm{gen}}/n$."
+      "informalSketch": "The event $K\\le k$ is the disjoint union, over sets $A$ of at most $k$\npositions, of the measurable rectangles on which the errors fall exactly on\n$A$; each has product probability $R^{|A|}(1-R)^{n-|A|}$, and grouping by\n$|A|$ gives $F_{n,R}(k)$. In Bernstein polynomials,\n$\\frac{d}{dp}F_{n,p}(k)=-n\\,b_{n-1,k}(p)\\le0$ on $[0,1]$, so $F_{n,p}(k)$\ndecreases in $p$. For the uniform statement let $k^*$ be the largest $k\\le n$\nwith $F_{n,R}(k)\\le\\delta$; the event is contained in $K\\le k^*$."
     },
     {
-      "id": "lem:gradient_spectral_emergence",
+      "id": "lem:binomial_mlp_certificate",
       "kind": "lemma",
-      "title": "First-principles spectral feature emergence from raw weight gradients",
-      "leanName": "OpenTheory.GradientSpectralEmergence.vecDot_gramAct_symm",
+      "title": "Exact binomial certificate for the trained MLP",
+      "leanName": "OpenTheory.BinomialMLPDigits.tailNumerator_le",
       "leanNames": [
-        "OpenTheory.GradientSpectralEmergence.vecDot_gramAct_symm",
-        "OpenTheory.GradientSpectralEmergence.vecDot_gramAct_eigenpair",
-        "OpenTheory.GradientSpectralEmergence.rawWeightGradStep_eigenmode_step",
-        "OpenTheory.GradientSpectralEmergence.rawWeightTrajectory_eigenmode_eq",
-        "OpenTheory.GradientSpectralEmergence.modalSubspaceEnergy_trajectory_eq",
-        "OpenTheory.GradientSpectralEmergence.signal_subspace_energy_lower_bound_from_gradients",
-        "OpenTheory.GradientSpectralEmergence.bulk_subspace_energy_upper_bound_from_gradients",
-        "OpenTheory.GradientSpectralEmergence.first_principles_gradient_signal_to_bulk_ratio",
-        "OpenTheory.GradientSpectralEmergence.first_principles_gradient_alignment_convergence"
+        "OpenTheory.BinomialMLPDigits.tailNumerator_le",
+        "OpenTheory.BinomialMLPDigits.binomCdf_le",
+        "OpenTheory.BinomialMLPDigits.heldout_numErrors",
+        "OpenTheory.BinomialMLPDigits.heldout_testSet_certificate",
+        "OpenTheory.BinomialMLPDigits.heldoutSample_fails_iff",
+        "OpenTheory.BinomialMLPDigits.heldout_clopperPearson",
+        "OpenTheory.BinomialMLPDigits.heldoutSample_fails_of_risk_gt"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:multistep_spectral_bias",
-        "lem:spiked_sample_complexity"
+        "thm:binomial_test_set",
+        "lem:pacbayes_mlp_certificate"
       ],
       "bountyUsd": null,
-      "informalSketch": "Use self-adjointness of `gramAct` on symmetric $G$ to prove $\\langle G w, v\\rangle = \\gamma\\langle w, v\\rangle$, induct on $T$, sum over the signal and bulk eigenfamilies, and feed the resulting modal energy bounds into `spectral_bias_alignment_disc_ge` and `mup_aligned_effectiveDim_le_rank_add_eps`."
+      "informalSketch": "Apply Theorem~\\ref{thm:binomial_test_set} with $n=397$, $k=16$,\n$p=303/5000$. Writing $F_{397,p}(16)=N/5000^{397}$ with $N$ a natural number,\nthe inequality $20N\\le5000^{397}$ is checked by kernel reduction with\nlinear-time binomial coefficients."
     },
     {
-      "id": "lem:compute_optimal_synthesis",
-      "kind": "lemma",
-      "title": "Variational Chinchilla compute allocation, critical batch optimality, and co-design synthesis",
-      "leanName": "OpenTheory.ComputeOptimalSynthesis.optimalCapacity_mul_optimalData_eq_compute",
+      "id": "thm:occam_binomial",
+      "kind": "theorem",
+      "title": "Binomial Occam bound for countable hypothesis spaces",
+      "leanName": "OpenTheory.BinomialTail.occam_binomial",
       "leanNames": [
-        "OpenTheory.ComputeOptimalSynthesis.optimalCapacity_mul_optimalData_eq_compute",
-        "OpenTheory.ComputeOptimalSynthesis.scalingRisk_at_optimal_eq_pareto",
-        "OpenTheory.ComputeOptimalSynthesis.chinchilla_completion_of_squares",
-        "OpenTheory.ComputeOptimalSynthesis.chinchilla_variational_global_optimality",
-        "OpenTheory.ComputeOptimalSynthesis.paretoComputeRisk_strict_mono_in_arch_and_opt",
-        "OpenTheory.ComputeOptimalSynthesis.optimal_capacity_to_data_ratio_shift",
-        "OpenTheory.ComputeOptimalSynthesis.optimalAllocation_directional_shifts",
-        "OpenTheory.ComputeOptimalSynthesis.stepProgress_eq_optimal_sgd",
-        "OpenTheory.ComputeOptimalSynthesis.stepProgress_strict_mono_in_batch",
-        "OpenTheory.ComputeOptimalSynthesis.flopEfficiency_strict_anti_in_batch",
-        "OpenTheory.ComputeOptimalSynthesis.critical_batch_variational_optimality",
-        "OpenTheory.ComputeOptimalSynthesis.critical_batch_global_maximizer",
-        "OpenTheory.ComputeOptimalSynthesis.momentum_reduces_critical_batch_size",
-        "OpenTheory.ComputeOptimalSynthesis.codesign_compute_saving_factor",
-        "OpenTheory.ComputeOptimalSynthesis.master_codesign_compute_dominance"
+        "OpenTheory.BinomialTail.occam_binomial",
+        "OpenTheory.BinomialTail.mem_occamEvent",
+        "OpenTheory.BinomialTail.tsum_sigma_mul_le_one",
+        "OpenTheory.BinomialTail.tsum_uniformWeight"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:end_to_end_sum",
-        "lem:stochastic_sharpness_sgd",
-        "lem:momentum_adam_trajectory",
-        "lem:spectral_sparse_circuit",
-        "lem:residual_preconditioned_momentum"
+        "thm:binomial_test_set"
       ],
       "bountyUsd": null,
-      "informalSketch": "Expand $(\\sqrt{AD} - \\sqrt{B_{\\mathrm{opt}}N})^2 / C$ using $ND=C$ for the Chinchilla identity, expand $(B - B_{\\mathrm{crit}})^2 / (4(B+B_{\\mathrm{crit}})^2)$ for the critical batch identity, and substitute $C_{\\mathrm{co}} = (A_{\\mathrm{co}}/A_{\\mathrm{base}})(B_{\\mathrm{co}}/B_{\\mathrm{base}})C_{\\mathrm{base}}$ into $R^\\star(C)$."
+      "informalSketch": "A countable union bound over Theorem~\\ref{thm:binomial_test_set} at level\n$\\delta\\,w(h)$, and $\\sum_h\\delta\\,w(h)\\le\\delta$."
     },
     {
-      "id": "lem:hierarchical_multi_index",
+      "id": "lem:kronecker_dot",
       "kind": "lemma",
-      "title": "Non-linear multi-index information exponent, grokking saddle plateaus, and hierarchical vs.\\ shallow separation",
-      "leanName": "OpenTheory.HierarchicalMultiIndex.tensorAlignmentDrift_eq_zero_of_lt",
+      "title": "Exact dot products by Kronecker substitution",
+      "leanName": "OpenTheory.Kronecker.ofDigits_conv",
       "leanNames": [
-        "OpenTheory.HierarchicalMultiIndex.tensorAlignmentDrift_eq_zero_of_lt",
-        "OpenTheory.HierarchicalMultiIndex.linear_gram_drift_zero_of_exponent_ge_two",
-        "OpenTheory.HierarchicalMultiIndex.multiIndexTrajectory_exponent_one_eq",
-        "OpenTheory.HierarchicalMultiIndex.nonlinear_drift_lt_linear_drift_on_plateau",
-        "OpenTheory.HierarchicalMultiIndex.grokking_escape_time_strict_mono_in_exponent",
-        "OpenTheory.HierarchicalMultiIndex.grokking_escape_time_ratio_eq",
-        "OpenTheory.HierarchicalMultiIndex.multiIndex_slow_plateau_upper_bound",
-        "OpenTheory.HierarchicalMultiIndex.multiIndex_post_threshold_exponential_growth",
-        "OpenTheory.HierarchicalMultiIndex.hierarchical_vs_shallow_sample_complexity_separation",
-        "OpenTheory.HierarchicalMultiIndex.hierarchical_stagewise_escape_time_lt_shallow",
-        "OpenTheory.HierarchicalMultiIndex.optimal_depth_and_horizon_for_multi_index"
+        "OpenTheory.Kronecker.ofDigits_conv",
+        "OpenTheory.Kronecker.getD_conv",
+        "OpenTheory.Kronecker.getD_conv_le",
+        "OpenTheory.Kronecker.ofDigits_div_pow_mod",
+        "OpenTheory.Kronecker.kronecker_dot",
+        "OpenTheory.Kronecker.pack_slots",
+        "OpenTheory.Kronecker.slot_lt_of_land_eq_zero",
+        "OpenTheory.Kronecker.slots_lt_of_land_eq_zero"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
-      "dependencies": [
-        "lem:multistep_spectral_bias",
-        "lem:gradient_spectral_emergence"
-      ],
+      "dependencies": [],
       "bountyUsd": null,
-      "informalSketch": "Induct on $T$ for the slow plateau bound and post-threshold geometric growth, factor $\\alpha_0^{s_2-1} = \\alpha_0^{s_1-1}\\alpha_0^{s_2-s_1}$ for the escape-time ratio, and compare $L d^{s_{\\mathrm{local}}}$ against $d^{s_{\\mathrm{total}}}$."
+      "informalSketch": "The product is the evaluation at $2^B$ of the carry-free convolution of the\ndigit lists, whose $k$-th coefficient is $\\sum_{i\\le k}c_ix_{k-i}\\le(\\sum c)M$.\nDigits below the base are recovered by division and remainder, and the\ncoefficient at $d-1$ against the reversed list is the dot product. The mask\nstatement compares bits slot by slot."
     },
     {
-      "id": "lem:global_saddle_pl",
-      "kind": "lemma",
-      "title": "Endogenous Polyak-\u0141ojasiewicz conditioning, strict saddle escape under SGD noise, and two-phase non-convex convergence",
-      "leanName": "OpenTheory.GlobalSaddlePL.endogenous_pl_inequality_from_gram_margin",
+      "id": "thm:packed_mlp_inference",
+      "kind": "theorem",
+      "title": "Packed inference equals the reference decoder",
+      "leanName": "OpenTheory.QuantizedMLP.dot_packed",
       "leanNames": [
-        "OpenTheory.GlobalSaddlePL.endogenous_pl_inequality_from_gram_margin",
-        "OpenTheory.GlobalSaddlePL.endogenous_pl_inequality_sample_normalized",
-        "OpenTheory.GlobalSaddlePL.dual_feature_and_residual_pl_acceleration",
-        "OpenTheory.GlobalSaddlePL.mlp_dual_feature_and_residual_pl_acceleration",
-        "OpenTheory.GlobalSaddlePL.saddle_deterministic_trapped",
-        "OpenTheory.GlobalSaddlePL.saddleUnstableVarTrajectory_closed_form",
-        "OpenTheory.GlobalSaddlePL.saddle_noise_exponential_escape",
-        "OpenTheory.GlobalSaddlePL.saddle_escape_loss_drop",
-        "OpenTheory.GlobalSaddlePL.two_phase_global_nonconvex_convergence",
-        "OpenTheory.GlobalSaddlePL.two_phase_global_nonconvex_from_recurrence",
-        "OpenTheory.GlobalSaddlePL.optimal_two_phase_noise_schedule"
+        "OpenTheory.QuantizedMLP.dot_packed",
+        "OpenTheory.QuantizedMLP.scoresPacked_eq",
+        "OpenTheory.QuantizedMLP.errorCount_packed"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:joint_pl_convergence",
-        "lem:stochastic_sharpness_sgd",
-        "lem:residual_preconditioned_momentum"
+        "lem:kronecker_dot"
       ],
       "bountyUsd": null,
-      "informalSketch": "Substitute $R_{\\mathrm{sq}} = 2L$ into the Gram spectral margin for the endogenous PL bound, induct on $T$ for the geometric series of `saddleUnstableVarTrajectory`, and chain the saddle loss drop with $K$-step PL basin contraction."
+      "informalSketch": "Lemma~\\ref{lem:kronecker_dot} for each hidden unit and for the pixel sum; the\nreference decoder's row split of the weight list reduces to the packed rows,\nand the remaining layers are unchanged."
     },
     {
-      "id": "lem:induction_head_dynamics",
-      "kind": "lemma",
-      "title": "Nonlinear softmax logit-margin dynamics, 1-hot induction head sparsification, and logarithmic vs.\\ linear context scaling",
-      "leanName": "OpenTheory.InductionHeadDynamics.softmaxDistractorMass_eq",
+      "id": "thm:plateau_modes",
+      "kind": "theorem",
+      "title": "The gradient-descent plateau: exact mode dynamics",
+      "leanName": "OpenTheory.Plateau.mode_zero",
       "leanNames": [
-        "OpenTheory.InductionHeadDynamics.softmaxDistractorMass_eq",
-        "OpenTheory.InductionHeadDynamics.softmaxDistractorMass_le_exp_neg_margin",
-        "OpenTheory.InductionHeadDynamics.softmaxTargetProb_strict_mono_in_margin",
-        "OpenTheory.InductionHeadDynamics.logitMarginLogLossStep_strict_increase",
-        "OpenTheory.InductionHeadDynamics.induction_head_exponential_sparsification",
-        "OpenTheory.InductionHeadDynamics.softmax_vs_linear_attention_distractor_suppression",
-        "OpenTheory.InductionHeadDynamics.softmax_logarithmic_margin_sufficiency",
-        "OpenTheory.InductionHeadDynamics.linear_attention_requires_linear_margin",
-        "OpenTheory.InductionHeadDynamics.long_context_margin_scaling",
-        "OpenTheory.InductionHeadDynamics.trained_induction_head_retrieval_error",
-        "OpenTheory.InductionHeadDynamics.trained_induction_head_rowOutput_retrieval_error"
+        "OpenTheory.Plateau.mode_zero",
+        "OpenTheory.Plateau.hasDerivAt_mode",
+        "OpenTheory.Plateau.sub_mode_le",
+        "OpenTheory.Plateau.mode_le",
+        "OpenTheory.Plateau.signal_learned",
+        "OpenTheory.Plateau.noise_off",
+        "OpenTheory.Plateau.plateau"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
-      "dependencies": [
-        "lem:attention_logit_stability",
-        "lem:in_context_retrieval"
-      ],
+      "dependencies": [],
       "bountyUsd": null,
-      "informalSketch": "Use `Real.add_one_le_exp` to obtain $\\Delta < e^\\Delta$ for $\\Delta > 0$, cross-multiply the softmax and linear distractor ratios, and bound the value retrieval discrepancy via convex combination weights."
+      "informalSketch": "Explicit bounds $0\\le\\sigma-w(t)\\le\\sigma(\\sigma/\\varepsilon^2)e^{-2\\sigma t}$ and\n$0\\le w(t)\\le\\sigma/((\\sigma/\\varepsilon^2-1)e^{-2\\sigma t})$; at\n$t=c\\log(1/\\varepsilon)$, $e^{-2\\sigma t}=\\varepsilon^{2\\sigma c}$, and the bounds are\nmonotone in $t$ on the window."
     },
     {
-      "id": "lem:autoregressive_ood",
-      "kind": "lemma",
-      "title": "Autoregressive rollout compounding, contractive Chain-of-Thought stability, and OOD compositional generalization",
-      "leanName": "OpenTheory.AutoregressiveOOD.autoregressiveRolloutError_unit_lip",
+      "id": "thm:plateau_flow",
+      "kind": "theorem",
+      "title": "Mode decoupling for a two-layer linear network",
+      "leanName": "OpenTheory.Plateau.unique_of_contDiff",
       "leanNames": [
-        "OpenTheory.AutoregressiveOOD.autoregressiveRolloutError_unit_lip",
-        "OpenTheory.AutoregressiveOOD.autoregressiveRolloutError_closed_form",
-        "OpenTheory.AutoregressiveOOD.cot_contractive_rollout_horizon_free_bound",
-        "OpenTheory.AutoregressiveOOD.unstable_rollout_strict_mono_and_exceeds_contractive",
-        "OpenTheory.AutoregressiveOOD.cot_strictly_dominates_direct_prediction",
-        "OpenTheory.AutoregressiveOOD.cot_contractive_dominates_direct_for_all_horizons",
-        "OpenTheory.AutoregressiveOOD.sesc_zero_ood_shift_penalty",
-        "OpenTheory.AutoregressiveOOD.sesc_ood_strictly_dominates_dense_mlp",
-        "OpenTheory.AutoregressiveOOD.dense_mlp_ood_risk_floor_as_n_infty"
+        "OpenTheory.Plateau.unique_of_contDiff",
+        "OpenTheory.Plateau.gradField_eq_matrix",
+        "OpenTheory.Plateau.gradField_contDiff",
+        "OpenTheory.Plateau.diagSol_solves",
+        "OpenTheory.Plateau.flow_exists",
+        "OpenTheory.Plateau.flow_decouples",
+        "OpenTheory.Plateau.flow_plateau",
+        "OpenTheory.Plateau.gradField_rotate",
+        "OpenTheory.Plateau.rotate_solves"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:transformer_generalization",
-        "lem:spectral_sparse_circuit"
+        "thm:plateau_modes"
       ],
       "bountyUsd": null,
-      "informalSketch": "Induct on $H$ for the geometric rollout identity, bound $1 - \\Lambda^H \\le 1$ when $0 \\le \\Lambda < 1$, and invoke `sesc_orthogonal_bulk_invariance` for the zero OOD shift penalty."
+      "informalSketch": "The diagonal candidate with $a_k=b_k=\\sqrt{w_k}$ solves the flow entrywise;\nuniqueness holds because the field is $C^1$, both solutions are bounded on the\ncompact interval, and a $C^1$ field is Lipschitz on a closed ball."
     },
     {
-      "id": "lem:predictive_model_prescription",
-      "kind": "lemma",
-      "title": "Master predictive task-to-model synthesis compiler",
-      "leanName": "OpenTheory.PredictiveModelPrescription.predictiveTaskRisk_nonneg",
+      "id": "thm:bayes_scale_invariant",
+      "kind": "theorem",
+      "title": "Bayes second moment for a scale-invariant prior",
+      "leanName": "OpenTheory.BayesToy.integrable_abs_rpow_mul_exp",
       "leanNames": [
-        "OpenTheory.PredictiveModelPrescription.predictiveTaskRisk_nonneg",
-        "OpenTheory.PredictiveModelPrescription.predictiveTaskRisk_mono",
-        "OpenTheory.PredictiveModelPrescription.predictiveTaskRisk_strict_mono_in_each_factor",
-        "OpenTheory.PredictiveModelPrescription.prescribed_architecture_dominance_hierarchy",
-        "OpenTheory.PredictiveModelPrescription.criticalSampleThreshold",
-        "OpenTheory.PredictiveModelPrescription.adaptive_architecture_selection_by_sample_size",
-        "OpenTheory.PredictiveModelPrescription.hierarchical_cot_softmax_strictly_dominates_shallow_linear",
-        "OpenTheory.PredictiveModelPrescription.endToEndComputeRisk_at_optimal_eq_prescribed",
-        "OpenTheory.PredictiveModelPrescription.master_predictive_model_prescription"
+        "OpenTheory.BayesToy.integrable_abs_rpow_mul_exp",
+        "OpenTheory.BayesToy.hasDerivAt_q",
+        "OpenTheory.BayesToy.hasDerivAt_q1",
+        "OpenTheory.BayesToy.integral_Fode'",
+        "OpenTheory.BayesToy.ode",
+        "OpenTheory.BayesToy.q1_sq_le",
+        "OpenTheory.BayesToy.abs_L1_le",
+        "OpenTheory.BayesToy.gaussian_ibp",
+        "OpenTheory.BayesToy.moment_identity",
+        "OpenTheory.BayesToy.postMean_eq",
+        "OpenTheory.BayesToy.bayes_second_moment"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
-      "dependencies": [
-        "lem:compute_optimal_synthesis",
-        "lem:spectral_sparse_circuit",
-        "lem:residual_preconditioned_momentum",
-        "lem:hierarchical_multi_index",
-        "lem:global_saddle_pl",
-        "lem:induction_head_dynamics",
-        "lem:autoregressive_ood"
-      ],
+      "dependencies": [],
       "bountyUsd": null,
-      "informalSketch": "Combine the linear crossover equivalence for $n_{\\mathrm{crit}}$, the compositional CoT + Softmax risk decomposition, and the Chinchilla completion-of-squares identity scaled by the contractive rollout factor $1/(1-\\Lambda_{\\mathrm{CoT}})$."
+      "informalSketch": "With $q=\\int|u|^{\\alpha-1}e^{-(z-u)^2/2}du$, differentiation under the integral sign\nand integration by parts in $u$ (split at $0$) give $q''+zq'=(\\alpha-1)q$. With\n$L=\\log q$, $m=z+L'$ and $L'^2=(\\alpha-1)-zL'-L''$; a posterior Cauchy--Schwarz\ninequality and the equation give $|L'|\\le|z|+\\sqrt\\alpha$, and Gaussian integration by\nparts gives $\\mathbb E[L'']=\\mathbb E[zL']$ and $\\mathbb E[z^2]=1$, hence\n$\\mathbb E[m^2]=\\alpha$."
     },
     {
-      "id": "lem:certi_rpm",
+      "id": "lem:rrr_rlct_gain",
       "kind": "lemma",
-      "title": "Plug-in estimator quadratic regret, upper-confidence safe descent, and the self-tuning CertiRPM optimizer",
-      "leanName": "OpenTheory.CertiRPM.plugin_step_quadratic_regret_identity",
+      "title": "Bayes pays more than the true dimension in reduced-rank regression",
+      "leanName": "OpenTheory.RRR.rlct8",
       "leanNames": [
-        "OpenTheory.CertiRPM.plugin_step_quadratic_regret_identity",
-        "OpenTheory.CertiRPM.plugin_step_uniform_error_regret_bound",
-        "OpenTheory.CertiRPM.pluginSharpnessStep_sub_oracle_eq",
-        "OpenTheory.CertiRPM.pluginSharpness_exact_progress_ratio",
-        "OpenTheory.CertiRPM.upper_confidence_sharpness_interval",
-        "OpenTheory.CertiRPM.upper_confidence_multiplier_bounds",
-        "OpenTheory.CertiRPM.upper_confidence_sharpness_guarantees_positive_progress",
-        "OpenTheory.CertiRPM.upper_confidence_progress_lower_bound",
-        "OpenTheory.CertiRPM.pluginSharpnessStep_strict_accel_from_sharpness_drop",
-        "OpenTheory.CertiRPM.certiRPM_master_self_tuning_guarantee"
+        "OpenTheory.RRR.rlct8",
+        "OpenTheory.RRR.rlct8_gain"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
-      "dependencies": [
-        "lem:residual_preconditioned_momentum",
-        "lem:global_saddle_pl"
-      ],
+      "dependencies": [],
       "bountyUsd": null,
-      "informalSketch": "Substitute $\\hat{\\eta}_i - \\eta_i^\\star = \\frac{S_i - \\hat{S}_i}{\\hat{S}_i}\\eta_i^\\star$ into `rpm_variational_sub_eq_sum_sq`, bound $\\frac{2\\hat{S}_i S_i - S_i^2}{\\hat{S}_i^2} \\ge \\frac{S_i}{\\hat{S}_i}$ for $\\hat{S}_i \\ge S_i > 0$, and combine the $\\hat{\\kappa} < 0$ and $\\hat{\\kappa} \\ge 0$ branches of `certiRPMStep` and `certiRPMBatchSize`."
+      "informalSketch": "Three branches of the formula reduce to $(H-r)(M-r)/2$, $(H-r)(N-r)/2$ and\n$(M-r)(N-r)/2$. In the main branch, $8\\lambda-4r(M+N-r)=2g(S-h)+g^2-D^2+\\pi$ with\n$g=H-r$, $h=H+r$, $S=M+N$, $D=M-N$ and parity $\\pi$; case analysis on $S-h$."
     },
     {
-      "id": "lem:test_time_scaling",
+      "id": "lem:truncation_second_order",
       "kind": "lemma",
-      "title": "Joint pre-training vs.\\ test-time compute scaling, Best-of-$K$ verification, and small reasoning model dominance",
-      "leanName": "OpenTheory.TestTimeScaling.bestOfKFailureProb_strict_anti_in_K",
+      "title": "Second-order perturbation of the truncated SVD",
+      "leanName": "OpenTheory.HilbertSchmidt.hs",
       "leanNames": [
-        "OpenTheory.TestTimeScaling.bestOfKFailureProb_strict_anti_in_K",
-        "OpenTheory.TestTimeScaling.bestOfK_exponential_bound",
-        "OpenTheory.TestTimeScaling.bestOfK_sample_sufficiency",
-        "OpenTheory.TestTimeScaling.optimalInferenceModelSize_mul_optimalReasoningBudget",
-        "OpenTheory.TestTimeScaling.inferenceScalingRisk_at_optimal_eq_pareto",
-        "OpenTheory.TestTimeScaling.test_time_scaling_completion_of_squares",
-        "OpenTheory.TestTimeScaling.test_time_scaling_variational_optimality",
-        "OpenTheory.TestTimeScaling.small_reasoning_model_beats_giant_one_step_at_equal_inference_flops",
-        "OpenTheory.TestTimeScaling.cot_best_of_K_joint_error_bound",
-        "OpenTheory.TestTimeScaling.deployment_queries_shift_optimal_model_size_down"
+        "OpenTheory.HilbertSchmidt.hs",
+        "OpenTheory.HilbertSchmidt.hs_comp_left_le",
+        "OpenTheory.HilbertSchmidt.hs_comp_right_le",
+        "OpenTheory.HilbertSchmidt.opNorm_le_hs",
+        "OpenTheory.RankTruncation.projL_comp",
+        "OpenTheory.Perturbation.opn_gramL_sub_le",
+        "OpenTheory.Perturbation.second_order_bound"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
-      "dependencies": [
-        "lem:compute_optimal_synthesis",
-        "lem:autoregressive_ood"
-      ],
+      "dependencies": [],
       "bountyUsd": null,
-      "informalSketch": "Bound $p_{\\mathrm{fail}} = 1 - (1 - p_{\\mathrm{fail}}) \\le e^{-(1-p_{\\mathrm{fail}})}$ and raise to the $K$-th power; factor the difference $R_{\\mathrm{inf}}(M N_{\\mathrm{small}}, 1) - R_{\\mathrm{inf}}(N_{\\mathrm{small}}, M) = \\frac{M-1}{M}(\\beta_{\\mathrm{reason}} - \\frac{\\alpha_{\\mathrm{model}}}{N_{\\mathrm{small}}})$."
+      "informalSketch": "Exact identity $\\widehat W-W-P_T(D)=-[P_C^\\perp P_W WQ_WQ_C^\\perp+(P_C^\\perp-P_W^\\perp)DQ_C^\\perp\n+P_W^\\perp D(Q_C^\\perp-Q_W^\\perp)]$ from the intertwining $P_C C=CQ_C$; each projection\nproduct is bounded by Davis--Kahan (vendored SLT library); Hilbert--Schmidt norms by\noperator norm times Hilbert--Schmidt norm."
     },
     {
-      "id": "lem:zero_shot_compiler",
+      "id": "lem:gaussian_trace",
       "kind": "lemma",
-      "title": "Pre-training zero-shot architecture and compute compiler from noisy empirical observables",
-      "leanName": "OpenTheory.ZeroShotCompiler.zero_shot_certified_threshold_brackets_oracle",
+      "title": "Gaussian trace identity",
+      "leanName": "OpenTheory.GaussianQuadratic.integral_inner_mul_inner",
       "leanNames": [
-        "OpenTheory.ZeroShotCompiler.zero_shot_certified_threshold_brackets_oracle",
-        "OpenTheory.ZeroShotCompiler.zero_shot_architecture_compiler_soundness",
-        "OpenTheory.ZeroShotCompiler.zero_shot_plug_in_architecture_regret_le_two_delta",
-        "OpenTheory.ZeroShotCompiler.compiledCapacity_mul_compiledData_eq_compute",
-        "OpenTheory.ZeroShotCompiler.compiledAllocation_eq_optimal_of_exact_ratio",
-        "OpenTheory.ZeroShotCompiler.compiled_chinchilla_exact_regret",
-        "OpenTheory.ZeroShotCompiler.zero_shot_compiler_end_to_end_guarantee"
+        "OpenTheory.GaussianQuadratic.integral_inner_mul_inner",
+        "OpenTheory.GaussianQuadratic.integral_norm_sq_map",
+        "OpenTheory.GaussianQuadratic.integrable_one_add_norm_pow"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
-      "dependencies": [
-        "lem:predictive_model_prescription",
-        "lem:compute_optimal_synthesis"
-      ],
+      "dependencies": [],
       "bountyUsd": null,
-      "informalSketch": "Use monotonicity of division on $0 < \\hat{\\varepsilon}_{\\mathrm{prune}} - \\delta_\\varepsilon \\le \\varepsilon_{\\mathrm{prune}} \\le \\hat{\\varepsilon}_{\\mathrm{prune}} + \\delta_\\varepsilon$ to bracket $n_{\\mathrm{crit}}$, bound the risk gap at $n \\in [n_{\\mathrm{low}}, n_{\\mathrm{high}}]$ via $|\\varepsilon_{\\mathrm{prune}} - \\hat{\\varepsilon}_{\\mathrm{prune}}| \\le \\delta_\\varepsilon$, and apply `chinchilla_completion_of_squares`."
+      "informalSketch": "The covariance of Mathlib's \\texttt{stdGaussian} is the inner product; Fernique for moments."
     },
     {
-      "id": "lem:runtime_reasoning_guardrail",
-      "kind": "lemma",
-      "title": "Certified runtime reasoning and OOD triple-shield safety guardrail",
-      "leanName": "OpenTheory.RuntimeReasoningGuardrail.dampedSensitivity_at_requiredAnchorStrength",
+      "id": "thm:truncation_risk",
+      "kind": "theorem",
+      "title": "Asymptotic risk of the truncated SVD is the manifold dimension",
+      "leanName": "OpenTheory.TruncationRisk.tendsto_risk",
       "leanNames": [
-        "OpenTheory.RuntimeReasoningGuardrail.dampedSensitivity_at_requiredAnchorStrength",
-        "OpenTheory.RuntimeReasoningGuardrail.dampedSensitivity_le_target_iff",
-        "OpenTheory.RuntimeReasoningGuardrail.runtime_damped_rollout_horizon_free_certificate",
-        "OpenTheory.RuntimeReasoningGuardrail.upper_confidence_runtime_rollout_soundness",
-        "OpenTheory.RuntimeReasoningGuardrail.master_runtime_triple_shield_certificate"
+        "OpenTheory.TruncationRisk.tendsto_risk",
+        "OpenTheory.TruncationRank.rankL_eq_rankR",
+        "OpenTheory.TruncationRank.sum_hs_sq_tangent_noise",
+        "OpenTheory.TruncationRank.tendsto_risk_iid"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:autoregressive_ood",
-        "lem:transformer_generalization"
+        "lem:truncation_second_order",
+        "lem:gaussian_trace"
       ],
       "bountyUsd": null,
-      "informalSketch": "Solve $(1 - \\alpha_{\\mathrm{anchor}})\\Lambda_{\\mathrm{raw}} \\le \\Lambda_{\\max}$ for $\\alpha_{\\mathrm{anchor}} \\ge 1 - \\Lambda_{\\max}/\\Lambda_{\\mathrm{raw}}$, chain `autoregressiveRolloutError_mono_in_sensitivity` with `cot_contractive_rollout_horizon_free_bound`, and combine with `sesc_zero_ood_shift_penalty` and `orthogonal_circuit_ablation_zero_unsafe_and_risk_bound`."
+      "informalSketch": "Lemma~\\ref{lem:truncation_second_order} with $D=n^{-1/2}Z$ gives\n$|\\sqrt n(\\widehat W_n-W)-P_T(Z)|_{HS}\\le K(\\|Z\\|)/\\sqrt n$ with $K$ a polynomial;\nsqueeze between two integrals with an integrable envelope $c(1+\\|Z\\|)^8$; the limit\n$\\mathbb E\\|P_TZ\\|^2=\\sum_{k,l}(1-\\|P^\\perp f_k\\|^2\\|Q^\\perp e_l\\|^2)=NM-(N-r)(M-r)$\nby Lemma~\\ref{lem:gaussian_trace} and the trace of spectral projections."
     },
     {
-      "id": "lem:proof_carrying_ai",
+      "id": "lem:truncation_good_event",
       "kind": "lemma",
-      "title": "Proof-carrying neural systems and infinite-horizon closed-loop control barrier invariance",
-      "leanName": "OpenTheory.ProofCarryingAI.closedLoopStateError_zero_init_eq_autoregressiveRolloutError",
+      "title": "Small noise fixes the spectral picture",
+      "leanName": "OpenTheory.TruncationEvent.le_inner_of_mem'",
       "leanNames": [
-        "OpenTheory.ProofCarryingAI.closedLoopStateError_zero_init_eq_autoregressiveRolloutError",
-        "OpenTheory.ProofCarryingAI.closedLoopStateError_nonneg",
-        "OpenTheory.ProofCarryingAI.IsSafeBarrierInvariant",
-        "OpenTheory.ProofCarryingAI.isSafeBarrierInvariant_iff",
-        "OpenTheory.ProofCarryingAI.safe_ball_step_invariant",
-        "OpenTheory.ProofCarryingAI.trajectory_stays_in_safe_ball_forever",
-        "OpenTheory.ProofCarryingAI.observableBarrierMargin",
-        "OpenTheory.ProofCarryingAI.observable_barrier_certificate_soundness",
-        "OpenTheory.ProofCarryingAI.barrierAnchorStrength",
-        "OpenTheory.ProofCarryingAI.damped_controller_satisfies_safe_barrier",
-        "OpenTheory.ProofCarryingAI.proof_carrying_ai_master_certificate"
+        "OpenTheory.TruncationEvent.le_inner_of_mem'",
+        "OpenTheory.TruncationEvent.inner_le_of_mem",
+        "OpenTheory.TruncationEvent.eigen_split",
+        "OpenTheory.TruncationEvent.count_eq_of_close",
+        "OpenTheory.TruncationEvent.eigenvalue_split",
+        "OpenTheory.TruncationEvent.card_le_count"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
-      "dependencies": [
-        "lem:runtime_reasoning_guardrail",
-        "lem:autoregressive_ood",
-        "lem:transformer_generalization"
-      ],
+      "dependencies": [],
       "bountyUsd": null,
-      "informalSketch": "Induct on $t \\in \\mathbb{N}$ using $\\Lambda_{\\mathrm{ctrl}}E_t + \\varepsilon_{\\mathrm{ctrl}} \\le \\Lambda_{\\mathrm{ctrl}}B_{\\mathrm{safe}} + \\varepsilon_{\\mathrm{ctrl}} \\le B_{\\mathrm{safe}}$, bound the unknown $(\\Lambda_{\\mathrm{ctrl}}, \\varepsilon_{\\mathrm{ctrl}})$ by their upper-confidence intervals, and combine with `sesc_zero_ood_shift_penalty` and `orthogonal_circuit_ablation_zero_unsafe_and_risk_bound`."
+      "informalSketch": "Weyl's inequality (vendored SLT), Rayleigh bounds on spectral subspaces, and the dimension\nof a spectral subspace."
     },
     {
-      "id": "lem:verifiable_self_improvement",
-      "kind": "lemma",
-      "title": "Verifiable recursive AI self-improvement and zero-GPU symbolic search filtering",
-      "leanName": "OpenTheory.VerifiableSelfImprovement.IsVerifiablySafeImprovement",
+      "id": "thm:gd_plateau_end_to_end",
+      "kind": "theorem",
+      "title": "The gradient-descent plateau is the truncated SVD and pays the true dimension",
+      "leanName": "OpenTheory.Plateau.trunc_eq_svd",
       "leanNames": [
-        "OpenTheory.VerifiableSelfImprovement.IsVerifiablySafeImprovement",
-        "OpenTheory.VerifiableSelfImprovement.verifiably_safe_improvement_guarantees_descent_and_pareto_drop",
-        "OpenTheory.VerifiableSelfImprovement.generationComplexityProduct",
-        "OpenTheory.VerifiableSelfImprovement.generationParetoRisk",
-        "OpenTheory.VerifiableSelfImprovement.generationEquivalentCompute",
-        "OpenTheory.VerifiableSelfImprovement.generationParetoRisk_strict_anti_in_generation",
-        "OpenTheory.VerifiableSelfImprovement.recursive_self_improvement_exponential_compute_compression",
-        "OpenTheory.VerifiableSelfImprovement.empiricalSearchCompute",
-        "OpenTheory.VerifiableSelfImprovement.symbolicSearchCompute",
-        "OpenTheory.VerifiableSelfImprovement.symbolic_vs_empirical_search_flop_savings"
+        "OpenTheory.Plateau.trunc_eq_svd",
+        "OpenTheory.Plateau.rotated_plateau",
+        "OpenTheory.Plateau.plateau_eq_trunc",
+        "OpenTheory.Plateau.gd_plateau_end_to_end"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:certi_rpm",
-        "lem:compute_optimal_synthesis"
+        "thm:truncation_risk",
+        "lem:truncation_good_event",
+        "lem:rrr_rlct_gain"
       ],
       "bountyUsd": null,
-      "informalSketch": "Invoke `upper_confidence_sharpness_guarantees_positive_progress` for non-divergence, cancel $\\gamma_{\\mathrm{imp}}^G$ inside $\\sqrt{(\\gamma_{\\mathrm{imp}}^G A_0)B_0} / \\sqrt{\\gamma_{\\mathrm{imp}}^G C_0}$ for exponential compute compression, and expand the linear difference between `empiricalSearchCompute` and `symbolicSearchCompute`."
+      "informalSketch": "In SVD coordinates the spectral projection keeps exactly the columns with $\\sigma_k^2\\ge\\tau$,\nso $\\mathrm{trunc}_\\tau\\widehat C=U\\,\\mathrm{diag}(\\sigma\\mathbf 1_{\\sigma^2\\ge\\tau})V^\\top$;\nrotate the plateau theorem by $(U,V)$; on the good event the signal modes satisfy\n$\\sigma_k^2\\ge3s_2/4$ and the noise modes $\\sigma_k^2\\le s_2/4$, and no mode beyond $H$ passes\nthe threshold (too many orthonormal vectors in an $r$-dimensional subspace). Chebyshev for\nthe good event; Theorem~\\ref{thm:truncation_risk} for the risk; Lemma~\\ref{lem:rrr_rlct_gain}."
     },
     {
-      "id": "lem:auditable_small_model_dominance",
-      "kind": "lemma",
-      "title": "$100\\times$ smaller auditable circuit models beating monolithic black-box giants",
-      "leanName": "OpenTheory.AuditableSmallModelDominance.auditComplexitySESC",
+      "id": "thm:stopping_rule",
+      "kind": "theorem",
+      "title": "A loss-threshold stopping rule provably lands on the plateau",
+      "leanName": "OpenTheory.Plateau.trainLoss",
       "leanNames": [
-        "OpenTheory.AuditableSmallModelDominance.auditComplexitySESC",
-        "OpenTheory.AuditableSmallModelDominance.auditComplexityGiant",
-        "OpenTheory.AuditableSmallModelDominance.auditCompressionRatio",
-        "OpenTheory.AuditableSmallModelDominance.auditCompressionRatio_pos_and_lt_one",
-        "OpenTheory.AuditableSmallModelDominance.giantOneStepInferenceFLOPs",
-        "OpenTheory.AuditableSmallModelDominance.smallAuditableInferenceFLOPs",
-        "OpenTheory.AuditableSmallModelDominance.small_auditable_uses_le_inference_flops",
-        "OpenTheory.AuditableSmallModelDominance.sesc_capacity_constant_lt_giant",
-        "OpenTheory.AuditableSmallModelDominance.fullDeploymentRisk",
-        "OpenTheory.AuditableSmallModelDominance.giant_minus_small_auditable_deployment_risk_gap",
-        "OpenTheory.AuditableSmallModelDominance.auditable_small_model_strictly_beats_monolithic_giant",
-        "OpenTheory.AuditableSmallModelDominance.symmetry_matched_small_model_unconditional_dominance",
-        "OpenTheory.AuditableSmallModelDominance.master_auditable_small_vs_monolithic_giant_theorem"
+        "OpenTheory.Plateau.trainLoss",
+        "OpenTheory.Plateau.hitTime",
+        "OpenTheory.Plateau.trainLoss_rotate",
+        "OpenTheory.Plateau.rotated_plateau_window",
+        "OpenTheory.Plateau.plateauMatrix_eq",
+        "OpenTheory.Plateau.stopping_rule",
+        "OpenTheory.Plateau.good_event",
+        "OpenTheory.Plateau.stopping_rule_end_to_end"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:test_time_scaling",
-        "lem:predictive_model_prescription",
-        "lem:spectral_sparse_circuit"
+        "thm:gd_plateau_end_to_end"
       ],
       "bountyUsd": null,
-      "informalSketch": "Cancel $M > 0$ in $(M\\alpha_{\\mathrm{small}})/(M N_{\\mathrm{small}}) = \\alpha_{\\mathrm{small}}/N_{\\mathrm{small}}$, leaving the strictly positive reasoning and OOD risk margin $\\beta_{\\mathrm{reason}}(1 - 1/T_{\\mathrm{reason}}) + w_{\\mathrm{giant}}\\Delta_{\\mathrm{OOD}}^2 > 0$."
+      "informalSketch": "The loss is rotation invariant, so it can be computed in SVD coordinates, where the network\nproduct is explicit. Before $0.9\\log(1/\\varepsilon)/\\sigma_*$ the weakest signal mode is still off\nand the loss exceeds $\\tfrac12(7\\sigma_*/8)^2>\\rho$. At $1.1\\log(1/\\varepsilon)/\\sigma_*$ the loss is\nat most $\\tfrac N2(\\sqrt h+\\eta)^2<\\rho$. Hence $\\tfrac32\\hat t\\in[1.35,1.65]\\log(1/\\varepsilon)/\\sigma_*$,\nwhich lies inside the plateau window because the noise singular values are below $\\sigma_*/\\sqrt7$."
     },
     {
-      "id": "lem:universal_task_taxonomy",
+      "id": "lem:riccati_closed_form",
       "kind": "lemma",
-      "title": "Universal task--data--architecture--optimizer optimality and No-Free-Lunch conservation",
-      "leanName": "OpenTheory.UniversalTaskTaxonomy.TaskModality",
+      "title": "The matrix Riccati equation in closed form",
+      "leanName": "OpenTheory.Riccati.expS",
       "leanNames": [
-        "OpenTheory.UniversalTaskTaxonomy.TaskModality",
-        "OpenTheory.UniversalTaskTaxonomy.UniversalTaskDescriptor",
-        "OpenTheory.UniversalTaskTaxonomy.matchedArchDim",
-        "OpenTheory.UniversalTaskTaxonomy.denseAmbientDim",
-        "OpenTheory.UniversalTaskTaxonomy.archGeneralizationPenalty",
-        "OpenTheory.UniversalTaskTaxonomy.totalArchitectureRisk",
-        "OpenTheory.UniversalTaskTaxonomy.isotropicSubspaceBias",
-        "OpenTheory.UniversalTaskTaxonomy.matched_architecture_strict_dominance_on_structured_tasks",
-        "OpenTheory.UniversalTaskTaxonomy.no_free_lunch_unstructured_conservation",
-        "OpenTheory.UniversalTaskTaxonomy.universal_variational_architecture_minimum",
-        "OpenTheory.UniversalTaskTaxonomy.rpm_global_maximum_over_all_step_vectors",
-        "OpenTheory.UniversalTaskTaxonomy.rpm_reduces_to_scalar_sgd_iff_isotropic",
-        "OpenTheory.UniversalTaskTaxonomy.universal_task_architecture_optimizer_optimality"
+        "OpenTheory.Riccati.expS",
+        "OpenTheory.Riccati.phi",
+        "OpenTheory.Riccati.Gop",
+        "OpenTheory.Riccati.Pc",
+        "OpenTheory.Riccati.isUnit_Gop",
+        "OpenTheory.Riccati.hasDerivAt_Pc",
+        "OpenTheory.Riccati.Pc_zero",
+        "OpenTheory.Riccati.eq_Pc"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
-      "dependencies": [
-        "lem:predictive_model_prescription",
-        "lem:convolutional_generalization",
-        "lem:hierarchical_multi_index",
-        "lem:residual_preconditioned_momentum"
-      ],
+      "dependencies": [],
       "bountyUsd": null,
-      "informalSketch": "Case-split on `T.modality` for structured dimension reduction vs.\\ unstructured isotropic bias conservation, and apply `rpm_variational_sub_eq_sum_sq` with `Finset.sum_eq_zero_iff_of_nonneg` for global coordinate-wise step optimality."
+      "informalSketch": "$\\dot Y=SY$, $\\dot G=Y^\\top Y$ and $\\tfrac{d}{dt}G^{-1}=-G^{-1}\\dot GG^{-1}$ (derivative of the ring\ninverse); uniqueness from the smooth vector field."
     },
     {
-      "id": "lem:executable_computable_synthesis",
+      "id": "lem:riccati_window",
       "kind": "lemma",
-      "title": "Executable telemetry-to-certificate synthesis engine, $O(p)$ algorithmic tractability, and the Grand Unified Theorem of OpenTheory",
-      "leanName": "OpenTheory.ExecutableSynthesisEngine.ObservableTelemetry",
+      "title": "Riccati entries on the plateau window",
+      "leanName": "OpenTheory.Riccati.inner_Q_sq_le",
       "leanNames": [
-        "OpenTheory.ExecutableSynthesisEngine.ObservableTelemetry",
-        "OpenTheory.ExecutableSynthesisEngine.SynthesizedCertificate",
-        "OpenTheory.ExecutableSynthesisEngine.synthesizeSystem",
-        "OpenTheory.ExecutableSynthesisEngine.synthesizeSystem_budget_and_compression_sound",
-        "OpenTheory.ExecutableSynthesisEngine.synthesizeSystem_runtime_stabilization_sound",
-        "OpenTheory.ExecutableSynthesisEngine.grand_unified_open_theory_soundness",
-        "OpenTheory.ComputableTractableEngine.certiRPMProbeFLOPs",
-        "OpenTheory.ComputableTractableEngine.certiRPMProbeMemory",
-        "OpenTheory.ComputableTractableEngine.fullHessianPrecondFLOPs",
-        "OpenTheory.ComputableTractableEngine.fullHessianPrecondMemory",
-        "OpenTheory.ComputableTractableEngine.tractabilitySpeedupRatio",
-        "OpenTheory.ComputableTractableEngine.certiRPM_linear_vs_cubic_tractability",
-        "OpenTheory.ComputableTractableEngine.runTractableSynthesisQ",
-        "OpenTheory.ComputableTractableEngine.computable_engine_certifies_real_deployment_guarantees"
+        "OpenTheory.Riccati.inner_Q_sq_le",
+        "OpenTheory.Riccati.inner_Q_signal_le",
+        "OpenTheory.Riccati.dual_identity",
+        "OpenTheory.Riccati.amp_small",
+        "OpenTheory.Riccati.weight_small",
+        "OpenTheory.Riccati.signal_ratio",
+        "OpenTheory.Riccati.inner_w_Pc",
+        "OpenTheory.Riccati.Pc_entries_limit"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
       "isVerified": true,
       "dependencies": [
-        "lem:zero_shot_compiler",
-        "lem:certi_rpm",
-        "lem:test_time_scaling",
-        "lem:runtime_reasoning_guardrail"
+        "lem:riccati_closed_form"
       ],
       "bountyUsd": null,
-      "informalSketch": "Combine `zero_shot_compiler_end_to_end_guarantee`, `upper_confidence_sharpness_guarantees_positive_progress`, `small_reasoning_model_beats_giant_one_step_at_equal_inference_flops`, and `runtime_damped_rollout_horizon_free_certificate`, and cast the rational prescriptions via `Rat.cast` homomorphisms."
+      "informalSketch": "$0\\le Q=G^{-1}\\le I$, Cauchy--Schwarz for $Q$, the bound $\\langle cg,Qcg\\rangle\\le c^2/\\varphi$, and\nthe dual identity $\\langle h,d\\rangle=\\langle Qh,d\\rangle+\\sum_c\\varphi_c\\langle g_c,Qh\\rangle\\langle g_c,d\\rangle$."
+    },
+    {
+      "id": "thm:balanced_plateau",
+      "kind": "theorem",
+      "title": "The plateau from a balanced, non-aligned initialization",
+      "leanName": "OpenTheory.Plateau.gap_const",
+      "leanNames": [
+        "OpenTheory.Plateau.gap_const",
+        "OpenTheory.Plateau.Zmat_grad",
+        "OpenTheory.Plateau.hasDerivAt_Pop",
+        "OpenTheory.Plateau.wD",
+        "OpenTheory.Plateau.Sop_wD",
+        "OpenTheory.Plateau.target_expand",
+        "OpenTheory.Plateau.balanced_plateau_diag",
+        "OpenTheory.Plateau.balanced_plateau_eq_trunc"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "lem:riccati_window",
+        "thm:gd_plateau_end_to_end"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Balance is conserved, so $Z=[A^\\top;B]$ satisfies $\\dot Z=SZ-\\tfrac12ZZ^\\top Z$ with $S$ the dilation of\n$C$, and $P=ZZ^\\top$ solves the Riccati equation; $BA$ is its off-diagonal block. The dilation of\ndiagonal data has an explicit eigenbasis; Lemma~\\ref{lem:riccati_window} gives the limit; rotate by\nthe SVD and identify with the truncated SVD."
+    },
+    {
+      "id": "def:rlct",
+      "kind": "definition",
+      "title": "Real log canonical threshold",
+      "leanName": "OpenTheory.Singular.zetaIntegral",
+      "leanNames": [
+        "OpenTheory.Singular.zetaIntegral",
+        "OpenTheory.Singular.IsRLCT",
+        "OpenTheory.Singular.IsRLCT.unique"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": false,
+      "isVerified": true,
+      "dependencies": [],
+      "bountyUsd": null,
+      "informalSketch": null
+    },
+    {
+      "id": "thm:hironaka_monomial_bounds",
+      "kind": "theorem",
+      "title": "Resolution in the form used for Bayesian integrals",
+      "leanName": "OpenTheory.Singular.chartMonomial",
+      "leanNames": [
+        "OpenTheory.Singular.chartMonomial",
+        "OpenTheory.Singular.IsMonomialAt.exists_abs_bounds",
+        "OpenTheory.Singular.MonomialBounds",
+        "OpenTheory.Singular.exists_resolution_monomial_bounds"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [],
+      "bountyUsd": null,
+      "informalSketch": "Atiyah's resolution theorem with the Jacobian clause of Bierstone--Milman,\n\\texttt{exists\\_proper\\_analytic\\_monomialization} upstream, gives $K\\circ\\pi$ and $\\det D\\pi$ as\nmonomials times analytic units near every point; a unit is bounded between two positive constants\nnear the point, and $\\pi$ is proper."
+    },
+    {
+      "id": "lem:lintegral_fin_prod",
+      "kind": "lemma",
+      "title": "Tonelli for products of one-variable functions",
+      "leanName": "OpenTheory.Singular.lintegral_fin_prod_eq_prod",
+      "leanNames": [
+        "OpenTheory.Singular.lintegral_fin_prod_eq_prod"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [],
+      "bountyUsd": null,
+      "informalSketch": "Induction on the number of variables, splitting off the first coordinate."
+    },
+    {
+      "id": "thm:normal_crossing_rlct",
+      "kind": "theorem",
+      "title": "The learning coefficient of a normal-crossing model",
+      "leanName": "OpenTheory.Singular.cube",
+      "leanNames": [
+        "OpenTheory.Singular.cube",
+        "OpenTheory.Singular.monomialLoss",
+        "OpenTheory.Singular.monomialPrior",
+        "OpenTheory.Singular.lintegral_Ioo_rpow_lt_top_iff",
+        "OpenTheory.Singular.lintegral_Ioo_rpow_pos",
+        "OpenTheory.Singular.zetaIntegrand_eq_prod",
+        "OpenTheory.Singular.zetaIntegral_monomial",
+        "OpenTheory.Singular.isRLCT_monomial"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:rlct",
+        "lem:lintegral_fin_prod"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "$K^{-s}\\varphi=\\prod_iy_i^{h_i-2k_is}$ factorizes; each factor $\\int_0^1y^{a}dy$ is positive and\nfinite iff $a>-1$."
+    },
+    {
+      "id": "thm:normal_crossing_zeta",
+      "kind": "theorem",
+      "title": "Zeta function of a normal-crossing model",
+      "leanName": "OpenTheory.Singular.monomialLoss_rpow_mul",
+      "leanNames": [
+        "OpenTheory.Singular.monomialLoss_rpow_mul",
+        "OpenTheory.Singular.integral_Ioo_rpow",
+        "OpenTheory.Singular.zeta_monomial"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "thm:normal_crossing_rlct"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Fubini and $\\int_0^1y^{a}dy=1/(a+1)$."
+    },
+    {
+      "id": "thm:normal_crossing_free_energy",
+      "kind": "theorem",
+      "title": "Free energy of a normal-crossing model",
+      "leanName": "OpenTheory.Singular.lintegral_Ioo_pow",
+      "leanNames": [
+        "OpenTheory.Singular.lintegral_Ioo_pow",
+        "OpenTheory.Singular.measurable_monomialLoss",
+        "OpenTheory.Singular.measurable_monomialPrior",
+        "OpenTheory.Singular.partition_lower",
+        "OpenTheory.Singular.partition",
+        "OpenTheory.Singular.freeEnergy_le"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "lem:lintegral_fin_prod"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "On the box where $y_{i_0}<n^{-1/(2k_{i_0})}$, $nK\\le1$; integrate $\\varphi$ over the box."
+    },
+    {
+      "id": "cor:toy_rlct",
+      "kind": "corollary",
+      "title": "The toy model $y=ab^kx$",
+      "leanName": "OpenTheory.Singular.isRLCT_toy",
+      "leanNames": [
+        "OpenTheory.Singular.isRLCT_toy"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "thm:normal_crossing_rlct"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "$\\min(1/2,1/(2k))=1/(2k)$."
+    },
+    {
+      "id": "lem:monomial_box",
+      "kind": "lemma",
+      "title": "Monomials on coordinate boxes",
+      "leanName": "OpenTheory.Singular.intervalIntegrable_abs_rpow",
+      "leanNames": [
+        "OpenTheory.Singular.intervalIntegrable_abs_rpow",
+        "OpenTheory.Singular.lintegral_Ioo_abs_rpow_lt_top_iff",
+        "OpenTheory.Singular.lintegral_Ioo_abs_rpow_lt_top_of_lt",
+        "OpenTheory.Singular.lintegral_Ioo_abs_rpow_pos",
+        "OpenTheory.Singular.box",
+        "OpenTheory.Singular.box_subset_ball",
+        "OpenTheory.Singular.lintegral_box_prod",
+        "OpenTheory.Singular.ae_coord_ne_zero",
+        "OpenTheory.Singular.lintegral_box_monomial_lt_top_iff",
+        "OpenTheory.Singular.lintegral_finset_biUnion_le"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "lem:lintegral_fin_prod"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Fubini on the box; $\\int_{-r}^{r}|t|^adt<\\infty$ iff $a>-1$, and $|t|^a$ is continuous on an\ninterval avoiding $0$; every factor is positive."
+    },
+    {
+      "id": "thm:analytic_rlct",
+      "kind": "theorem",
+      "title": "Every analytic model has a rational learning coefficient",
+      "leanName": "OpenTheory.Singular.chartMap",
+      "leanNames": [
+        "OpenTheory.Singular.chartMap",
+        "OpenTheory.Singular.LocalBox",
+        "OpenTheory.Singular.localBox_nonempty",
+        "OpenTheory.Singular.surjective_of_resolution",
+        "OpenTheory.Singular.abs_monomial_mul_rpow",
+        "OpenTheory.Singular.exists_isRLCT"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:rlct",
+        "thm:hironaka_monomial_bounds",
+        "lem:monomial_box"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Resolve $K$ by $\\pi:M\\to U$. Around every $p\\in M$ take a box in the chart at $p$ on which\n$K\\circ\\pi\\asymp|y^{\\alpha}|$, $|\\det D\\pi|\\asymp|y^{\\beta}|$, every centre coordinate is $0$ or\nexceeds the half-width, and $\\varphi\\circ\\pi\\ge\\varphi(\\pi(p))/2$. $\\pi$ is proper, so finitely many\nboxes cover $\\pi^{-1}(\\operatorname{supp}\\varphi)$, and $\\pi$ is onto since its range is closed and\ncontains the dense set $\\{K\\neq0\\}$. Let $\\lambda$ be the least $(\\beta_i+1)/\\alpha_i$ over boxes and\ncoordinates with vanishing centre and $\\alpha_i>0$; a zero of $K$ in the support provides one. By the\nchange of variables formula each piece of $\\int K^{-s}\\varphi$ is between constant multiples of\n$\\int_B\\prod|y_i|^{\\beta_i-s\\alpha_i}$, finite for $s<\\lambda$ by Lemma~\\ref{lem:monomial_box}. The\nzero set of $K$ in the support is null, covered by images of coordinate hyperplanes. At the\nminimizing box $\\varphi$ is bounded below, and the piece diverges for $s\\ge\\lambda$."
     }
   ]
 }

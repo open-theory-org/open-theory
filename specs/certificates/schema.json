@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/matthieu-perso/open-theory/specs/certificates/schema.json",
+  "title": "OpenTheory certificate v0.1",
+  "description": "certificate.json inside a bundle directory. Files are referenced by path (inside the bundle) and sha256. The verifier writes the Lean statement from `claim`; the bundle carries data, never Lean source.",
+  "type": "object",
+  "required": ["format", "claim", "subject", "evidence", "assumptions", "pins"],
+  "properties": {
+    "format": {"const": "opentheory-certificate/0.1"},
+    "claim": {
+      "type": "object",
+      "required": ["type", "version"],
+      "properties": {
+        "type": {"enum": ["heldout-error"]},
+        "version": {"const": "0.1"},
+        "errors": {"type": "integer", "minimum": 0, "description": "claimed held-out error count k"},
+        "bound": {"$ref": "#/$defs/fraction", "description": "claimed population error bound p"},
+        "delta": {"$ref": "#/$defs/fraction", "description": "failure probability, 1/d with d ≥ 2"}
+      }
+    },
+    "subject": {
+      "type": "object",
+      "required": ["model"],
+      "properties": {"model": {"$ref": "#/$defs/file"}}
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["heldout"],
+      "properties": {
+        "heldout": {
+          "allOf": [{"$ref": "#/$defs/file"}],
+          "properties": {"n": {"type": "integer", "minimum": 1}}
+        }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^A[0-9]+-[a-z0-9-]+$"},
+      "description": "ids from specs/assumptions/README.md; must include those of the catalog guarantee"
+    },
+    "pins": {
+      "type": "object",
+      "required": ["lean_toolchain"],
+      "properties": {
+        "lean_toolchain": {"type": "string"},
+        "opentheory_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "issuer": {"type": "string"},
+    "created": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "fraction": {
+      "type": "object",
+      "required": ["num", "den"],
+      "properties": {"num": {"type": "integer", "minimum": 0}, "den": {"type": "integer", "minimum": 1}}
+    },
+    "file": {
+      "type": "object",
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "description": "relative to the bundle; may not escape it"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  },
+  "x-model-files": {
+    "quantized-mlp": "model.json = {model_type: 'quantized-mlp', inputs, hidden, classes, hidden_bias_scale, output_bias_scale, codes: [0..3]*}; heldout.json = {rows: [[x_1..x_inputs, label]]}"
+  }
+}

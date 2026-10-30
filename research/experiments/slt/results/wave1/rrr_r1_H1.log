@@ -1,0 +1,4 @@
+r=1 H=1 n=   300 lambda= 3.50  bayes=  3.28±0.13  mle=  3.31±0.13  gd_conv=  3.31±0.13  gd_early=  3.65±0.21  (325s)
+r=1 H=1 n=  1000 lambda= 3.50  bayes=  3.43±0.13  mle=  3.44±0.13  gd_conv=  3.44±0.13  gd_early=  3.77±0.18  (363s)
+r=1 H=1 n=  3000 lambda= 3.50  bayes=  3.30±0.14  mle=  3.30±0.14  gd_conv=  3.30±0.14  gd_early=  3.44±0.16  (385s)
+r=1 H=1 n= 10000 lambda= 3.50  bayes=  3.43±0.13  mle=  3.43±0.13  gd_conv=  3.43±0.13  gd_early=  3.47±0.13  (292s)

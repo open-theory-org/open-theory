@@ -1,0 +1,5821 @@
+{
+ "n": 60000,
+ "delta": 0.05,
+ "n_configs": 110,
+ "results": [
+  {
+   "name": "cnn2_c4-8_t0.5_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 2871,
+   "train_err": 0.04785,
+   "test_err": 0.042,
+   "bits": 3761.7813597135246,
+   "parts": [
+    {
+     "bits": 145,
+     "counts": [
+      25,
+      59,
+      16
+     ],
+     "bias_bits": 33
+    },
+    {
+     "bits": 454,
+     "counts": [
+      96,
+      125,
+      67
+     ],
+     "bias_bits": 121
+    },
+    {
+     "bits": 2838,
+     "counts": [
+      525,
+      1125,
+      350
+     ],
+     "bias_bits": 164
+    }
+   ],
+   "bound_binomial_occam": 0.13721581596124371,
+   "bound_kl_occam": 0.13731505834799912,
+   "seconds": 13.010617971420288
+  },
+  {
+   "name": "cnn2_c4-8_t0.5_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 3425,
+   "train_err": 0.05708333333333333,
+   "test_err": 0.0597,
+   "bits": 3834.7813597135246,
+   "parts": [
+    {
+     "bits": 154,
+     "counts": [
+      42,
+      43,
+      15
+     ],
+     "bias_bits": 57
+    },
+    {
+     "bits": 432,
+     "counts": [
+      80,
+      151,
+      57
+     ],
+     "bias_bits": 127
+    },
+    {
+     "bits": 2898,
+     "counts": [
+      524,
+      1088,
+      388
+     ],
+     "bias_bits": 160
+    }
+   ],
+   "bound_binomial_occam": 0.15219000864903984,
+   "bound_kl_occam": 0.15229281112685764,
+   "seconds": 11.278338193893433
+  },
+  {
+   "name": "cnn2_c4-8_t0.5_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 2833,
+   "train_err": 0.047216666666666664,
+   "test_err": 0.0441,
+   "bits": 3496.7813597135246,
+   "parts": [
+    {
+     "bits": 161,
+     "counts": [
+      29,
+      46,
+      25
+     ],
+     "bias_bits": 36
+    },
+    {
+     "bits": 459,
+     "counts": [
+      90,
+      121,
+      77
+     ],
+     "bias_bits": 137
+    },
+    {
+     "bits": 2533,
+     "counts": [
+      476,
+      1292,
+      232
+     ],
+     "bias_bits": 164
+    }
+   ],
+   "bound_binomial_occam": 0.13215892331839407,
+   "bound_kl_occam": 0.13225961908425363,
+   "seconds": 15.195770263671875
+  },
+  {
+   "name": "cnn2_c4-8_t0.5_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 3165,
+   "train_err": 0.05275,
+   "test_err": 0.0527,
+   "bits": 3487.7813597135246,
+   "parts": [
+    {
+     "bits": 157,
+     "counts": [
+      44,
+      38,
+      18
+     ],
+     "bias_bits": 56
+    },
+    {
+     "bits": 451,
+     "counts": [
+      81,
+      134,
+      73
+     ],
+     "bias_bits": 128
+    },
+    {
+     "bits": 2532,
+     "counts": [
+      452,
+      1302,
+      246
+     ],
+     "bias_bits": 157
+    }
+   ],
+   "bound_binomial_occam": 0.14030614379763634,
+   "bound_kl_occam": 0.14040954205829367,
+   "seconds": 17.16560125350952
+  },
+  {
+   "name": "cnn2_c4-8_t0.5_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 2665,
+   "train_err": 0.04441666666666667,
+   "test_err": 0.0394,
+   "bits": 2760.7813597135246,
+   "parts": [
+    {
+     "bits": 165,
+     "counts": [
+      36,
+      37,
+      27
+     ],
+     "bias_bits": 43
+    },
+    {
+     "bits": 460,
+     "counts": [
+      91,
+      119,
+      78
+     ],
+     "bias_bits": 130
+    },
+    {
+     "bits": 1803,
+     "counts": [
+      323,
+      1585,
+      92
+     ],
+     "bias_bits": 153
+    }
+   ],
+   "bound_binomial_occam": 0.11614722727186494,
+   "bound_kl_occam": 0.11625223437920534,
+   "seconds": 20.04866313934326
+  },
+  {
+   "name": "cnn2_c4-8_t0.5_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 6488,
+   "train_err": 0.10813333333333333,
+   "test_err": 0.1082,
+   "bits": 2499.7813597135246,
+   "parts": [
+    {
+     "bits": 136,
+     "counts": [
+      34,
+      58,
+      8
+     ],
+     "bias_bits": 57
+    },
+    {
+     "bits": 391,
+     "counts": [
+      58,
+      181,
+      49
+     ],
+     "bias_bits": 112
+    },
+    {
+     "bits": 1637,
+     "counts": [
+      286,
+      1640,
+      74
+     ],
+     "bias_bits": 160
+    }
+   ],
+   "bound_binomial_occam": 0.19718300249983575,
+   "bound_kl_occam": 0.19731834271290544,
+   "seconds": 15.393301010131836
+  },
+  {
+   "name": "cnn2_c4-8_t0.7_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 2503,
+   "train_err": 0.041716666666666666,
+   "test_err": 0.0384,
+   "bits": 3829.7813597135246,
+   "parts": [
+    {
+     "bits": 155,
+     "counts": [
+      20,
+      52,
+      28
+     ],
+     "bias_bits": 30
+    },
+    {
+     "bits": 431,
+     "counts": [
+      86,
+      149,
+      53
+     ],
+     "bias_bits": 127
+    },
+    {
+     "bits": 2924,
+     "counts": [
+      557,
+      1059,
+      384
+     ],
+     "bias_bits": 156
+    }
+   ],
+   "bound_binomial_occam": 0.12873705309977035,
+   "bound_kl_occam": 0.1288328707703738,
+   "seconds": 15.136932134628296
+  },
+  {
+   "name": "cnn2_c4-8_t0.7_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 4881,
+   "train_err": 0.08135,
+   "test_err": 0.0765,
+   "bits": 3708.7813597135246,
+   "parts": [
+    {
+     "bits": 133,
+     "counts": [
+      28,
+      63,
+      9
+     ],
+     "bias_bits": 46
+    },
+    {
+     "bits": 401,
+     "counts": [
+      66,
+      174,
+      48
+     ],
+     "bias_bits": 113
+    },
+    {
+     "bits": 2858,
+     "counts": [
+      495,
+      1122,
+      383
+     ],
+     "bias_bits": 151
+    }
+   ],
+   "bound_binomial_occam": 0.18452952515279683,
+   "bound_kl_occam": 0.18464195103617972,
+   "seconds": 14.4879469871521
+  },
+  {
+   "name": "cnn2_c4-8_t0.7_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 3020,
+   "train_err": 0.050333333333333334,
+   "test_err": 0.0459,
+   "bits": 3454.7813597135246,
+   "parts": [
+    {
+     "bits": 158,
+     "counts": [
+      21,
+      49,
+      30
+     ],
+     "bias_bits": 27
+    },
+    {
+     "bits": 428,
+     "counts": [
+      80,
+      154,
+      54
+     ],
+     "bias_bits": 127
+    },
+    {
+     "bits": 2545,
+     "counts": [
+      464,
+      1292,
+      244
+     ],
+     "bias_bits": 163
+    }
+   ],
+   "bound_binomial_occam": 0.13618801054007193,
+   "bound_kl_occam": 0.13629052116670035,
+   "seconds": 16.175334930419922
+  },
+  {
+   "name": "cnn2_c4-8_t0.7_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 5113,
+   "train_err": 0.08521666666666666,
+   "test_err": 0.0796,
+   "bits": 3317.7813597135246,
+   "parts": [
+    {
+     "bits": 142,
+     "counts": [
+      36,
+      54,
+      10
+     ],
+     "bias_bits": 47
+    },
+    {
+     "bits": 368,
+     "counts": [
+      58,
+      192,
+      38
+     ],
+     "bias_bits": 103
+    },
+    {
+     "bits": 2495,
+     "counts": [
+      457,
+      1315,
+      228
+     ],
+     "bias_bits": 156
+    }
+   ],
+   "bound_binomial_occam": 0.18302640666646403,
+   "bound_kl_occam": 0.1831437431263147,
+   "seconds": 18.393203735351562
+  },
+  {
+   "name": "cnn2_c4-8_t0.7_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 5729,
+   "train_err": 0.09548333333333334,
+   "test_err": 0.0862,
+   "bits": 2625.7813597135246,
+   "parts": [
+    {
+     "bits": 138,
+     "counts": [
+      23,
+      63,
+      14
+     ],
+     "bias_bits": 41
+    },
+    {
+     "bits": 432,
+     "counts": [
+      85,
+      149,
+      54
+     ],
+     "bias_bits": 130
+    },
+    {
+     "bits": 1720,
+     "counts": [
+      302,
+      1614,
+      84
+     ],
+     "bias_bits": 158
+    }
+   ],
+   "bound_binomial_occam": 0.1836446329066725,
+   "bound_kl_occam": 0.18377387213089497,
+   "seconds": 24.74926519393921
+  },
+  {
+   "name": "cnn2_c4-8_t0.7_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 5722,
+   "train_err": 0.09536666666666667,
+   "test_err": 0.0964,
+   "bits": 2485.7813597135246,
+   "parts": [
+    {
+     "bits": 149,
+     "counts": [
+      41,
+      47,
+      12
+     ],
+     "bias_bits": 44
+    },
+    {
+     "bits": 360,
+     "counts": [
+      49,
+      197,
+      42
+     ],
+     "bias_bits": 122
+    },
+    {
+     "bits": 1656,
+     "counts": [
+      290,
+      1634,
+      76
+     ],
+     "bias_bits": 148
+    }
+   ],
+   "bound_binomial_occam": 0.1807177566970926,
+   "bound_kl_occam": 0.1808491000793023,
+   "seconds": 18.93784999847412
+  },
+  {
+   "name": "cnn2_c4-8_t1.0_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 4185,
+   "train_err": 0.06975,
+   "test_err": 0.0651,
+   "bits": 3654.7813597135246,
+   "parts": [
+    {
+     "bits": 138,
+     "counts": [
+      28,
+      61,
+      11
+     ],
+     "bias_bits": 32
+    },
+    {
+     "bits": 382,
+     "counts": [
+      57,
+      186,
+      45
+     ],
+     "bias_bits": 102
+    },
+    {
+     "bits": 2858,
+     "counts": [
+      484,
+      1124,
+      392
+     ],
+     "bias_bits": 136
+    }
+   ],
+   "bound_binomial_occam": 0.16753464281866418,
+   "bound_kl_occam": 0.1676436345308959,
+   "seconds": 18.657477855682373
+  },
+  {
+   "name": "cnn2_c4-8_t1.0_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 5412,
+   "train_err": 0.0902,
+   "test_err": 0.0822,
+   "bits": 3415.7813597135246,
+   "parts": [
+    {
+     "bits": 134,
+     "counts": [
+      32,
+      60,
+      8
+     ],
+     "bias_bits": 42
+    },
+    {
+     "bits": 327,
+     "counts": [
+      50,
+      210,
+      28
+     ],
+     "bias_bits": 102
+    },
+    {
+     "bits": 2656,
+     "counts": [
+      412,
+      1255,
+      333
+     ],
+     "bias_bits": 148
+    }
+   ],
+   "bound_binomial_occam": 0.19141553370457826,
+   "bound_kl_occam": 0.19153342558293435,
+   "seconds": 19.797152042388916
+  },
+  {
+   "name": "cnn2_c4-8_t1.0_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 4389,
+   "train_err": 0.07315,
+   "test_err": 0.0662,
+   "bits": 3306.7813597135246,
+   "parts": [
+    {
+     "bits": 132,
+     "counts": [
+      20,
+      67,
+      13
+     ],
+     "bias_bits": 35
+    },
+    {
+     "bits": 375,
+     "counts": [
+      67,
+      186,
+      35
+     ],
+     "bias_bits": 129
+    },
+    {
+     "bits": 2486,
+     "counts": [
+      428,
+      1329,
+      243
+     ],
+     "bias_bits": 143
+    }
+   ],
+   "bound_binomial_occam": 0.1664215484369853,
+   "bound_kl_occam": 0.16653483193062163,
+   "seconds": 23.67971897125244
+  },
+  {
+   "name": "cnn2_c4-8_t1.0_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 4962,
+   "train_err": 0.0827,
+   "test_err": 0.0796,
+   "bits": 3234.7813597135246,
+   "parts": [
+    {
+     "bits": 151,
+     "counts": [
+      34,
+      51,
+      15
+     ],
+     "bias_bits": 40
+    },
+    {
+     "bits": 369,
+     "counts": [
+      60,
+      191,
+      37
+     ],
+     "bias_bits": 74
+    },
+    {
+     "bits": 2436,
+     "counts": [
+      433,
+      1347,
+      220
+     ],
+     "bias_bits": 158
+    }
+   ],
+   "bound_binomial_occam": 0.17817708948970323,
+   "bound_kl_occam": 0.1782944531451037,
+   "seconds": 19.209874868392944
+  },
+  {
+   "name": "cnn2_c4-8_t1.0_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 5994,
+   "train_err": 0.0999,
+   "test_err": 0.0941,
+   "bits": 2619.7813597135246,
+   "parts": [
+    {
+     "bits": 103,
+     "counts": [
+      9,
+      79,
+      12
+     ],
+     "bias_bits": 21
+    },
+    {
+     "bits": 363,
+     "counts": [
+      71,
+      189,
+      28
+     ],
+     "bias_bits": 124
+    },
+    {
+     "bits": 1843,
+     "counts": [
+      318,
+      1577,
+      105
+     ],
+     "bias_bits": 159
+    }
+   ],
+   "bound_binomial_occam": 0.18918597849735294,
+   "bound_kl_occam": 0.18931677621061413,
+   "seconds": 19.97694206237793
+  },
+  {
+   "name": "cnn2_c4-8_t1.0_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 2410,
+   "train_errors": 6839,
+   "train_err": 0.11398333333333334,
+   "test_err": 0.108,
+   "bits": 2602.7813597135246,
+   "parts": [
+    {
+     "bits": 91,
+     "counts": [
+      11,
+      83,
+      6
+     ],
+     "bias_bits": 37
+    },
+    {
+     "bits": 337,
+     "counts": [
+      52,
+      206,
+      30
+     ],
+     "bias_bits": 129
+    },
+    {
+     "bits": 1840,
+     "counts": [
+      315,
+      1579,
+      106
+     ],
+     "bias_bits": 162
+    }
+   ],
+   "bound_binomial_occam": 0.20661400604617858,
+   "bound_kl_occam": 0.20674939556323677,
+   "seconds": 17.64404010772705
+  },
+  {
+   "name": "cnn2_c6-12_t0.5_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 1818,
+   "train_err": 0.0303,
+   "test_err": 0.0316,
+   "bits": 5845.781359713525,
+   "parts": [
+    {
+     "bits": 236,
+     "counts": [
+      43,
+      72,
+      35
+     ],
+     "bias_bits": 60
+    },
+    {
+     "bits": 944,
+     "counts": [
+      186,
+      348,
+      114
+     ],
+     "bias_bits": 173
+    },
+    {
+     "bits": 4264,
+     "counts": [
+      763,
+      1689,
+      548
+     ],
+     "bias_bits": 162
+    }
+   ],
+   "bound_binomial_occam": 0.13720692746183605,
+   "bound_kl_occam": 0.13728881513028365,
+   "seconds": 18.268698692321777
+  },
+  {
+   "name": "cnn2_c6-12_t0.5_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 2294,
+   "train_err": 0.038233333333333334,
+   "test_err": 0.0335,
+   "bits": 5910.781359713525,
+   "parts": [
+    {
+     "bits": 237,
+     "counts": [
+      54,
+      66,
+      30
+     ],
+     "bias_bits": 72
+    },
+    {
+     "bits": 991,
+     "counts": [
+      200,
+      307,
+      141
+     ],
+     "bias_bits": 168
+    },
+    {
+     "bits": 4269,
+     "counts": [
+      747,
+      1690,
+      563
+     ],
+     "bias_bits": 167
+    }
+   ],
+   "bound_binomial_occam": 0.15194251880691953,
+   "bound_kl_occam": 0.15202783080476676,
+   "seconds": 18.121318817138672
+  },
+  {
+   "name": "cnn2_c6-12_t0.5_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 3377,
+   "train_err": 0.05628333333333333,
+   "test_err": 0.0524,
+   "bits": 5304.781359713525,
+   "parts": [
+    {
+     "bits": 231,
+     "counts": [
+      47,
+      75,
+      28
+     ],
+     "bias_bits": 78
+    },
+    {
+     "bits": 925,
+     "counts": [
+      172,
+      365,
+      111
+     ],
+     "bias_bits": 171
+    },
+    {
+     "bits": 3728,
+     "counts": [
+      646,
+      1991,
+      363
+     ],
+     "bias_bits": 165
+    }
+   ],
+   "bound_binomial_occam": 0.17283533204229515,
+   "bound_kl_occam": 0.1729296883002641,
+   "seconds": 20.984095096588135
+  },
+  {
+   "name": "cnn2_c6-12_t0.5_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 1962,
+   "train_err": 0.0327,
+   "test_err": 0.0324,
+   "bits": 5414.781359713525,
+   "parts": [
+    {
+     "bits": 236,
+     "counts": [
+      56,
+      65,
+      29
+     ],
+     "bias_bits": 77
+    },
+    {
+     "bits": 1000,
+     "counts": [
+      204,
+      297,
+      147
+     ],
+     "bias_bits": 185
+    },
+    {
+     "bits": 3744,
+     "counts": [
+      678,
+      1973,
+      349
+     ],
+     "bias_bits": 166
+    }
+   ],
+   "bound_binomial_occam": 0.13587881569125493,
+   "bound_kl_occam": 0.13596322660663235,
+   "seconds": 18.6248939037323
+  },
+  {
+   "name": "cnn2_c6-12_t0.5_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 2001,
+   "train_err": 0.03335,
+   "test_err": 0.0318,
+   "bits": 4243.781359713525,
+   "parts": [
+    {
+     "bits": 245,
+     "counts": [
+      58,
+      47,
+      45
+     ],
+     "bias_bits": 82
+    },
+    {
+     "bits": 991,
+     "counts": [
+      197,
+      309,
+      142
+     ],
+     "bias_bits": 199
+    },
+    {
+     "bits": 2551,
+     "counts": [
+      428,
+      2437,
+      135
+     ],
+     "bias_bits": 169
+    }
+   ],
+   "bound_binomial_occam": 0.1211213821816986,
+   "bound_kl_occam": 0.12121060145298496,
+   "seconds": 20.29608416557312
+  },
+  {
+   "name": "cnn2_c6-12_t0.5_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 2203,
+   "train_err": 0.03671666666666667,
+   "test_err": 0.0375,
+   "bits": 4216.781359713525,
+   "parts": [
+    {
+     "bits": 235,
+     "counts": [
+      60,
+      62,
+      28
+     ],
+     "bias_bits": 57
+    },
+    {
+     "bits": 1023,
+     "counts": [
+      229,
+      255,
+      164
+     ],
+     "bias_bits": 187
+    },
+    {
+     "bits": 2541,
+     "counts": [
+      434,
+      2437,
+      129
+     ],
+     "bias_bits": 167
+    }
+   ],
+   "bound_binomial_occam": 0.12632993198586395,
+   "bound_kl_occam": 0.12642111908404038,
+   "seconds": 18.377328157424927
+  },
+  {
+   "name": "cnn2_c6-12_t0.7_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 2538,
+   "train_err": 0.0423,
+   "test_err": 0.0391,
+   "bits": 5728.781359713525,
+   "parts": [
+    {
+     "bits": 237,
+     "counts": [
+      52,
+      67,
+      31
+     ],
+     "bias_bits": 80
+    },
+    {
+     "bits": 939,
+     "counts": [
+      186,
+      351,
+      111
+     ],
+     "bias_bits": 171
+    },
+    {
+     "bits": 4137,
+     "counts": [
+      674,
+      1786,
+      540
+     ],
+     "bias_bits": 158
+    }
+   ],
+   "bound_binomial_occam": 0.1563748878740611,
+   "bound_kl_occam": 0.15646247123643325,
+   "seconds": 19.346196174621582
+  },
+  {
+   "name": "cnn2_c6-12_t0.7_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 1955,
+   "train_err": 0.03258333333333333,
+   "test_err": 0.0335,
+   "bits": 5813.781359713525,
+   "parts": [
+    {
+     "bits": 237,
+     "counts": [
+      53,
+      66,
+      31
+     ],
+     "bias_bits": 57
+    },
+    {
+     "bits": 955,
+     "counts": [
+      195,
+      337,
+      116
+     ],
+     "bias_bits": 185
+    },
+    {
+     "bits": 4206,
+     "counts": [
+      748,
+      1728,
+      524
+     ],
+     "bias_bits": 167
+    }
+   ],
+   "bound_binomial_occam": 0.14087122186879036,
+   "bound_kl_occam": 0.14095431801670938,
+   "seconds": 28.68582820892334
+  },
+  {
+   "name": "cnn2_c6-12_t0.7_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 3311,
+   "train_err": 0.055183333333333334,
+   "test_err": 0.0534,
+   "bits": 5174.781359713525,
+   "parts": [
+    {
+     "bits": 227,
+     "counts": [
+      54,
+      73,
+      23
+     ],
+     "bias_bits": 72
+    },
+    {
+     "bits": 855,
+     "counts": [
+      160,
+      405,
+      83
+     ],
+     "bias_bits": 170
+    },
+    {
+     "bits": 3685,
+     "counts": [
+      606,
+      2021,
+      373
+     ],
+     "bias_bits": 159
+    }
+   ],
+   "bound_binomial_occam": 0.16929613510343816,
+   "bound_kl_occam": 0.16939071436674244,
+   "seconds": 20.472957134246826
+  },
+  {
+   "name": "cnn2_c6-12_t0.7_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 1900,
+   "train_err": 0.03166666666666667,
+   "test_err": 0.0295,
+   "bits": 5416.781359713525,
+   "parts": [
+    {
+     "bits": 239,
+     "counts": [
+      44,
+      69,
+      37
+     ],
+     "bias_bits": 60
+    },
+    {
+     "bits": 982,
+     "counts": [
+      204,
+      313,
+      131
+     ],
+     "bias_bits": 182
+    },
+    {
+     "bits": 3786,
+     "counts": [
+      678,
+      1956,
+      366
+     ],
+     "bias_bits": 161
+    }
+   ],
+   "bound_binomial_occam": 0.13409070952553034,
+   "bound_kl_occam": 0.13417459547482896,
+   "seconds": 21.490661144256592
+  },
+  {
+   "name": "cnn2_c6-12_t0.7_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 4485,
+   "train_err": 0.07475,
+   "test_err": 0.0686,
+   "bits": 3632.7813597135246,
+   "parts": [
+    {
+     "bits": 217,
+     "counts": [
+      45,
+      84,
+      21
+     ],
+     "bias_bits": 68
+    },
+    {
+     "bits": 659,
+     "counts": [
+      71,
+      501,
+      76
+     ],
+     "bias_bits": 154
+    },
+    {
+     "bits": 2370,
+     "counts": [
+      372,
+      2501,
+      127
+     ],
+     "bias_bits": 158
+    }
+   ],
+   "bound_binomial_occam": 0.1741594077028285,
+   "bound_kl_occam": 0.17427033133877576,
+   "seconds": 20.99323010444641
+  },
+  {
+   "name": "cnn2_c6-12_t0.7_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 4817,
+   "train_err": 0.08028333333333333,
+   "test_err": 0.073,
+   "bits": 4009.7813597135246,
+   "parts": [
+    {
+     "bits": 211,
+     "counts": [
+      45,
+      87,
+      18
+     ],
+     "bias_bits": 75
+    },
+    {
+     "bits": 893,
+     "counts": [
+      162,
+      386,
+      100
+     ],
+     "bias_bits": 174
+    },
+    {
+     "bits": 2491,
+     "counts": [
+      421,
+      2454,
+      125
+     ],
+     "bias_bits": 159
+    }
+   ],
+   "bound_binomial_occam": 0.18805954190621754,
+   "bound_kl_occam": 0.18816917146953624,
+   "seconds": 22.672218799591064
+  },
+  {
+   "name": "cnn2_c6-12_t1.0_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 3892,
+   "train_err": 0.06486666666666667,
+   "test_err": 0.0651,
+   "bits": 5303.781359713525,
+   "parts": [
+    {
+     "bits": 184,
+     "counts": [
+      29,
+      105,
+      16
+     ],
+     "bias_bits": 42
+    },
+    {
+     "bits": 730,
+     "counts": [
+      113,
+      470,
+      65
+     ],
+     "bias_bits": 178
+    },
+    {
+     "bits": 4000,
+     "counts": [
+      626,
+      1870,
+      504
+     ],
+     "bias_bits": 163
+    }
+   ],
+   "bound_binomial_occam": 0.18580681273523672,
+   "bound_kl_occam": 0.1859038723291727,
+   "seconds": 24.44957208633423
+  },
+  {
+   "name": "cnn2_c6-12_t1.0_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 5213,
+   "train_err": 0.08688333333333334,
+   "test_err": 0.0885,
+   "bits": 5236.781359713525,
+   "parts": [
+    {
+     "bits": 214,
+     "counts": [
+      44,
+      86,
+      20
+     ],
+     "bias_bits": 78
+    },
+    {
+     "bits": 766,
+     "counts": [
+      116,
+      456,
+      76
+     ],
+     "bias_bits": 167
+    },
+    {
+     "bits": 3845,
+     "counts": [
+      565,
+      1958,
+      477
+     ],
+     "bias_bits": 160
+    }
+   ],
+   "bound_binomial_occam": 0.21650516637316064,
+   "bound_kl_occam": 0.2166083292892612,
+   "seconds": 23.812467098236084
+  },
+  {
+   "name": "cnn2_c6-12_t1.0_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 3391,
+   "train_err": 0.056516666666666666,
+   "test_err": 0.0554,
+   "bits": 4871.781359713525,
+   "parts": [
+    {
+     "bits": 185,
+     "counts": [
+      31,
+      104,
+      15
+     ],
+     "bias_bits": 61
+    },
+    {
+     "bits": 678,
+     "counts": [
+      103,
+      490,
+      55
+     ],
+     "bias_bits": 183
+    },
+    {
+     "bits": 3594,
+     "counts": [
+      590,
+      2062,
+      348
+     ],
+     "bias_bits": 164
+    }
+   ],
+   "bound_binomial_occam": 0.16697678043128558,
+   "bound_kl_occam": 0.16707328860421708,
+   "seconds": 24.591195106506348
+  },
+  {
+   "name": "cnn2_c6-12_t1.0_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 4919,
+   "train_err": 0.08198333333333334,
+   "test_err": 0.083,
+   "bits": 4816.781359713525,
+   "parts": [
+    {
+     "bits": 183,
+     "counts": [
+      37,
+      102,
+      11
+     ],
+     "bias_bits": 71
+    },
+    {
+     "bits": 728,
+     "counts": [
+      112,
+      471,
+      65
+     ],
+     "bias_bits": 151
+    },
+    {
+     "bits": 3519,
+     "counts": [
+      569,
+      2097,
+      334
+     ],
+     "bias_bits": 158
+    }
+   ],
+   "bound_binomial_occam": 0.20323937118224006,
+   "bound_kl_occam": 0.203343862951947,
+   "seconds": 25.246150970458984
+  },
+  {
+   "name": "cnn2_c6-12_t1.0_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 4032,
+   "train_err": 0.0672,
+   "test_err": 0.0659,
+   "bits": 3771.7813597135246,
+   "parts": [
+    {
+     "bits": 201,
+     "counts": [
+      45,
+      91,
+      14
+     ],
+     "bias_bits": 55
+    },
+    {
+     "bits": 650,
+     "counts": [
+      80,
+      504,
+      64
+     ],
+     "bias_bits": 136
+    },
+    {
+     "bits": 2571,
+     "counts": [
+      413,
+      2438,
+      149
+     ],
+     "bias_bits": 152
+    }
+   ],
+   "bound_binomial_occam": 0.165835836716383,
+   "bound_kl_occam": 0.16594298534495264,
+   "seconds": 24.932921886444092
+  },
+  {
+   "name": "cnn2_c6-12_t1.0_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      6
+     ],
+     [
+      3,
+      2,
+      12
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 3826,
+   "train_errors": 4661,
+   "train_err": 0.07768333333333333,
+   "test_err": 0.0712,
+   "bits": 3673.7813597135246,
+   "parts": [
+    {
+     "bits": 203,
+     "counts": [
+      42,
+      92,
+      16
+     ],
+     "bias_bits": 64
+    },
+    {
+     "bits": 657,
+     "counts": [
+      91,
+      500,
+      57
+     ],
+     "bias_bits": 154
+    },
+    {
+     "bits": 2436,
+     "counts": [
+      393,
+      2478,
+      129
+     ],
+     "bias_bits": 153
+    }
+   ],
+   "bound_binomial_occam": 0.17890446546948838,
+   "bound_kl_occam": 0.17901601920380958,
+   "seconds": 13.191840887069702
+  },
+  {
+   "name": "cnn2_c8-16_t0.5_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 1231,
+   "train_err": 0.020516666666666666,
+   "test_err": 0.021,
+   "bits": 8237.781359713525,
+   "parts": [
+    {
+     "bits": 316,
+     "counts": [
+      65,
+      88,
+      47
+     ],
+     "bias_bits": 100
+    },
+    {
+     "bits": 1693,
+     "counts": [
+      355,
+      593,
+      204
+     ],
+     "bias_bits": 244
+    },
+    {
+     "bits": 5709,
+     "counts": [
+      1007,
+      2237,
+      756
+     ],
+     "bias_bits": 169
+    }
+   ],
+   "bound_binomial_occam": 0.14711559982793224,
+   "bound_kl_occam": 0.14718723400042064,
+   "seconds": 10.743218898773193
+  },
+  {
+   "name": "cnn2_c8-16_t0.5_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 1321,
+   "train_err": 0.022016666666666667,
+   "test_err": 0.0255,
+   "bits": 8268.781359713525,
+   "parts": [
+    {
+     "bits": 321,
+     "counts": [
+      74,
+      75,
+      51
+     ],
+     "bias_bits": 88
+    },
+    {
+     "bits": 1767,
+     "counts": [
+      387,
+      518,
+      247
+     ],
+     "bias_bits": 257
+    },
+    {
+     "bits": 5666,
+     "counts": [
+      991,
+      2268,
+      741
+     ],
+     "bias_bits": 163
+    }
+   ],
+   "bound_binomial_occam": 0.1505773670446906,
+   "bound_kl_occam": 0.15064974172566975,
+   "seconds": 10.324605941772461
+  },
+  {
+   "name": "cnn2_c8-16_t0.5_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 1542,
+   "train_err": 0.0257,
+   "test_err": 0.0253,
+   "bits": 7218.781359713525,
+   "parts": [
+    {
+     "bits": 290,
+     "counts": [
+      54,
+      113,
+      33
+     ],
+     "bias_bits": 94
+    },
+    {
+     "bits": 1555,
+     "counts": [
+      283,
+      701,
+      168
+     ],
+     "bias_bits": 256
+    },
+    {
+     "bits": 4865,
+     "counts": [
+      806,
+      2713,
+      481
+     ],
+     "bias_bits": 152
+    }
+   ],
+   "bound_binomial_occam": 0.14559956127399698,
+   "bound_kl_occam": 0.1456757823344194,
+   "seconds": 10.334318161010742
+  },
+  {
+   "name": "cnn2_c8-16_t0.5_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 1680,
+   "train_err": 0.028,
+   "test_err": 0.0283,
+   "bits": 7226.781359713525,
+   "parts": [
+    {
+     "bits": 295,
+     "counts": [
+      64,
+      105,
+      31
+     ],
+     "bias_bits": 98
+    },
+    {
+     "bits": 1576,
+     "counts": [
+      302,
+      683,
+      167
+     ],
+     "bias_bits": 255
+    },
+    {
+     "bits": 4836,
+     "counts": [
+      773,
+      2734,
+      493
+     ],
+     "bias_bits": 160
+    }
+   ],
+   "bound_binomial_occam": 0.15009919862647733,
+   "bound_kl_occam": 0.15017650631996732,
+   "seconds": 10.501970052719116
+  },
+  {
+   "name": "cnn2_c8-16_t0.5_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 2353,
+   "train_err": 0.039216666666666664,
+   "test_err": 0.0362,
+   "bits": 5779.781359713525,
+   "parts": [
+    {
+     "bits": 296,
+     "counts": [
+      52,
+      110,
+      38
+     ],
+     "bias_bits": 111
+    },
+    {
+     "bits": 1578,
+     "counts": [
+      287,
+      688,
+      177
+     ],
+     "bias_bits": 249
+    },
+    {
+     "bits": 3384,
+     "counts": [
+      548,
+      3261,
+      191
+     ],
+     "bias_bits": 155
+    }
+   ],
+   "bound_binomial_occam": 0.15188997580142502,
+   "bound_kl_occam": 0.15197613117194883,
+   "seconds": 10.433035135269165
+  },
+  {
+   "name": "cnn2_c8-16_t0.5_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 1617,
+   "train_err": 0.02695,
+   "test_err": 0.026,
+   "bits": 6039.781359713525,
+   "parts": [
+    {
+     "bits": 314,
+     "counts": [
+      73,
+      85,
+      42
+     ],
+     "bias_bits": 110
+    },
+    {
+     "bits": 1719,
+     "counts": [
+      372,
+      566,
+      214
+     ],
+     "bias_bits": 261
+    },
+    {
+     "bits": 3464,
+     "counts": [
+      583,
+      3228,
+      189
+     ],
+     "bias_bits": 165
+    }
+   ],
+   "bound_binomial_occam": 0.13352841079211492,
+   "bound_kl_occam": 0.1336080353695027,
+   "seconds": 10.520541906356812
+  },
+  {
+   "name": "cnn2_c8-16_t0.7_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 1162,
+   "train_err": 0.019366666666666667,
+   "test_err": 0.02,
+   "bits": 7924.781359713525,
+   "parts": [
+    {
+     "bits": 304,
+     "counts": [
+      60,
+      101,
+      39
+     ],
+     "bias_bits": 89
+    },
+    {
+     "bits": 1582,
+     "counts": [
+      280,
+      688,
+      184
+     ],
+     "bias_bits": 234
+    },
+    {
+     "bits": 5543,
+     "counts": [
+      925,
+      2358,
+      717
+     ],
+     "bias_bits": 166
+    }
+   ],
+   "bound_binomial_occam": 0.14111013121347596,
+   "bound_kl_occam": 0.14118163906513045,
+   "seconds": 10.381115674972534
+  },
+  {
+   "name": "cnn2_c8-16_t0.7_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 2206,
+   "train_err": 0.03676666666666667,
+   "test_err": 0.0358,
+   "bits": 7868.781359713525,
+   "parts": [
+    {
+     "bits": 277,
+     "counts": [
+      51,
+      121,
+      28
+     ],
+     "bias_bits": 106
+    },
+    {
+     "bits": 1540,
+     "counts": [
+      304,
+      699,
+      149
+     ],
+     "bias_bits": 235
+    },
+    {
+     "bits": 5550,
+     "counts": [
+      932,
+      2352,
+      716
+     ],
+     "bias_bits": 154
+    }
+   ],
+   "bound_binomial_occam": 0.17397950994269218,
+   "bound_kl_occam": 0.17405892219164384,
+   "seconds": 10.760740280151367
+  },
+  {
+   "name": "cnn2_c8-16_t0.7_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 1986,
+   "train_err": 0.0331,
+   "test_err": 0.0336,
+   "bits": 7248.781359713525,
+   "parts": [
+    {
+     "bits": 296,
+     "counts": [
+      59,
+      107,
+      34
+     ],
+     "bias_bits": 104
+    },
+    {
+     "bits": 1541,
+     "counts": [
+      270,
+      712,
+      170
+     ],
+     "bias_bits": 254
+    },
+    {
+     "bits": 4890,
+     "counts": [
+      819,
+      2699,
+      482
+     ],
+     "bias_bits": 157
+    }
+   ],
+   "bound_binomial_occam": 0.1598237040545123,
+   "bound_kl_occam": 0.15990317994470987,
+   "seconds": 10.79653787612915
+  },
+  {
+   "name": "cnn2_c8-16_t0.7_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 1868,
+   "train_err": 0.031133333333333332,
+   "test_err": 0.0308,
+   "bits": 7307.781359713525,
+   "parts": [
+    {
+     "bits": 288,
+     "counts": [
+      56,
+      113,
+      31
+     ],
+     "bias_bits": 109
+    },
+    {
+     "bits": 1600,
+     "counts": [
+      320,
+      663,
+      169
+     ],
+     "bias_bits": 241
+    },
+    {
+     "bits": 4904,
+     "counts": [
+      813,
+      2695,
+      492
+     ],
+     "bias_bits": 159
+    }
+   ],
+   "bound_binomial_occam": 0.156940301803745,
+   "bound_kl_occam": 0.15701881989218877,
+   "seconds": 11.093315839767456
+  },
+  {
+   "name": "cnn2_c8-16_t0.7_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 2684,
+   "train_err": 0.04473333333333333,
+   "test_err": 0.041,
+   "bits": 5765.781359713525,
+   "parts": [
+    {
+     "bits": 300,
+     "counts": [
+      72,
+      97,
+      31
+     ],
+     "bias_bits": 102
+    },
+    {
+     "bits": 1535,
+     "counts": [
+      256,
+      719,
+      177
+     ],
+     "bias_bits": 246
+    },
+    {
+     "bits": 3412,
+     "counts": [
+      551,
+      3253,
+      196
+     ],
+     "bias_bits": 164
+    }
+   ],
+   "bound_binomial_occam": 0.16088120582255536,
+   "bound_kl_occam": 0.16096959674875894,
+   "seconds": 10.839281797409058
+  },
+  {
+   "name": "cnn2_c8-16_t0.7_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 2479,
+   "train_err": 0.04131666666666667,
+   "test_err": 0.0391,
+   "bits": 5486.781359713525,
+   "parts": [
+    {
+     "bits": 293,
+     "counts": [
+      64,
+      106,
+      30
+     ],
+     "bias_bits": 106
+    },
+    {
+     "bits": 1504,
+     "counts": [
+      265,
+      731,
+      156
+     ],
+     "bias_bits": 250
+    },
+    {
+     "bits": 3179,
+     "counts": [
+      528,
+      3317,
+      155
+     ],
+     "bias_bits": 148
+    }
+   ],
+   "bound_binomial_occam": 0.15149700157298876,
+   "bound_kl_occam": 0.15158506186846207,
+   "seconds": 12.594212055206299
+  },
+  {
+   "name": "cnn2_c8-16_t1.0_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 1623,
+   "train_err": 0.02705,
+   "test_err": 0.0281,
+   "bits": 7609.781359713525,
+   "parts": [
+    {
+     "bits": 288,
+     "counts": [
+      56,
+      113,
+      31
+     ],
+     "bias_bits": 90
+    },
+    {
+     "bits": 1394,
+     "counts": [
+      213,
+      793,
+      146
+     ],
+     "bias_bits": 230
+    },
+    {
+     "bits": 5443,
+     "counts": [
+      894,
+      2421,
+      685
+     ],
+     "bias_bits": 158
+    }
+   ],
+   "bound_binomial_occam": 0.15287299064399493,
+   "bound_kl_occam": 0.15294904462761222,
+   "seconds": 13.672279834747314
+  },
+  {
+   "name": "cnn2_c8-16_t1.0_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 1736,
+   "train_err": 0.028933333333333332,
+   "test_err": 0.0268,
+   "bits": 7506.781359713525,
+   "parts": [
+    {
+     "bits": 273,
+     "counts": [
+      50,
+      123,
+      27
+     ],
+     "bias_bits": 75
+    },
+    {
+     "bits": 1384,
+     "counts": [
+      248,
+      786,
+      118
+     ],
+     "bias_bits": 245
+    },
+    {
+     "bits": 5361,
+     "counts": [
+      831,
+      2477,
+      692
+     ],
+     "bias_bits": 162
+    }
+   ],
+   "bound_binomial_occam": 0.1552335938330326,
+   "bound_kl_occam": 0.15531071506980973,
+   "seconds": 11.615267038345337
+  },
+  {
+   "name": "cnn2_c8-16_t1.0_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 2259,
+   "train_err": 0.03765,
+   "test_err": 0.0381,
+   "bits": 6553.781359713525,
+   "parts": [
+    {
+     "bits": 269,
+     "counts": [
+      56,
+      122,
+      22
+     ],
+     "bias_bits": 95
+    },
+    {
+     "bits": 1224,
+     "counts": [
+      173,
+      865,
+      114
+     ],
+     "bias_bits": 228
+    },
+    {
+     "bits": 4576,
+     "counts": [
+      665,
+      2861,
+      474
+     ],
+     "bias_bits": 155
+    }
+   ],
+   "bound_binomial_occam": 0.1592339142362359,
+   "bound_kl_occam": 0.1593170337261681,
+   "seconds": 11.545432090759277
+  },
+  {
+   "name": "cnn2_c8-16_t1.0_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 2678,
+   "train_err": 0.04463333333333333,
+   "test_err": 0.043,
+   "bits": 6680.781359713525,
+   "parts": [
+    {
+     "bits": 282,
+     "counts": [
+      62,
+      113,
+      25
+     ],
+     "bias_bits": 84
+    },
+    {
+     "bits": 1274,
+     "counts": [
+      197,
+      842,
+      113
+     ],
+     "bias_bits": 239
+    },
+    {
+     "bits": 4639,
+     "counts": [
+      702,
+      2829,
+      469
+     ],
+     "bias_bits": 156
+    }
+   ],
+   "bound_binomial_occam": 0.17274602169072295,
+   "bound_kl_occam": 0.17283133048620644,
+   "seconds": 11.123854160308838
+  },
+  {
+   "name": "cnn2_c8-16_t1.0_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 3085,
+   "train_err": 0.051416666666666666,
+   "test_err": 0.0477,
+   "bits": 5212.781359713525,
+   "parts": [
+    {
+     "bits": 264,
+     "counts": [
+      58,
+      123,
+      19
+     ],
+     "bias_bits": 97
+    },
+    {
+     "bits": 1343,
+     "counts": [
+      212,
+      813,
+      127
+     ],
+     "bias_bits": 243
+    },
+    {
+     "bits": 3107,
+     "counts": [
+      490,
+      3348,
+      162
+     ],
+     "bias_bits": 152
+    }
+   ],
+   "bound_binomial_occam": 0.16398454035289725,
+   "bound_kl_occam": 0.1640776165211236,
+   "seconds": 11.378497123718262
+  },
+  {
+   "name": "cnn2_c8-16_t1.0_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5386,
+   "train_errors": 5030,
+   "train_err": 0.08383333333333333,
+   "test_err": 0.0836,
+   "bits": 5227.781359713525,
+   "parts": [
+    {
+     "bits": 266,
+     "counts": [
+      48,
+      127,
+      25
+     ],
+     "bias_bits": 84
+    },
+    {
+     "bits": 1086,
+     "counts": [
+      154,
+      913,
+      85
+     ],
+     "bias_bits": 216
+    },
+    {
+     "bits": 3412,
+     "counts": [
+      551,
+      3253,
+      196
+     ],
+     "bias_bits": 157
+    }
+   ],
+   "bound_binomial_occam": 0.21209808950759798,
+   "bound_kl_occam": 0.21220059039032532,
+   "seconds": 12.187150001525879
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.5_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 3304,
+   "train_err": 0.05506666666666667,
+   "test_err": 0.0532,
+   "bits": 2977.7813597135246,
+   "parts": [
+    {
+     "bits": 140,
+     "counts": [
+      20,
+      63,
+      17
+     ],
+     "bias_bits": 39
+    },
+    {
+     "bits": 395,
+     "counts": [
+      67,
+      177,
+      44
+     ],
+     "bias_bits": 130
+    },
+    {
+     "bits": 885,
+     "counts": [
+      178,
+      271,
+      127
+     ],
+     "bias_bits": 130
+    },
+    {
+     "bits": 1068,
+     "counts": [
+      198,
+      376,
+      146
+     ],
+     "bias_bits": 184
+    }
+   ],
+   "bound_binomial_occam": 0.13534750983212476,
+   "bound_kl_occam": 0.13545623348191524,
+   "seconds": 14.622267007827759
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.5_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 4095,
+   "train_err": 0.06825,
+   "test_err": 0.0645,
+   "bits": 3053.7813597135246,
+   "parts": [
+    {
+     "bits": 134,
+     "counts": [
+      29,
+      62,
+      9
+     ],
+     "bias_bits": 55
+    },
+    {
+     "bits": 430,
+     "counts": [
+      81,
+      152,
+      55
+     ],
+     "bias_bits": 132
+    },
+    {
+     "bits": 894,
+     "counts": [
+      183,
+      259,
+      134
+     ],
+     "bias_bits": 142
+    },
+    {
+     "bits": 1075,
+     "counts": [
+      212,
+      366,
+      142
+     ],
+     "bias_bits": 185
+    }
+   ],
+   "bound_binomial_occam": 0.15526693394060517,
+   "bound_kl_occam": 0.15538079760315887,
+   "seconds": 14.059532165527344
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.5_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 2910,
+   "train_err": 0.0485,
+   "test_err": 0.0445,
+   "bits": 2978.7813597135246,
+   "parts": [
+    {
+     "bits": 165,
+     "counts": [
+      36,
+      37,
+      27
+     ],
+     "bias_bits": 35
+    },
+    {
+     "bits": 447,
+     "counts": [
+      102,
+      128,
+      58
+     ],
+     "bias_bits": 137
+    },
+    {
+     "bits": 895,
+     "counts": [
+      175,
+      262,
+      139
+     ],
+     "bias_bits": 146
+    },
+    {
+     "bits": 962,
+     "counts": [
+      203,
+      432,
+      85
+     ],
+     "bias_bits": 185
+    }
+   ],
+   "bound_binomial_occam": 0.12579116169708365,
+   "bound_kl_occam": 0.12589652794112588,
+   "seconds": 14.053059101104736
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.5_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 3144,
+   "train_err": 0.0524,
+   "test_err": 0.0478,
+   "bits": 2969.7813597135246,
+   "parts": [
+    {
+     "bits": 150,
+     "counts": [
+      39,
+      48,
+      13
+     ],
+     "bias_bits": 59
+    },
+    {
+     "bits": 445,
+     "counts": [
+      88,
+      138,
+      62
+     ],
+     "bias_bits": 130
+    },
+    {
+     "bits": 897,
+     "counts": [
+      188,
+      254,
+      134
+     ],
+     "bias_bits": 150
+    },
+    {
+     "bits": 950,
+     "counts": [
+      192,
+      443,
+      85
+     ],
+     "bias_bits": 182
+    }
+   ],
+   "bound_binomial_occam": 0.13135497661838166,
+   "bound_kl_occam": 0.13146244939940738,
+   "seconds": 15.326709985733032
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.5_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 7707,
+   "train_err": 0.12845,
+   "test_err": 0.1275,
+   "bits": 2497.7813597135246,
+   "parts": [
+    {
+     "bits": 134,
+     "counts": [
+      20,
+      66,
+      14
+     ],
+     "bias_bits": 38
+    },
+    {
+     "bits": 338,
+     "counts": [
+      45,
+      207,
+      36
+     ],
+     "bias_bits": 109
+    },
+    {
+     "bits": 882,
+     "counts": [
+      181,
+      272,
+      123
+     ],
+     "bias_bits": 146
+    },
+    {
+     "bits": 667,
+     "counts": [
+      123,
+      565,
+      32
+     ],
+     "bias_bits": 177
+    }
+   ],
+   "bound_binomial_occam": 0.222271039552679,
+   "bound_kl_occam": 0.2224122344196761,
+   "seconds": 13.037312030792236
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.5_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 7097,
+   "train_err": 0.11828333333333334,
+   "test_err": 0.114,
+   "bits": 2611.7813597135246,
+   "parts": [
+    {
+     "bits": 143,
+     "counts": [
+      34,
+      55,
+      11
+     ],
+     "bias_bits": 58
+    },
+    {
+     "bits": 408,
+     "counts": [
+      71,
+      169,
+      48
+     ],
+     "bias_bits": 133
+    },
+    {
+     "bits": 862,
+     "counts": [
+      165,
+      295,
+      116
+     ],
+     "bias_bits": 151
+    },
+    {
+     "bits": 669,
+     "counts": [
+      126,
+      563,
+      31
+     ],
+     "bias_bits": 181
+    }
+   ],
+   "bound_binomial_occam": 0.21214894989948088,
+   "bound_kl_occam": 0.21228540989107397,
+   "seconds": 13.397132635116577
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.7_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 3260,
+   "train_err": 0.05433333333333333,
+   "test_err": 0.0498,
+   "bits": 3022.7813597135246,
+   "parts": [
+    {
+     "bits": 128,
+     "counts": [
+      15,
+      69,
+      16
+     ],
+     "bias_bits": 37
+    },
+    {
+     "bits": 418,
+     "counts": [
+      80,
+      160,
+      48
+     ],
+     "bias_bits": 126
+    },
+    {
+     "bits": 866,
+     "counts": [
+      153,
+      295,
+      128
+     ],
+     "bias_bits": 150
+    },
+    {
+     "bits": 1108,
+     "counts": [
+      240,
+      325,
+      155
+     ],
+     "bias_bits": 183
+    }
+   ],
+   "bound_binomial_occam": 0.1350439679686492,
+   "bound_kl_occam": 0.13515192057793585,
+   "seconds": 13.49596095085144
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.7_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 6561,
+   "train_err": 0.10935,
+   "test_err": 0.0992,
+   "bits": 2930.7813597135246,
+   "parts": [
+    {
+     "bits": 155,
+     "counts": [
+      44,
+      40,
+      16
+     ],
+     "bias_bits": 43
+    },
+    {
+     "bits": 410,
+     "counts": [
+      66,
+      169,
+      53
+     ],
+     "bias_bits": 123
+    },
+    {
+     "bits": 797,
+     "counts": [
+      139,
+      344,
+      93
+     ],
+     "bias_bits": 139
+    },
+    {
+     "bits": 1072,
+     "counts": [
+      216,
+      366,
+      138
+     ],
+     "bias_bits": 185
+    }
+   ],
+   "bound_binomial_occam": 0.20730945795306052,
+   "bound_kl_occam": 0.20743862431225896,
+   "seconds": 13.256321907043457
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.7_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 3513,
+   "train_err": 0.05855,
+   "test_err": 0.0539,
+   "bits": 2918.7813597135246,
+   "parts": [
+    {
+     "bits": 130,
+     "counts": [
+      18,
+      68,
+      14
+     ],
+     "bias_bits": 41
+    },
+    {
+     "bits": 445,
+     "counts": [
+      93,
+      135,
+      60
+     ],
+     "bias_bits": 129
+    },
+    {
+     "bits": 863,
+     "counts": [
+      172,
+      291,
+      113
+     ],
+     "bias_bits": 142
+    },
+    {
+     "bits": 983,
+     "counts": [
+      190,
+      429,
+      101
+     ],
+     "bias_bits": 179
+    }
+   ],
+   "bound_binomial_occam": 0.13932619044129074,
+   "bound_kl_occam": 0.13943715019993905,
+   "seconds": 12.939729928970337
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.7_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 5561,
+   "train_err": 0.09268333333333334,
+   "test_err": 0.0846,
+   "bits": 2816.7813597135246,
+   "parts": [
+    {
+     "bits": 145,
+     "counts": [
+      31,
+      56,
+      13
+     ],
+     "bias_bits": 52
+    },
+    {
+     "bits": 406,
+     "counts": [
+      74,
+      169,
+      45
+     ],
+     "bias_bits": 129
+    },
+    {
+     "bits": 817,
+     "counts": [
+      148,
+      330,
+      98
+     ],
+     "bias_bits": 141
+    },
+    {
+     "bits": 938,
+     "counts": [
+      188,
+      450,
+      82
+     ],
+     "bias_bits": 182
+    }
+   ],
+   "bound_binomial_occam": 0.18371382165110062,
+   "bound_kl_occam": 0.18383944572257124,
+   "seconds": 13.733004093170166
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.7_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 5389,
+   "train_err": 0.08981666666666667,
+   "test_err": 0.0859,
+   "bits": 2515.7813597135246,
+   "parts": [
+    {
+     "bits": 74,
+     "counts": [
+      7,
+      88,
+      5
+     ],
+     "bias_bits": 43
+    },
+    {
+     "bits": 400,
+     "counts": [
+      72,
+      173,
+      43
+     ],
+     "bias_bits": 126
+    },
+    {
+     "bits": 872,
+     "counts": [
+      157,
+      289,
+      130
+     ],
+     "bias_bits": 144
+    },
+    {
+     "bits": 684,
+     "counts": [
+      135,
+      555,
+      30
+     ],
+     "bias_bits": 166
+    }
+   ],
+   "bound_binomial_occam": 0.1741666933914402,
+   "bound_kl_occam": 0.1742955789553474,
+   "seconds": 13.510337829589844
+  },
+  {
+   "name": "cnn2_c4-8-8_t0.7_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 5748,
+   "train_err": 0.0958,
+   "test_err": 0.0904,
+   "bits": 2561.7813597135246,
+   "parts": [
+    {
+     "bits": 156,
+     "counts": [
+      39,
+      44,
+      17
+     ],
+     "bias_bits": 46
+    },
+    {
+     "bits": 402,
+     "counts": [
+      58,
+      175,
+      55
+     ],
+     "bias_bits": 135
+    },
+    {
+     "bits": 789,
+     "counts": [
+      137,
+      349,
+      90
+     ],
+     "bias_bits": 148
+    },
+    {
+     "bits": 696,
+     "counts": [
+      135,
+      552,
+      33
+     ],
+     "bias_bits": 183
+    }
+   ],
+   "bound_binomial_occam": 0.1827882853951416,
+   "bound_kl_occam": 0.18291859483553602,
+   "seconds": 14.4773690700531
+  },
+  {
+   "name": "cnn2_c4-8-8_t1.0_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 3590,
+   "train_err": 0.059833333333333336,
+   "test_err": 0.0531,
+   "bits": 2843.7813597135246,
+   "parts": [
+    {
+     "bits": 132,
+     "counts": [
+      14,
+      67,
+      19
+     ],
+     "bias_bits": 34
+    },
+    {
+     "bits": 387,
+     "counts": [
+      82,
+      174,
+      32
+     ],
+     "bias_bits": 133
+    },
+    {
+     "bits": 778,
+     "counts": [
+      132,
+      356,
+      88
+     ],
+     "bias_bits": 134
+    },
+    {
+     "bits": 1054,
+     "counts": [
+      220,
+      376,
+      124
+     ],
+     "bias_bits": 185
+    }
+   ],
+   "bound_binomial_occam": 0.13984791188352952,
+   "bound_kl_occam": 0.13996023553736253,
+   "seconds": 13.92940378189087
+  },
+  {
+   "name": "cnn2_c4-8-8_t1.0_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 7057,
+   "train_err": 0.11761666666666666,
+   "test_err": 0.1139,
+   "bits": 2703.7813597135246,
+   "parts": [
+    {
+     "bits": 120,
+     "counts": [
+      25,
+      69,
+      6
+     ],
+     "bias_bits": 50
+    },
+    {
+     "bits": 339,
+     "counts": [
+      49,
+      206,
+      33
+     ],
+     "bias_bits": 122
+    },
+    {
+     "bits": 705,
+     "counts": [
+      119,
+      392,
+      65
+     ],
+     "bias_bits": 138
+    },
+    {
+     "bits": 1057,
+     "counts": [
+      213,
+      378,
+      129
+     ],
+     "bias_bits": 166
+    }
+   ],
+   "bound_binomial_occam": 0.21319883210799137,
+   "bound_kl_occam": 0.2133336190726701,
+   "seconds": 14.016366958618164
+  },
+  {
+   "name": "cnn2_c4-8-8_t1.0_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 4351,
+   "train_err": 0.07251666666666666,
+   "test_err": 0.0677,
+   "bits": 2703.7813597135246,
+   "parts": [
+    {
+     "bits": 96,
+     "counts": [
+      4,
+      80,
+      16
+     ],
+     "bias_bits": 26
+    },
+    {
+     "bits": 388,
+     "counts": [
+      81,
+      174,
+      33
+     ],
+     "bias_bits": 128
+    },
+    {
+     "bits": 788,
+     "counts": [
+      138,
+      349,
+      89
+     ],
+     "bias_bits": 142
+    },
+    {
+     "bits": 952,
+     "counts": [
+      196,
+      440,
+      84
+     ],
+     "bias_bits": 177
+    }
+   ],
+   "bound_binomial_occam": 0.1548572802452617,
+   "bound_kl_occam": 0.15497681601768196,
+   "seconds": 13.996876955032349
+  },
+  {
+   "name": "cnn2_c4-8-8_t1.0_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 5154,
+   "train_err": 0.0859,
+   "test_err": 0.0774,
+   "bits": 2598.7813597135246,
+   "parts": [
+    {
+     "bits": 115,
+     "counts": [
+      22,
+      72,
+      6
+     ],
+     "bias_bits": 57
+    },
+    {
+     "bits": 332,
+     "counts": [
+      51,
+      208,
+      29
+     ],
+     "bias_bits": 134
+    },
+    {
+     "bits": 702,
+     "counts": [
+      116,
+      394,
+      66
+     ],
+     "bias_bits": 141
+    },
+    {
+     "bits": 935,
+     "counts": [
+      180,
+      455,
+      85
+     ],
+     "bias_bits": 176
+    }
+   ],
+   "bound_binomial_occam": 0.17068533776044265,
+   "bound_kl_occam": 0.17081155575574444,
+   "seconds": 14.048631191253662
+  },
+  {
+   "name": "cnn2_c4-8-8_t1.0_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 4379,
+   "train_err": 0.07298333333333333,
+   "test_err": 0.0633,
+   "bits": 2445.7813597135246,
+   "parts": [
+    {
+     "bits": 136,
+     "counts": [
+      18,
+      65,
+      17
+     ],
+     "bias_bits": 49
+    },
+    {
+     "bits": 366,
+     "counts": [
+      66,
+      190,
+      32
+     ],
+     "bias_bits": 131
+    },
+    {
+     "bits": 730,
+     "counts": [
+      113,
+      383,
+      80
+     ],
+     "bias_bits": 140
+    },
+    {
+     "bits": 706,
+     "counts": [
+      136,
+      549,
+      35
+     ],
+     "bias_bits": 181
+    }
+   ],
+   "bound_binomial_occam": 0.15066459797401288,
+   "bound_kl_occam": 0.15078772912726354,
+   "seconds": 13.476911783218384
+  },
+  {
+   "name": "cnn2_c4-8-8_t1.0_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      4
+     ],
+     [
+      3,
+      2,
+      8
+     ],
+     [
+      3,
+      1,
+      8
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 1714,
+   "train_errors": 6442,
+   "train_err": 0.10736666666666667,
+   "test_err": 0.0943,
+   "bits": 2283.7813597135246,
+   "parts": [
+    {
+     "bits": 130,
+     "counts": [
+      28,
+      64,
+      8
+     ],
+     "bias_bits": 57
+    },
+    {
+     "bits": 276,
+     "counts": [
+      35,
+      230,
+      23
+     ],
+     "bias_bits": 117
+    },
+    {
+     "bits": 733,
+     "counts": [
+      124,
+      379,
+      73
+     ],
+     "bias_bits": 135
+    },
+    {
+     "bits": 660,
+     "counts": [
+      136,
+      560,
+      24
+     ],
+     "bias_bits": 169
+    }
+   ],
+   "bound_binomial_occam": 0.19171612658895892,
+   "bound_kl_occam": 0.19185506615314568,
+   "seconds": 13.333927869796753
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.5_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 856,
+   "train_err": 0.014266666666666667,
+   "test_err": 0.0165,
+   "bits": 8530.781359713525,
+   "parts": [
+    {
+     "bits": 323,
+     "counts": [
+      68,
+      77,
+      55
+     ],
+     "bias_bits": 82
+    },
+    {
+     "bits": 1764,
+     "counts": [
+      358,
+      536,
+      258
+     ],
+     "bias_bits": 231
+    },
+    {
+     "bits": 3505,
+     "counts": [
+      684,
+      1097,
+      523
+     ],
+     "bias_bits": 277
+    },
+    {
+     "bits": 2155,
+     "counts": [
+      447,
+      710,
+      283
+     ],
+     "bias_bits": 187
+    }
+   ],
+   "bound_binomial_occam": 0.13673923693380646,
+   "bound_kl_occam": 0.13680657423221593,
+   "seconds": 14.01449179649353
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.5_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 765,
+   "train_err": 0.01275,
+   "test_err": 0.0168,
+   "bits": 8419.781359713525,
+   "parts": [
+    {
+     "bits": 316,
+     "counts": [
+      65,
+      89,
+      46
+     ],
+     "bias_bits": 72
+    },
+    {
+     "bits": 1689,
+     "counts": [
+      317,
+      612,
+      223
+     ],
+     "bias_bits": 245
+    },
+    {
+     "bits": 3492,
+     "counts": [
+      684,
+      1109,
+      511
+     ],
+     "bias_bits": 276
+    },
+    {
+     "bits": 2132,
+     "counts": [
+      431,
+      734,
+      275
+     ],
+     "bias_bits": 191
+    }
+   ],
+   "bound_binomial_occam": 0.13196150581162847,
+   "bound_kl_occam": 0.13202786295614194,
+   "seconds": 13.817435026168823
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.5_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 797,
+   "train_err": 0.013283333333333333,
+   "test_err": 0.016,
+   "bits": 8325.781359713525,
+   "parts": [
+    {
+     "bits": 320,
+     "counts": [
+      85,
+      60,
+      55
+     ],
+     "bias_bits": 84
+    },
+    {
+     "bits": 1792,
+     "counts": [
+      400,
+      484,
+      268
+     ],
+     "bias_bits": 255
+    },
+    {
+     "bits": 3454,
+     "counts": [
+      677,
+      1144,
+      483
+     ],
+     "bias_bits": 284
+    },
+    {
+     "bits": 1940,
+     "counts": [
+      379,
+      866,
+      195
+     ],
+     "bias_bits": 190
+    }
+   ],
+   "bound_binomial_occam": 0.13217155665747463,
+   "bound_kl_occam": 0.1322384484061962,
+   "seconds": 15.186429023742676
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.5_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 1116,
+   "train_err": 0.0186,
+   "test_err": 0.0214,
+   "bits": 8222.781359713525,
+   "parts": [
+    {
+     "bits": 321,
+     "counts": [
+      67,
+      81,
+      52
+     ],
+     "bias_bits": 81
+    },
+    {
+     "bits": 1706,
+     "counts": [
+      333,
+      594,
+      225
+     ],
+     "bias_bits": 249
+    },
+    {
+     "bits": 3470,
+     "counts": [
+      662,
+      1136,
+      506
+     ],
+     "bias_bits": 277
+    },
+    {
+     "bits": 1924,
+     "counts": [
+      359,
+      882,
+      199
+     ],
+     "bias_bits": 188
+    }
+   ],
+   "bound_binomial_occam": 0.14289022298729062,
+   "bound_kl_occam": 0.142960798542867,
+   "seconds": 13.73045802116394
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.5_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 1887,
+   "train_err": 0.03145,
+   "test_err": 0.0322,
+   "bits": 7044.781359713525,
+   "parts": [
+    {
+     "bits": 239,
+     "counts": [
+      35,
+      142,
+      23
+     ],
+     "bias_bits": 92
+    },
+    {
+     "bits": 1381,
+     "counts": [
+      218,
+      797,
+      137
+     ],
+     "bias_bits": 235
+    },
+    {
+     "bits": 3273,
+     "counts": [
+      579,
+      1302,
+      423
+     ],
+     "bias_bits": 279
+    },
+    {
+     "bits": 1359,
+     "counts": [
+      244,
+      1122,
+      74
+     ],
+     "bias_bits": 180
+    }
+   ],
+   "bound_binomial_occam": 0.15431202892341878,
+   "bound_kl_occam": 0.1543913008688353,
+   "seconds": 13.672624111175537
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.5_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.5,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 3397,
+   "train_err": 0.05661666666666667,
+   "test_err": 0.0555,
+   "bits": 7007.781359713525,
+   "parts": [
+    {
+     "bits": 269,
+     "counts": [
+      44,
+      127,
+      29
+     ],
+     "bias_bits": 82
+    },
+    {
+     "bits": 1360,
+     "counts": [
+      228,
+      802,
+      122
+     ],
+     "bias_bits": 248
+    },
+    {
+     "bits": 3316,
+     "counts": [
+      619,
+      1263,
+      422
+     ],
+     "bias_bits": 272
+    },
+    {
+     "bits": 1278,
+     "counts": [
+      200,
+      1160,
+      80
+     ],
+     "bias_bits": 176
+    }
+   ],
+   "bound_binomial_occam": 0.19646812782694706,
+   "bound_kl_occam": 0.19655604233771803,
+   "seconds": 13.434268236160278
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.7_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 908,
+   "train_err": 0.015133333333333334,
+   "test_err": 0.0166,
+   "bits": 8200.781359713525,
+   "parts": [
+    {
+     "bits": 301,
+     "counts": [
+      61,
+      103,
+      36
+     ],
+     "bias_bits": 48
+    },
+    {
+     "bits": 1639,
+     "counts": [
+      289,
+      653,
+      210
+     ],
+     "bias_bits": 233
+    },
+    {
+     "bits": 3342,
+     "counts": [
+      613,
+      1248,
+      443
+     ],
+     "bias_bits": 268
+    },
+    {
+     "bits": 2183,
+     "counts": [
+      444,
+      689,
+      307
+     ],
+     "bias_bits": 180
+    }
+   ],
+   "bound_binomial_occam": 0.1350228426529352,
+   "bound_kl_occam": 0.13509124689356472,
+   "seconds": 15.157185077667236
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.7_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 944,
+   "train_err": 0.015733333333333332,
+   "test_err": 0.017,
+   "bits": 8326.781359713525,
+   "parts": [
+    {
+     "bits": 312,
+     "counts": [
+      59,
+      95,
+      46
+     ],
+     "bias_bits": 72
+    },
+    {
+     "bits": 1634,
+     "counts": [
+      312,
+      648,
+      192
+     ],
+     "bias_bits": 248
+    },
+    {
+     "bits": 3409,
+     "counts": [
+      649,
+      1189,
+      466
+     ],
+     "bias_bits": 278
+    },
+    {
+     "bits": 2171,
+     "counts": [
+      434,
+      703,
+      303
+     ],
+     "bias_bits": 196
+    }
+   ],
+   "bound_binomial_occam": 0.13778976567477605,
+   "bound_kl_occam": 0.13785839477864634,
+   "seconds": 14.589439153671265
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.7_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 1410,
+   "train_err": 0.0235,
+   "test_err": 0.0222,
+   "bits": 7706.781359713525,
+   "parts": [
+    {
+     "bits": 247,
+     "counts": [
+      27,
+      139,
+      34
+     ],
+     "bias_bits": 71
+    },
+    {
+     "bits": 1394,
+     "counts": [
+      207,
+      794,
+      151
+     ],
+     "bias_bits": 256
+    },
+    {
+     "bits": 3334,
+     "counts": [
+      608,
+      1255,
+      441
+     ],
+     "bias_bits": 288
+    },
+    {
+     "bits": 1919,
+     "counts": [
+      364,
+      882,
+      194
+     ],
+     "bias_bits": 191
+    }
+   ],
+   "bound_binomial_occam": 0.1470579981923836,
+   "bound_kl_occam": 0.14713214029404525,
+   "seconds": 14.266793966293335
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.7_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 1675,
+   "train_err": 0.027916666666666666,
+   "test_err": 0.0277,
+   "bits": 7788.781359713525,
+   "parts": [
+    {
+     "bits": 268,
+     "counts": [
+      46,
+      127,
+      27
+     ],
+     "bias_bits": 72
+    },
+    {
+     "bits": 1536,
+     "counts": [
+      265,
+      716,
+      171
+     ],
+     "bias_bits": 252
+    },
+    {
+     "bits": 3308,
+     "counts": [
+      616,
+      1269,
+      419
+     ],
+     "bias_bits": 272
+    },
+    {
+     "bits": 1896,
+     "counts": [
+      363,
+      893,
+      184
+     ],
+     "bias_bits": 178
+    }
+   ],
+   "bound_binomial_occam": 0.15666237002901773,
+   "bound_kl_occam": 0.15673845042717724,
+   "seconds": 13.655734062194824
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.7_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 2249,
+   "train_err": 0.037483333333333334,
+   "test_err": 0.037,
+   "bits": 6839.781359713525,
+   "parts": [
+    {
+     "bits": 257,
+     "counts": [
+      38,
+      134,
+      28
+     ],
+     "bias_bits": 69
+    },
+    {
+     "bits": 1388,
+     "counts": [
+      218,
+      794,
+      140
+     ],
+     "bias_bits": 257
+    },
+    {
+     "bits": 3200,
+     "counts": [
+      548,
+      1354,
+      402
+     ],
+     "bias_bits": 272
+    },
+    {
+     "bits": 1212,
+     "counts": [
+      222,
+      1167,
+      51
+     ],
+     "bias_bits": 178
+    }
+   ],
+   "bound_binomial_occam": 0.16256030622032577,
+   "bound_kl_occam": 0.1626425632811522,
+   "seconds": 13.264384984970093
+  },
+  {
+   "name": "cnn2_c8-16-16_t0.7_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 0.7,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 2157,
+   "train_err": 0.03595,
+   "test_err": 0.0334,
+   "bits": 6621.781359713525,
+   "parts": [
+    {
+     "bits": 257,
+     "counts": [
+      37,
+      134,
+      29
+     ],
+     "bias_bits": 84
+    },
+    {
+     "bits": 1305,
+     "counts": [
+      201,
+      830,
+      121
+     ],
+     "bias_bits": 256
+    },
+    {
+     "bits": 3049,
+     "counts": [
+      512,
+      1443,
+      349
+     ],
+     "bias_bits": 271
+    },
+    {
+     "bits": 1207,
+     "counts": [
+      199,
+      1178,
+      63
+     ],
+     "bias_bits": 186
+    }
+   ],
+   "bound_binomial_occam": 0.15712506978007892,
+   "bound_kl_occam": 0.15720731657077075,
+   "seconds": 13.347275018692017
+  },
+  {
+   "name": "cnn2_c8-16-16_t1.0_f0.7_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 0.7,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 2161,
+   "train_err": 0.03601666666666667,
+   "test_err": 0.033,
+   "bits": 6995.781359713525,
+   "parts": [
+    {
+     "bits": 269,
+     "counts": [
+      50,
+      125,
+      25
+     ],
+     "bias_bits": 75
+    },
+    {
+     "bits": 1325,
+     "counts": [
+      203,
+      822,
+      127
+     ],
+     "bias_bits": 228
+    },
+    {
+     "bits": 2657,
+     "counts": [
+      408,
+      1637,
+      259
+     ],
+     "bias_bits": 242
+    },
+    {
+     "bits": 2004,
+     "counts": [
+      316,
+      851,
+      273
+     ],
+     "bias_bits": 189
+    }
+   ],
+   "bound_binomial_occam": 0.1619316472693432,
+   "bound_kl_occam": 0.16201291977179308,
+   "seconds": 13.150063753128052
+  },
+  {
+   "name": "cnn2_c8-16-16_t1.0_f0.7_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 0.7,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 2600,
+   "train_err": 0.043333333333333335,
+   "test_err": 0.0417,
+   "bits": 7049.781359713525,
+   "parts": [
+    {
+     "bits": 274,
+     "counts": [
+      42,
+      125,
+      33
+     ],
+     "bias_bits": 86
+    },
+    {
+     "bits": 1186,
+     "counts": [
+      179,
+      876,
+      97
+     ],
+     "bias_bits": 240
+    },
+    {
+     "bits": 2727,
+     "counts": [
+      436,
+      1603,
+      265
+     ],
+     "bias_bits": 251
+    },
+    {
+     "bits": 2097,
+     "counts": [
+      371,
+      780,
+      289
+     ],
+     "bias_bits": 182
+    }
+   ],
+   "bound_binomial_occam": 0.17527177052090898,
+   "bound_kl_occam": 0.17535555082195584,
+   "seconds": 14.795644283294678
+  },
+  {
+   "name": "cnn2_c8-16-16_t1.0_f1.0_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.0,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 1812,
+   "train_err": 0.0302,
+   "test_err": 0.0295,
+   "bits": 6814.781359713525,
+   "parts": [
+    {
+     "bits": 297,
+     "counts": [
+      58,
+      107,
+      35
+     ],
+     "bias_bits": 77
+    },
+    {
+     "bits": 1260,
+     "counts": [
+      181,
+      851,
+      120
+     ],
+     "bias_bits": 202
+    },
+    {
+     "bits": 2676,
+     "counts": [
+      419,
+      1627,
+      258
+     ],
+     "bias_bits": 248
+    },
+    {
+     "bits": 1864,
+     "counts": [
+      313,
+      925,
+      202
+     ],
+     "bias_bits": 184
+    }
+   ],
+   "bound_binomial_occam": 0.14918580824228725,
+   "bound_kl_occam": 0.1492650818036369,
+   "seconds": 13.790655136108398
+  },
+  {
+   "name": "cnn2_c8-16-16_t1.0_f1.0_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.0,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 2360,
+   "train_err": 0.03933333333333333,
+   "test_err": 0.0401,
+   "bits": 6466.781359713525,
+   "parts": [
+    {
+     "bits": 218,
+     "counts": [
+      28,
+      151,
+      21
+     ],
+     "bias_bits": 71
+    },
+    {
+     "bits": 903,
+     "counts": [
+      124,
+      970,
+      58
+     ],
+     "bias_bits": 241
+    },
+    {
+     "bits": 2737,
+     "counts": [
+      436,
+      1599,
+      269
+     ],
+     "bias_bits": 246
+    },
+    {
+     "bits": 1863,
+     "counts": [
+      322,
+      923,
+      195
+     ],
+     "bias_bits": 181
+    }
+   ],
+   "bound_binomial_occam": 0.16102747880876445,
+   "bound_kl_occam": 0.16111150922688408,
+   "seconds": 15.47360897064209
+  },
+  {
+   "name": "cnn2_c8-16-16_t1.0_f1.4_s0",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.4,
+    "seed": 0,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 2436,
+   "train_err": 0.0406,
+   "test_err": 0.0362,
+   "bits": 6057.781359713525,
+   "parts": [
+    {
+     "bits": 251,
+     "counts": [
+      37,
+      137,
+      26
+     ],
+     "bias_bits": 78
+    },
+    {
+     "bits": 1171,
+     "counts": [
+      162,
+      885,
+      105
+     ],
+     "bias_bits": 243
+    },
+    {
+     "bits": 2552,
+     "counts": [
+      381,
+      1682,
+      241
+     ],
+     "bias_bits": 284
+    },
+    {
+     "bits": 1298,
+     "counts": [
+      221,
+      1147,
+      72
+     ],
+     "bias_bits": 174
+    }
+   ],
+   "bound_binomial_occam": 0.1578823645149976,
+   "bound_kl_occam": 0.157968159418222,
+   "seconds": 15.408797979354858
+  },
+  {
+   "name": "cnn2_c8-16-16_t1.0_f1.4_s1",
+   "cfg": {
+    "kind": "cnn",
+    "convs": [
+     [
+      5,
+      2,
+      8
+     ],
+     [
+      3,
+      2,
+      16
+     ],
+     [
+      3,
+      1,
+      16
+     ]
+    ],
+    "t": 1.0,
+    "t_fc": 1.4,
+    "seed": 1,
+    "epochs": 40
+   },
+   "params": 5146,
+   "train_errors": 4268,
+   "train_err": 0.07113333333333334,
+   "test_err": 0.0695,
+   "bits": 5288.781359713525,
+   "parts": [
+    {
+     "bits": 226,
+     "counts": [
+      30,
+      148,
+      22
+     ],
+     "bias_bits": 95
+    },
+    {
+     "bits": 627,
+     "counts": [
+      75,
+      1044,
+      33
+     ],
+     "bias_bits": 239
+    },
+    {
+     "bits": 2352,
+     "counts": [
+      333,
+      1761,
+      210
+     ],
+     "bias_bits": 282
+    },
+    {
+     "bits": 1286,
+     "counts": [
+      228,
+      1147,
+      65
+     ],
+     "bias_bits": 175
+    }
+   ],
+   "bound_binomial_occam": 0.19482522861794999,
+   "bound_kl_occam": 0.19492415148659323,
+   "seconds": 14.510249853134155
+  }
+ ]
+}

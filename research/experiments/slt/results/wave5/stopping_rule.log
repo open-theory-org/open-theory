@@ -1,0 +1,36 @@
+4x4 r=1 H=4 n=  100 aligned rho=0.25  theory=  3.5  rule=  3.53±0.14  truncSVD=  3.53  oracle=  2.93  t_hat=11.1
+4x4 r=1 H=4 n=  100 aligned rho=0.05  theory=  3.5  rule=  5.47±0.24  truncSVD=  3.64  oracle=  3.05  t_hat=18.6
+4x4 r=1 H=4 n=  100 random  rho=0.25  theory=  3.5  rule=  3.59±0.14  truncSVD=  3.59  oracle=  3.08  t_hat=11.0
+4x4 r=1 H=4 n=  100 random  rho=0.05  theory=  3.5  rule=  5.75±0.25  truncSVD=  3.94  oracle=  3.23  t_hat=18.9
+4x4 r=1 H=4 n= 1000 aligned rho=0.25  theory=  3.5  rule=  3.38±0.13  truncSVD=  3.38  oracle=  3.02  t_hat=11.2
+4x4 r=1 H=4 n= 1000 aligned rho=0.05  theory=  3.5  rule=  3.65±0.14  truncSVD=  3.65  oracle=  3.25  t_hat=12.0
+4x4 r=1 H=4 n= 1000 random  rho=0.25  theory=  3.5  rule=  3.54±0.13  truncSVD=  3.54  oracle=  3.08  t_hat=10.9
+4x4 r=1 H=4 n= 1000 random  rho=0.05  theory=  3.5  rule=  3.65±0.13  truncSVD=  3.65  oracle=  3.28  t_hat=11.8
+4x4 r=1 H=4 n=10000 aligned rho=0.25  theory=  3.5  rule=  4.03±0.16  truncSVD=  4.03  oracle=  3.67  t_hat=11.2
+4x4 r=1 H=4 n=10000 aligned rho=0.05  theory=  3.5  rule=  3.49±0.13  truncSVD=  3.49  oracle=  3.22  t_hat=12.0
+4x4 r=1 H=4 n=10000 random  rho=0.25  theory=  3.5  rule=  3.44±0.12  truncSVD=  3.44  oracle=  3.17  t_hat=11.0
+4x4 r=1 H=4 n=10000 random  rho=0.05  theory=  3.5  rule=  3.74±0.14  truncSVD=  3.74  oracle=  3.47  t_hat=11.8
+4x4 r=2 H=4 n=  100 aligned rho=0.25  theory=  6.0  rule=  6.06±0.19  truncSVD=  6.06  oracle=  5.93  t_hat=11.9
+4x4 r=2 H=4 n=  100 aligned rho=0.05  theory=  6.0  rule=  6.33±0.18  truncSVD=  6.23  oracle=  6.11  t_hat=13.4
+4x4 r=2 H=4 n=  100 random  rho=0.25  theory=  6.0  rule=  5.97±0.17  truncSVD=  5.97  oracle=  5.85  t_hat=12.0
+4x4 r=2 H=4 n=  100 random  rho=0.05  theory=  6.0  rule=  6.05±0.17  truncSVD=  5.84  oracle=  5.75  t_hat=13.7
+4x4 r=2 H=4 n= 1000 aligned rho=0.25  theory=  6.0  rule=  6.13±0.17  truncSVD=  6.13  oracle=  6.02  t_hat=11.7
+4x4 r=2 H=4 n= 1000 aligned rho=0.05  theory=  6.0  rule=  5.94±0.17  truncSVD=  5.94  oracle=  5.85  t_hat=12.4
+4x4 r=2 H=4 n= 1000 random  rho=0.25  theory=  6.0  rule=  6.00±0.18  truncSVD=  6.00  oracle=  5.87  t_hat=11.6
+4x4 r=2 H=4 n= 1000 random  rho=0.05  theory=  6.0  rule=  5.97±0.17  truncSVD=  5.97  oracle=  5.84  t_hat=12.4
+4x4 r=2 H=4 n=10000 aligned rho=0.25  theory=  6.0  rule=  6.21±0.17  truncSVD=  6.21  oracle=  6.04  t_hat=11.6
+4x4 r=2 H=4 n=10000 aligned rho=0.05  theory=  6.0  rule=  6.33±0.19  truncSVD=  6.33  oracle=  6.18  t_hat=12.3
+4x4 r=2 H=4 n=10000 random  rho=0.25  theory=  6.0  rule=  6.12±0.19  truncSVD=  6.12  oracle=  5.96  t_hat=11.6
+4x4 r=2 H=4 n=10000 random  rho=0.05  theory=  6.0  rule=  6.28±0.18  truncSVD=  6.28  oracle=  6.02  t_hat=12.4
+10x10 r=2 H=10 n=  100 aligned rho=0.25  theory= 18.0  rule= 37.81±0.75  truncSVD= 20.27  oracle= 19.16  t_hat=20.5
+10x10 r=2 H=10 n=  100 aligned rho=0.05  theory= 18.0  rule= 48.38±0.48  truncSVD= 20.26  oracle= 19.11  t_hat=40.0
+10x10 r=2 H=10 n=  100 random  rho=0.25  theory= 18.0  rule= 36.62±0.71  truncSVD= 19.77  oracle= 18.66  t_hat=19.2
+10x10 r=2 H=10 n=  100 random  rho=0.05  theory= 18.0  rule= 48.46±0.50  truncSVD= 20.66  oracle= 19.64  t_hat=38.0
+10x10 r=2 H=10 n= 1000 aligned rho=0.25  theory= 18.0  rule= 18.02±0.26  truncSVD= 18.02  oracle= 17.77  t_hat=11.7
+10x10 r=2 H=10 n= 1000 aligned rho=0.05  theory= 18.0  rule= 18.34±0.31  truncSVD= 18.34  oracle= 18.07  t_hat=12.6
+10x10 r=2 H=10 n= 1000 random  rho=0.25  theory= 18.0  rule= 18.13±0.29  truncSVD= 18.13  oracle= 17.80  t_hat=10.9
+10x10 r=2 H=10 n= 1000 random  rho=0.05  theory= 18.0  rule= 18.32±0.30  truncSVD= 18.32  oracle= 18.06  t_hat=12.0
+10x10 r=2 H=10 n=10000 aligned rho=0.25  theory= 18.0  rule= 18.33±0.30  truncSVD= 18.33  oracle= 18.10  t_hat=11.6
+10x10 r=2 H=10 n=10000 aligned rho=0.05  theory= 18.0  rule= 19.01±0.30  truncSVD= 19.01  oracle= 18.78  t_hat=12.3
+10x10 r=2 H=10 n=10000 random  rho=0.25  theory= 18.0  rule= 17.39±0.27  truncSVD= 17.39  oracle= 17.18  t_hat=10.9
+10x10 r=2 H=10 n=10000 random  rho=0.05  theory= 18.0  rule= 17.86±0.31  truncSVD= 17.86  oracle= 17.60  t_hat=11.6

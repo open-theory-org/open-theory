@@ -1,0 +1,11 @@
+id = "heldout-accuracy-quantized-classifier"
+name = "Certified held-out accuracy of a quantized classifier"
+level = "verified"
+claim = "heldout-error"
+uses = ["quantized-mlp-kernel-inference", "heldout-binomial-bound"]
+assumptions = ["A1-iid", "A2-heldout-independent", "A3-model-binding", "A4-labels"]
+example = "examples/certified_accuracy/"
+
+[lean]
+template = "OpenTheory.HeldOut.Claim"
+instances = ["OpenTheory.BinomialMLPDigits.heldout_testSet_certificate"]

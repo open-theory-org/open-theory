@@ -1,0 +1,14 @@
+id = "quantized-mlp-kernel-inference"
+name = "Kernel re-execution of a quantized ReLU MLP"
+level = "verified"
+mode = "verified-implementation"
+kind = "statistical"
+summary = "The network is an integer Lean definition; the kernel evaluates it on every held-out row (decide +kernel) and recounts errors. The exporter is untrusted."
+implementation = ["methods/statistical/quantized_mlp_certificate.py"]
+assumptions = ["A3-model-binding"]
+trusted = ["Lean kernel", "definition OpenTheory.QuantizedMLP.scoresOfWeights"]
+conformance = ["tests/conformance/heldout_verify.py", "tests/conformance/certified_accuracy.sh", "tests/integration/test_quantized_mlp_certificate.py"]
+
+[lean]
+spec = ["OpenTheory.QuantizedMLP.scoresOfWeights", "OpenTheory.QuantizedMLP.errorCountOfWeights"]
+correctness = ["OpenTheory.HeldOut.QuantizedMLP.numErrors_sampleOf", "OpenTheory.QuantizedMLP.errorCount_codeOfList", "OpenTheory.QuantizedMLP.errorCount_append"]

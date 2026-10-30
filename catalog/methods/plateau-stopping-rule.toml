@@ -1,0 +1,14 @@
+id = "plateau-stopping-rule"
+name = "Loss-threshold stopping rule for two-layer linear networks"
+level = "specified"
+kind = "statistical"
+summary = "Stop at 1.5 × the first time training loss ≤ ρ; Lean proves the stopped network converges to the truncated SVD as init scale → 0."
+implementation = ["research/experiments/slt/stopping_rule.py"]
+not_verified_because = "Python runs discrete float gradient descent; the theorem is about exact gradient flow from aligned initialization in the limit ε → 0."
+assumptions = []
+trusted = ["Python/NumPy implementation"]
+conformance = []
+
+[lean]
+spec = ["OpenTheory.Plateau.hitTime", "OpenTheory.Plateau.trainLoss"]
+correctness = ["OpenTheory.Plateau.stopping_rule"]

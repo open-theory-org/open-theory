@@ -1,0 +1,1 @@
+r=1 H=2 n= 1000  n*E[G]: bayes=  2.15±0.19  gd_conv=  4.57±0.27  gd_early_fair=  4.35±0.42  gd_best_on_path=  2.09±0.22  acc=0.75 conv=0.20 (3912s)

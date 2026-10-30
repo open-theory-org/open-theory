@@ -1,0 +1,4 @@
+r=2 H=3 n=   300 lambda= 7.00  bayes=  6.84±0.20  mle=  7.89±0.21  gd_conv=  7.89±0.21  gd_early=  6.94±0.26  gd_early_fair=  8.93±0.29  rank_r_mle=  6.16±0.19  gd_plateau=  6.16±0.19  (379s)
+r=2 H=3 n=  1000 lambda= 7.00  bayes=  7.00±0.19  mle=  7.99±0.20  gd_conv=  7.99±0.20  gd_early=  6.98±0.24  gd_early_fair=  8.45±0.25  rank_r_mle=  6.25±0.18  gd_plateau=  6.25±0.18  (389s)
+r=2 H=3 n=  3000 lambda= 7.00  bayes=  7.24±0.18  mle=  8.24±0.19  gd_conv=  8.24±0.19  gd_early=  7.33±0.34  gd_early_fair=  8.68±0.25  rank_r_mle=  6.31±0.18  gd_plateau=  6.31±0.18  (419s)
+r=2 H=3 n= 10000 lambda= 7.00  bayes=  6.70±0.19  mle=  7.61±0.20  gd_conv=  7.61±0.20  gd_early=  6.32±0.18  gd_early_fair=  8.06±0.24  rank_r_mle=  5.88±0.18  gd_plateau=  5.88±0.18  (280s)

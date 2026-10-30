@@ -1,0 +1,23 @@
+import Foundations.Hironaka
+
+/-! Axioms of the main theorems of Resolution's `Hironaka` library (`comparator.json` upstream),
+checked in this build: each should list only `propext`, `Classical.choice` and `Quot.sound`. -/
+
+#print axioms AlgebraicGeometry.exists_blowUpSequence_ord_weakTransformSeq_lt
+#print axioms AlgebraicGeometry.exists_blowUpSequence_weakTransformSeq_eq_top
+#print axioms AlgebraicGeometry.exists_blowUpSequence_forall_exists_stalkIdeal_weakTransformSeq_eq_top
+#print axioms AlgebraicGeometry.exists_functorial_principalization
+#print axioms AlgebraicGeometry.exists_blowUpSequence_isInvertible_isSncBoundary_radical_comap
+#print axioms AlgebraicGeometry.exists_functorial_resolution
+#print axioms AlgebraicGeometry.exists_strong_resolution
+#print axioms AlgebraicGeometry.exists_support_eq_singularLocus_isRegular_blowUp
+#print axioms AlgebraicGeometry.exists_dense_isIso_restrict_isRegular_blowUp
+#print axioms AlgebraicGeometry.exists_functorial_embeddedDesingularization
+#print axioms AnalyticManifold.exists_extensionCompatibleFamily_weakTransformSeq_eq_top
+#print axioms AnalyticManifold.exists_extensionCompatibleFamily_isNormalCrossingsDivisor_jacobianIdeal_mul_pullback
+#print axioms AnalyticManifold.exists_functorial_principalization
+#print axioms AnalyticManifold.exists_embeddedDesingularization
+#print axioms AnalyticSpace.exists_functorial_resolution
+#print axioms AnalyticSpace.exists_surjective_resolution_of_isReduced
+#print axioms AlgebraicGeometry.exists_isBlowUpAlong_smooth
+#print axioms exists_proper_analytic_monomialization
