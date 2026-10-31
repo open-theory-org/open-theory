@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-31T13:32:20.368574+00:00",
+  "generatedAt": "2026-10-31T16:02:53.616766+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 102,
+  "nodesCount": 105,
   "nodes": [
     {
       "id": "def:sample",
@@ -2202,6 +2202,67 @@
       ],
       "bountyUsd": null,
       "informalSketch": "Interval soundness puts the output in the propagated box; there the score of $c$ is at least its\nlower bound, which exceeds every other upper bound. The lower corner of a well-formed box lies in\nit."
+    },
+    {
+      "id": "def:spec",
+      "kind": "definition",
+      "title": "Property, scope, specification and guarantee",
+      "leanName": "OpenTheory.Property",
+      "leanNames": [
+        "OpenTheory.Property",
+        "OpenTheory.Scope",
+        "OpenTheory.Spec",
+        "OpenTheory.Spec.Target",
+        "OpenTheory.Sound"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": false,
+      "isVerified": true,
+      "dependencies": [],
+      "bountyUsd": null,
+      "informalSketch": null
+    },
+    {
+      "id": "thm:sound_exact",
+      "kind": "theorem",
+      "title": "Exact scopes",
+      "leanName": "OpenTheory.sound_exact_iff",
+      "leanNames": [
+        "OpenTheory.sound_exact_iff"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:spec"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "The Dirac measure of a set is $0$ exactly when the point is not in it."
+    },
+    {
+      "id": "thm:spec_instances",
+      "kind": "theorem",
+      "title": "The claim templates are instances",
+      "leanName": "OpenTheory.onRegion_sound",
+      "leanNames": [
+        "OpenTheory.onRegion_sound",
+        "OpenTheory.heldOut_sound",
+        "OpenTheory.poolRate_sound",
+        "OpenTheory.judgedRate_sound",
+        "OpenTheory.judgedRate_alarms_sound",
+        "OpenTheory.seedLaw",
+        "OpenTheory.seedLaw_apply"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:spec",
+        "thm:sound_exact",
+        "thm:region_certificate"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Each bad event is contained in the bad set of the template's own soundness theorem: the region\ncertificate, the uniform Clopper--Pearson event, or the seed sets bounded by the design-based\nsampling theorems; the seed law of a set is its fraction of seeds."
     }
   ]
 }

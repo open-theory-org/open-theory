@@ -45,6 +45,9 @@ jobs:
       - name: Check that every citation resolves
         run: python3 tests/regression/check_references.py
 
+      - name: Check the specs registries and the coverage matrix
+        run: python3 tests/regression/check_specs.py
+
       - name: Fail if committed graph is stale
         run: python3 blueprint/export_blueprint.py --check
 

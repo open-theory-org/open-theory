@@ -1,0 +1,206 @@
+Verifying AI Models: a taxonomy of specifications.
+
+
+# Introduction
+
+AI safety needs guarantees about the behavior of AI systems: that a model is accurate on the
+population it serves, that a decision does not flip under a small change of input, that an agent
+never takes a forbidden action. Scalable oversight [@amodei2016concrete; @bowman2022measuring],
+alignment and capability control all rest on such guarantees.
+
+In the case of AI, empirical guarantees are not enough. A benchmark score can be gamed, an audit set
+can be anticipated [@luck2026certified], and an evaluation report is only as good as the trust we
+place in whoever ran it. We need guarantees that are formal, that anyone can verify independently,
+and that scale to real models and real deployments.
+
+Formal verification has shown that this is possible for parts of the problem
+[@katz2017reluplex; @seshia2022toward; @dalrymple2024guaranteed]. The missing step is earlier: the
+clarification of the claims themselves. A claim must be formalized before it can be verified.
+Formalization is the prerequisite of verification.
+
+OpenTheory is a framework for turning knowledge about AI systems into independently verifiable
+guarantees. This document gives its taxonomy: a map of the claims that can be verified, and the way
+each claim is built. It is the stepping stone for everything else: once properties and
+specifications are fixed, we can say exactly which Lean theorem proves what, and build the catalog
+of methods on top.
+
+
+# Verification and Models
+
+A verification claim has three parts: a **claim**, the **evidence** that supports it, and the
+**assumptions** under which the evidence supports it. A **verifier** checks that the evidence
+establishes the claim under the assumptions:
+
+$$\underbrace{A}_{\text{assumptions}} \quad\Longrightarrow\quad \underbrace{P}_{\text{desired property}}.$$
+
+Two questions must both be answered:
+
+- **Mathematical correctness**: does the proof establish the formal statement? The Lean kernel
+  answers this one.
+- **Semantic fidelity**: does that statement accurately express the intended claim about the
+  system? Only a careful reading of the statement answers this one, which is why every statement is
+  read by a human before it enters `formal/`.
+
+AI models belong to families. A ReLU network of any depth and width is one family; a gradient-boosted
+tree ensemble is another; a deployed system seen only through its outputs is a third. A model is
+built by composing primitives (linear layers, activations, attention, trees), so that a fact proved
+once for each primitive holds for every model built from them.
+
+Trained models have properties. They have a size, they generalize or not, they behave in a certain
+way on given inputs, and their behavior has statistical regularities under given assumptions. A
+**property of a model is anything that can be true of it**, written `P(M)`. Some are directly
+relevant to safety (a decision is robust, a monitor fires), others are means to them (a Lipschitz
+constant, a bound on the parameters). Several properties can hold at once, and the same property
+can be asked of every model in a family.
+
+The basic unit is therefore a property, formalized, about a model, inside a claim.
+
+
+# Properties
+
+Models have a considerable number of properties, but not all are equally relevant. We classify them
+by their **core object**: what the property is about.
+
+| Core object | What it is | Example properties |
+| --- | --- | --- |
+| The learned function | `f : X → Y`, the input–output map | correctness on an input, robustness on a region, monotonicity in a feature, fairness between inputs, equivalence of two models |
+| The statistical predictor | `f` together with the distribution it serves | error rate, AUC, calibration, generalization from training data |
+| The data | what trained and evaluated the model | held-out data was unseen, labels are correct, no contamination |
+| The architecture | parameters and structure | size, Lipschitz bounds, quantization, the primitives it is built from |
+| The internals | activations, heads, circuits | a circuit is faithful, ablating heads changes little |
+| Inference | the deployed computation | the served model is the certified one (hardware, attestation), privacy of the prompt and of the weights |
+| Behavior over multiple steps | an agent acting in a loop | it never takes a forbidden action, it respects a constraint |
+| A changing environment | the world the system acts in | guarantees under bounded distribution shift |
+
+A property is stated as a **yes/no test on one input**: "the model's scores rank class `c` first on
+`x`", "the model's answer on `x` is correct", "the agent's action at state `x` is allowed". In Lean:
+
+```lean
+abbrev Property (M X : Type*) := M → X → Prop
+```
+
+A test on one input is the right unit because it combines. The same test, asked of every input in a
+region or of most inputs of a population, gives every kind of claim below.
+
+
+# Specifications
+
+A property alone says nothing about which inputs matter. A **scope** says where the property must
+hold:
+
+| Scope | Meaning | How it is checked |
+| --- | --- | --- |
+| **Region** | on every input of a set (a box around an applicant, a finite list of inputs) | exactly: the kernel evaluates a check whose soundness is proved once |
+| **Population** | on all but a fraction `p` of the population the evidence was sampled from | statistically: an exact binomial bound on a sample, with confidence `1 − δ` |
+
+A **specification** is a property together with its scope, and its **target** is what it asks of a
+model:
+
+```lean
+inductive Scope (X : Type*)
+  | region (R : Set X)
+  | population (p : ℝ)
+
+structure Spec (M X : Type*) where
+  property : Property M X
+  scope    : Scope X
+
+def Spec.Target (σ : Spec M X) (m : M) (weight : Set X → ℝ) : Prop :=
+  match σ.scope with
+  | .region R     => ∀ x ∈ R, σ.property m x
+  | .population p => weight {x | ¬ σ.property m x} ≤ p
+```
+
+`weight` is the population: a data distribution `D` for an IID sample, the fraction of a committed
+pool for a design-based sample.
+
+A **claim** is a specification with its numbers filled in, for one model: "this model predicts
+class 0 on every input within 3 of `x₀`", "this model errs on at most 3% of the population, with
+confidence 99.9%". A **certificate** is the evidence that a verifier checks for one claim.
+
+Every certificate gives the same guarantee, whatever its scope:
+
+```lean
+def Sound (P : Measure Ω) (accepts : Ω → Θ → Prop) (target : Θ → Prop) (δ : ℝ) : Prop :=
+  P {ω | ∃ θ, accepts ω θ ∧ ¬ target θ} ≤ δ
+```
+
+In words: **over the randomness of how the evidence was collected, the probability that the check
+accepts a claim that is false is at most `δ`**, even when the certifier chooses the claim (the
+count, the bound, the box) after seeing the evidence. For a region scope there is no randomness and
+`δ = 0`: an accepted claim is true. This one sentence is what a certificate means, and what a
+regulator or an auditor can rely on.
+
+
+# Assurance
+
+Not every guarantee is of the same kind. Each certificate states its **assurance type**:
+
+| Assurance type | Meaning |
+| --- | --- |
+| Formal | A mathematical proposition has a valid machine-checked proof |
+| Deterministic | A specified system property has been established for a stated scope |
+| Statistical | A probabilistic guarantee follows under documented assumptions |
+| Empirical | An observed result is supported by reproducible evaluation evidence |
+| Cryptographic | A defined computation or relation is proven without exposing specified private information |
+| Runtime | An enforcement mechanism has checked or enforced a specific operational constraint |
+
+and its **assurance level**, which says how much of the chain is machine-checked
+(`specs/protocols/assurance-levels.md`): `verified` when the Lean kernel checks the certificate
+against a proved specification, `specified` when the specification is formal but the
+implementation is not, `experimental` otherwise. A region claim checked by the kernel is formal,
+deterministic and `verified`. A population claim is statistical, and `verified` only for the
+sampling procedure its assumptions describe.
+
+**Assumptions are never hidden.** Each one has an id (`specs/assumptions/`): the sample is IID
+(A1), the held-out data was not used in training (A2), the certified model is the deployed one
+(A3), the labels are correct (A4). Each scope brings its own, and a claim lists all of them.
+
+
+# A Taxonomy of properties
+
+Combining the core object, the property and the scope gives the map of claims. A cell is the
+specification "this property, on this scope"; its status is what the repository can certify today.
+
+| Core object | Property | Region | Population |
+| --- | --- | --- | --- |
+| Learned function | prediction constant around an input | theorem, kernel check (ReLU MLPs) | robust accuracy (planned) |
+| Learned function | exact output on an input | kernel check, `experimental` (ReLU MLPs) | — |
+| Learned function | monotonicity, fairness between inputs | planned (tree ensembles) | fairness rates (planned) |
+| Statistical predictor | error rate | — | `verified` (quantized MLPs) |
+| Statistical predictor | AUC, calibration | — | planned |
+| Any system, black box | rate of an event on a committed pool | — | `verified` (pool-rate, judged-rate) |
+| Architecture | Lipschitz bound, interval soundness | theorem for every ReLU MLP | — |
+| Internals | head-ablation fidelity | theorem only | — |
+| Behavior over steps | allowed actions | planned (agent gate) | violation rate (planned) |
+
+This table is a summary. The authoritative version, `specs/coverage.md`, is generated from the
+registries in `specs/` (one card per model, property, scope and claim) and the levels in
+`catalog/`, and CI fails when it drifts from what is proved.
+
+
+# Proofs
+
+In Lean, a property holds when it follows from given quantities. For each certificate we can
+evaluate the model directly, or compute a proof from it. Either is expensive if done again for
+every claim.
+
+The efficient design is to share assumptions and proofs across instances, compute only the
+necessary model-specific statistics, and make the final certificate checks simple:
+
+- **Proved once**: for each specification, the theorem that an accepting check gives the guarantee
+  above. For a family of models, it is proved once per primitive and composed.
+- **Computed per model**: the statistics the check needs (counts, bounds, packed weights), by
+  untrusted code.
+- **Checked per certificate**: a `Bool` decision procedure, run by the Lean kernel in about a
+  millisecond for 100k parameters, or compiled (faster, but it trusts the compiler and is labelled
+  accordingly).
+
+Finding the most adequate quantities for each property, and the algorithms that compute and check
+them quicker and cheaper, is an active area of research.
+
+
+# References
+
+All citations are keys of `blueprint/src/references.bib`. The literature map behind the taxonomy is
+`research/literature/verifiable-traditional-ml.md`.

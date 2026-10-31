@@ -106,3 +106,7 @@ import Models.Exact.ReLU
 import Models.Exact.MLP
 import Properties.Prediction
 import Scopes.OnRegion
+import Properties.Basic
+import Scopes.Basic
+import Specs.Basic
+import Specs.Instances

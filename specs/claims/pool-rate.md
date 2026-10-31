@@ -1,3 +1,15 @@
++++
+id = "pool-rate"
+property = "no-event"
+scope = "population-pool"
+models = ["any-system"]
+lean = ["OpenTheory.PoolRate.Claim", "OpenTheory.PoolRate.Claim.of_poolCheck"]
+sound = ["OpenTheory.poolRate_sound"]
+checks = ["pool", "pool-witness"]
+methods = ["pool-rate-certificate"]
+assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity"]
+references = [{ key = "clopper1934use", relation = "implements" }, { key = "luck2026certified", relation = "background" }]
++++
 # Claim: pool rate (`pool-rate`, v0.1)
 
 **Statement.** An issuer commits to a pool of `N` items and to a procedure that gives each item a

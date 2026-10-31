@@ -1713,5 +1713,55 @@ lower bound, which exceeds every other upper bound. The lower corner of a well-f
 it.
 \end{proof}
 
+\chapter{Specifications}
+
+A property is a yes/no test of a model on one input; a scope says where it must hold; a
+specification is the pair. Every claim template of the repository is a specification whose
+certificates give one guarantee: the probability that the check accepts a false claim is at most
+$\delta$, uniformly over the parameters chosen after seeing the evidence. The registries in
+\texttt{specs/} and the generated matrix \texttt{specs/coverage.md} refer to these theorems.
+
+\begin{definition}[Property, scope, specification and guarantee]\label{def:spec}
+\lean{OpenTheory.Property, OpenTheory.Scope, OpenTheory.Spec, OpenTheory.Spec.Target, OpenTheory.Sound}
+\leanok
+A property is a predicate $P(m, x)$ of a model $m$ and an input $x$. A scope is a region $R$ or a
+population with a fraction $p$. The target of the specification $(P, R)$ is
+$\forall x \in R,\ P(m, x)$; the target of $(P, p)$ is $w\{x : \neg P(m,x)\} \le p$, where $w$ is
+the population's weight. A certificate is sound with error $\delta$ when, over the law $\mathbb{P}$
+of the evidence $\omega$,
+\[
+  \mathbb{P}\{\omega : \exists \theta,\ \mathrm{accepts}(\omega, \theta) \wedge \neg\,\mathrm{target}(\theta)\} \le \delta .
+\]
+\end{definition}
+
+\begin{theorem}[Exact scopes]\label{thm:sound_exact}
+\lean{OpenTheory.sound_exact_iff}
+\leanok
+\uses{def:spec}
+With no randomness and $\delta = 0$, soundness is: every accepted claim is true.
+\end{theorem}
+\begin{proof}
+\leanok
+The Dirac measure of a set is $0$ exactly when the point is not in it.
+\end{proof}
+
+\begin{theorem}[The claim templates are instances]\label{thm:spec_instances}
+\lean{OpenTheory.onRegion_sound, OpenTheory.heldOut_sound, OpenTheory.poolRate_sound, OpenTheory.judgedRate_sound, OpenTheory.judgedRate_alarms_sound, OpenTheory.seedLaw, OpenTheory.seedLaw_apply}
+\leanok
+\uses{def:spec, thm:sound_exact, thm:region_certificate}
+Region certificates for ReLU networks are sound with $\delta = 0$. Held-out error certificates are
+sound with $\delta$ for every data distribution, uniformly in the count and the bound
+(Clopper--Pearson \cite{clopper1934use}). Pool-rate certificates are sound with
+$(1 + N/2^b)^n \delta$ over beacon seeds, and judged-rate certificates with
+$(1 + N/2^b)^n \delta_J + (1 + N/2^b)^m \delta_A$ (plus $(1 + N/2^b)^m \delta_B$ with the false-alarm
+term).
+\end{theorem}
+\begin{proof}
+\leanok
+Each bad event is contained in the bad set of the template's own soundness theorem: the region
+certificate, the uniform Clopper--Pearson event, or the seed sets bounded by the design-based
+sampling theorems; the seed law of a set is its fraction of seeds.
+\end{proof}
+
 \bibliographystyle{alpha}
 \bibliography{references}

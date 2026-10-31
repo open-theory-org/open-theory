@@ -1,3 +1,15 @@
++++
+id = "judged-rate"
+property = "no-event"
+scope = "population-pool"
+models = ["any-system"]
+lean = ["OpenTheory.JudgedRate.Claim"]
+sound = ["OpenTheory.judgedRate_sound", "OpenTheory.judgedRate_alarms_sound"]
+checks = ["pool", "pool-witness"]
+methods = ["judged-rate-certificate"]
+assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A9-gold-labels"]
+references = [{ key = "clopper1934use", relation = "implements" }]
++++
 # Claim: judged rate (`judged-rate`, v0.1)
 
 **Statement.** An issuer commits to a pool of `N` items, each with a logged `output` and the

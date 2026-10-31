@@ -1,9 +1,16 @@
 # Properties
 
-| Property | Formal basis today | Status |
+One card per property: a yes/no test of a model on one input (`docs/specs.md`). Each card starts
+with a TOML header (`id`, `object`, `test`, `lean`, `references`) checked by
+`tests/regression/check_specs.py`.
+
+| Property | Core object | Card |
 | --- | --- | --- |
-| Accuracy / error rate | `formal/core/Specs/` (`HeldOut`, `QuantizedMLP/Occam`, `QuantizedMLP/PACBayes`) | verified |
-| Local robustness (ℓ∞ ball) | `formal/core/Scopes/OnRegion.lean` (`certify_sound`, `robust_of_certify`) over `Models/Exact` (`Net.box_sound`) | theorem and kernel check for every network built from exact `linear` / `relu` primitives; no method, catalog entry or conformance test yet, so no level |
-| Head-ablation fidelity | `formal/core/Theory/Function/AttentionAblation.lean` | theorem only, no method yet |
-| Causal effects | none | `formal/core/Theory/Agents/` is empty |
-| Agent constraints | none | `formal/core/Theory/Agents/` is empty |
+| `predicts` | learned function | [predicts.md](predicts.md) |
+| `exact-output` | learned function | [exact-output.md](exact-output.md) |
+| `zero-loss` | statistical predictor | [zero-loss.md](zero-loss.md) |
+| `no-event` | behavior (black box) | [no-event.md](no-event.md) |
+
+Which claims use them, with which scope and at which level: [../coverage.md](../coverage.md).
+Planned: monotonicity, fairness between inputs, calibration, equivalence of two models, monitor
+soundness.
