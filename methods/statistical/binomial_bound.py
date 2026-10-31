@@ -6,12 +6,19 @@ is trusted: the certificate states the integer inequality
 `delta_den * tailNumerator n k a scale ≤ scale ^ n`, the Lean kernel re-checks it, and
 `OpenTheory.BinomialTail.testSet_bound` turns it into a population bound.
 """
-from math import comb
 
 
 def tail_numerator(n, k, a, b):
-    """Mirror of `OpenTheory.BinomialTail.tailNumerator`: b^n · P(Bin(n, a/b) ≤ k)."""
-    return sum(comb(n, i) * a ** i * (b - a) ** (n - i) for i in range(k + 1))
+    """b^n · P(Bin(n, a/b) ≤ k) for a ≤ b: `OpenTheory.BinomialTail.tailNumerator`, computed by
+    Horner's rule like `OpenTheory.FastCheck.tailFast` (linear in k)."""
+    if n <= k:
+        return b ** n
+    q, c, p, s = b - a, 1, 1, 1
+    for i in range(k):
+        c = c * (n - i) // (i + 1)
+        p *= a
+        s = s * q + c * p
+    return q ** (n - k) * s
 
 
 def holds(n, k, a, scale, delta_den):

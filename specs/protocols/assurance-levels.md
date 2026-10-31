@@ -24,11 +24,18 @@ All six are required.
      check accepts it. Example: Python finds the tightest binomial bound, and the kernel checks the integer
      inequality behind it. A bug in the untrusted code can cause a rejection, never a false
      acceptance.
+   - **Decision procedures.** When the check is a `Bool`-valued Lean definition whose meaning is a
+     kernel-checked theorem (for example `FastCheck.poolCheck` with `PoolRate.Claim.of_poolCheck`),
+     the kernel evaluates the definition on each certificate; that run is `verified`. The same
+     definition can also run as compiled code (`ot verify --compiled`), which is faster but trusts
+     the Lean compiler: such a run is labelled separately and is never `verified`. No theorem
+     depends on a compiled run.
 4. **Exact semantics.** The kernel checks integers, rationals or intervals. A proof over `ℝ` of an
    algorithm that runs in floating point is **specified**, not verified, unless the rounding
    error is bounded in Lean.
 5. **Audit.** There is no `sorry`, and the only axioms are `propext`, `Classical.choice` and
-   `Quot.sound`. This rules out `native_decide`, whose `Lean.ofReduceBool` trusts the compiler.
+   `Quot.sound`. This rules out `native_decide`, whose `Lean.ofReduceBool` trusts the compiler,
+   inside any proof.
 6. **Conformance.** Tests show that honest inputs are accepted and tampered inputs are rejected.
 
 ## specified

@@ -22,3 +22,31 @@ requires a hash binding (open weights) or attestation (served models). See `../e
 ## A4-labels: held-out labels are the ground truth
 
 The error count is relative to the labels provided. Wrong labels give a bound on disagreement with them, not on true error.
+
+## A5-beacon: the beacon round is unpredictable, and its expansion is uniform
+
+The drand round used as the seed could not be predicted before it was published. Its SHA-256
+expansion into `n` blocks is modelled as uniform on `(Fin 2²⁵⁶)ⁿ` (random-oracle model). Used by
+`pool-rate`. drand is a threshold network: this fails only if enough of its members collude.
+
+## A6-timestamp: the ordering evidence is honest
+
+The log checkpoint or RFC 3161 token that shows the commitment existed before the beacon round
+was not backdated. Used by `pool-rate`.
+
+## A7-issuer-identity: all attempts are made under one issuer key
+
+Attempt accounting sums `δ` over the commitments the issuer declares for a round. Undeclared
+commitments and attempts under other identities are not counted; a transparency log (planned)
+makes undeclared commitments detectable. Used by `pool-rate`.
+
+## A8-log-complete: the pool is all of the period's traffic
+
+Needed only to read a `pool-rate` claim as a rate on traffic rather than on the committed pool.
+Made auditable by giving users signed receipts with inclusion proofs.
+
+## A9-gold-labels: the audit's gold labels define failure
+
+`judged-rate` bounds the rate of failures against gold labels, supplied after sampling for the
+audited items by a labeller independent of the issuer. The bound holds if they are the labels that a
+rule fixed before the round would give. Used by `judged-rate`.

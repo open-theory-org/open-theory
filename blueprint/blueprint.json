@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-30T22:39:58.379239+00:00",
+  "generatedAt": "2026-10-30T23:14:44.263633+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 95,
+  "nodesCount": 96,
   "nodes": [
     {
       "id": "def:sample",
@@ -1479,6 +1479,147 @@
       "informalSketch": "Lemma~\\ref{lem:kronecker_dot} for each hidden unit and for the pixel sum; the\nreference decoder's row split of the weight list reduces to the packed rows,\nand the remaining layers are unchanged."
     },
     {
+      "id": "thm:pool_rate_sound",
+      "kind": "theorem",
+      "title": "Soundness of a pool-rate certificate",
+      "leanName": "OpenTheory.DesignSampling.rate_sound",
+      "leanNames": [
+        "OpenTheory.DesignSampling.rate_sound",
+        "OpenTheory.DesignSampling.bad_subset",
+        "OpenTheory.DesignSampling.card_deriveIndex_fiber_le",
+        "OpenTheory.DesignSampling.card_derive_preimage_le",
+        "OpenTheory.DesignSampling.sampleLaw_uniformPool",
+        "OpenTheory.DesignSampling.card_clopperPearson_le"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "thm:binomial_test_set"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Each index has at most $\\lfloor 2^b/N\\rfloor+1$ preimages under reduction\nmodulo $N$, so a set $A$ of index tuples has at most\n$|A|(\\lfloor 2^b/N\\rfloor+1)^n$ preimage seeds. A bad seed maps into the\nClopper--Pearson event $F_{n,R}(K)\\le\\delta$. Under $n$ uniform indices this\nevent is the event of Theorem~\\ref{thm:binomial_test_set} for the uniform law\non the pool, whose probability of $e$ is $R$, so it has at most $\\delta N^n$\nelements. Dividing by $2^{bn}$ gives the bound."
+    },
+    {
+      "id": "cor:selective_publication",
+      "kind": "corollary",
+      "title": "Selective publication",
+      "leanName": "OpenTheory.DesignSampling.selective_sound",
+      "leanNames": [
+        "OpenTheory.DesignSampling.selective_sound"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "thm:pool_rate_sound"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Union bound over the $M$ bad sets of Theorem~\\ref{thm:pool_rate_sound}."
+    },
+    {
+      "id": "lem:chernoff_witness",
+      "kind": "lemma",
+      "title": "Chernoff witness for the binomial tail",
+      "leanName": "OpenTheory.ChernoffWitness.binomCdf_le_witness",
+      "leanNames": [
+        "OpenTheory.ChernoffWitness.binomCdf_le_witness",
+        "OpenTheory.ChernoffWitness.binomCdf_le_of_witness"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [],
+      "bountyUsd": null,
+      "informalSketch": "Multiply each term $i\\le k$ by $t^{i-k}\\ge1$ and add the terms $i>k$; the\nbinomial theorem sums the result."
+    },
+    {
+      "id": "def:pool_rate_claim",
+      "kind": "definition",
+      "title": "Claim template \\texttt{pool-rate}",
+      "leanName": "OpenTheory.PoolRate.Claim",
+      "leanNames": [
+        "OpenTheory.PoolRate.Claim",
+        "OpenTheory.PoolRate.Claim.of_tail",
+        "OpenTheory.PoolRate.Claim.of_witness",
+        "OpenTheory.PoolRate.Claim.sound"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": false,
+      "isVerified": true,
+      "dependencies": [
+        "thm:pool_rate_sound",
+        "lem:chernoff_witness"
+      ],
+      "bountyUsd": null,
+      "informalSketch": null
+    },
+    {
+      "id": "lem:pool_check",
+      "kind": "lemma",
+      "title": "A true decision procedure is a claim",
+      "leanName": "OpenTheory.FastCheck.poolCheck",
+      "leanNames": [
+        "OpenTheory.FastCheck.poolCheck",
+        "OpenTheory.FastCheck.poolCheckWitness",
+        "OpenTheory.PoolRate.popTree_eq",
+        "OpenTheory.PoolRate.card_bitsOf",
+        "OpenTheory.PoolRate.hornerState_eq",
+        "OpenTheory.PoolRate.tailFast_eq",
+        "OpenTheory.PoolRate.Claim.of_poolCheck",
+        "OpenTheory.PoolRate.Claim.of_poolCheckWitness"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:pool_rate_claim"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "The halving count equals the number of set bits among the first $64\\cdot2^l$ bits; for $x<2^n$\nthe bits beyond $n$ vanish. After $k$ Horner steps the state holds $\\binom nk$, $a^k$ and\n$\\sum_{i\\le k}\\binom ni a^i q^{k-i}$; multiplying by $q^{n-k}$ gives \\texttt{tailNumerator}, and for\n$k\\ge n$ the binomial theorem gives $b^n$."
+    },
+    {
+      "id": "lem:rectifier",
+      "kind": "lemma",
+      "title": "Rectifier identity, uniform prefixes",
+      "leanName": "OpenTheory.DesignSampling.poolRate_rectify",
+      "leanNames": [
+        "OpenTheory.DesignSampling.poolRate_rectify",
+        "OpenTheory.DesignSampling.poolRate_not",
+        "OpenTheory.DesignSampling.seedFrac_prefix",
+        "OpenTheory.DesignSampling.seedFrac_union_le"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [],
+      "bountyUsd": null,
+      "informalSketch": "Count item by item. Every prefix has exactly $(2^b)^{n-m}$ extensions."
+    },
+    {
+      "id": "thm:judged_rate",
+      "kind": "theorem",
+      "title": "Exact finite-sample prediction-powered failure rate",
+      "leanName": "OpenTheory.JudgedRate.Claim",
+      "leanNames": [
+        "OpenTheory.JudgedRate.Claim",
+        "OpenTheory.JudgedRate.bad",
+        "OpenTheory.JudgedRate.bad_frac",
+        "OpenTheory.JudgedRate.Claim.sound",
+        "OpenTheory.JudgedRate.Claim.sound_alarms"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "thm:pool_rate_sound",
+        "lem:rectifier",
+        "def:pool_rate_claim"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Apply Theorem~\\ref{thm:pool_rate_sound} to each part, on the seed or its prefix, and take a union\nbound; outside the bad set the rectifier identity combines the three bounds."
+    },
+    {
       "id": "thm:plateau_modes",
       "kind": "theorem",
       "title": "The gradient-descent plateau: exact mode dynamics",
@@ -1943,123 +2084,6 @@
       ],
       "bountyUsd": null,
       "informalSketch": "Resolve $K$ by $\\pi:M\\to U$. Around every $p\\in M$ take a box in the chart at $p$ on which\n$K\\circ\\pi\\asymp|y^{\\alpha}|$, $|\\det D\\pi|\\asymp|y^{\\beta}|$, every centre coordinate is $0$ or\nexceeds the half-width, and $\\varphi\\circ\\pi\\ge\\varphi(\\pi(p))/2$. $\\pi$ is proper, so finitely many\nboxes cover $\\pi^{-1}(\\operatorname{supp}\\varphi)$, and $\\pi$ is onto since its range is closed and\ncontains the dense set $\\{K\\neq0\\}$. Let $\\lambda$ be the least $(\\beta_i+1)/\\alpha_i$ over boxes and\ncoordinates with vanishing centre and $\\alpha_i>0$; a zero of $K$ in the support provides one. By the\nchange of variables formula each piece of $\\int K^{-s}\\varphi$ is between constant multiples of\n$\\int_B\\prod|y_i|^{\\beta_i-s\\alpha_i}$, finite for $s<\\lambda$ by Lemma~\\ref{lem:monomial_box}. The\nzero set of $K$ in the support is null, covered by images of coordinate hyperplanes. At the\nminimizing box $\\varphi$ is bounded below, and the piece diverges for $s\\ge\\lambda$."
-    },
-    {
-      "id": "def:exact_net",
-      "kind": "definition",
-      "title": "Exact primitive and network",
-      "leanName": "OpenTheory.Exact.Prim",
-      "leanNames": [
-        "OpenTheory.Exact.Prim",
-        "OpenTheory.Exact.Net",
-        "OpenTheory.Exact.Net.run",
-        "OpenTheory.Exact.Net.eval",
-        "OpenTheory.Exact.Net.Rules"
-      ],
-      "statementFormalized": true,
-      "proofFormalized": false,
-      "isVerified": true,
-      "dependencies": [],
-      "bountyUsd": null,
-      "informalSketch": null
-    },
-    {
-      "id": "thm:exact_agrees",
-      "kind": "theorem",
-      "title": "Agreement for every network",
-      "leanName": "OpenTheory.Exact.Net.agrees",
-      "leanNames": [
-        "OpenTheory.Exact.Net.agrees"
-      ],
-      "statementFormalized": true,
-      "proofFormalized": true,
-      "isVerified": true,
-      "dependencies": [
-        "def:exact_net"
-      ],
-      "bountyUsd": null,
-      "informalSketch": "Induction on the composition. A primitive is its own agreement proof; for $f$ followed by $g$,\nthe parameter pack splits back into the two packs and the two hypotheses compose."
-    },
-    {
-      "id": "def:interval_rule",
-      "kind": "definition",
-      "title": "Integer boxes and interval rules",
-      "leanName": "OpenTheory.Exact.InBox",
-      "leanNames": [
-        "OpenTheory.Exact.InBox",
-        "OpenTheory.Exact.IntervalRule",
-        "OpenTheory.Exact.Net.box"
-      ],
-      "statementFormalized": true,
-      "proofFormalized": false,
-      "isVerified": true,
-      "dependencies": [
-        "def:exact_net"
-      ],
-      "bountyUsd": null,
-      "informalSketch": null
-    },
-    {
-      "id": "lem:exact_primitives",
-      "kind": "lemma",
-      "title": "Exact linear layer and ReLU",
-      "leanName": "OpenTheory.Exact.linear_agrees",
-      "leanNames": [
-        "OpenTheory.Exact.linear_agrees",
-        "OpenTheory.Exact.linear_box_sound",
-        "OpenTheory.Exact.relu_agrees",
-        "OpenTheory.Exact.relu_box_sound"
-      ],
-      "statementFormalized": true,
-      "proofFormalized": true,
-      "isVerified": true,
-      "dependencies": [
-        "def:exact_net",
-        "def:interval_rule"
-      ],
-      "bountyUsd": null,
-      "informalSketch": "Coordinatewise: TorchLean's matrix--vector product is a sum of products, the integer dot product\nis the same sum, and each weighted term $w x_k$ is bounded by the endpoint chosen by the sign of $w$.\nReLU is monotone."
-    },
-    {
-      "id": "thm:box_sound",
-      "kind": "theorem",
-      "title": "Interval soundness for every network",
-      "leanName": "OpenTheory.Exact.Net.box_sound",
-      "leanNames": [
-        "OpenTheory.Exact.Net.box_sound",
-        "OpenTheory.Exact.reluMLP_box_sound"
-      ],
-      "statementFormalized": true,
-      "proofFormalized": true,
-      "isVerified": true,
-      "dependencies": [
-        "def:interval_rule",
-        "lem:exact_primitives"
-      ],
-      "bountyUsd": null,
-      "informalSketch": "Induction on the composition, as in Theorem~\\ref{thm:exact_agrees}."
-    },
-    {
-      "id": "thm:region_certificate",
-      "kind": "theorem",
-      "title": "Region certificate and local robustness",
-      "leanName": "OpenTheory.Predicts",
-      "leanNames": [
-        "OpenTheory.Predicts",
-        "OpenTheory.OnRegion.certify",
-        "OpenTheory.OnRegion.certify_sound",
-        "OpenTheory.OnRegion.robust_of_certify",
-        "OpenTheory.Exact.inBox_lower",
-        "OpenTheory.OnRegion.inBox_ball"
-      ],
-      "statementFormalized": true,
-      "proofFormalized": true,
-      "isVerified": true,
-      "dependencies": [
-        "thm:box_sound"
-      ],
-      "bountyUsd": null,
-      "informalSketch": "Interval soundness puts the output in the propagated box; there the score of $c$ is at least its\nlower bound, which exceeds every other upper bound. The lower corner of a well-formed box lies in\nit."
     }
   ]
 }

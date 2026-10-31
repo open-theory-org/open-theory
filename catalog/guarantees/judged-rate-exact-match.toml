@@ -1,0 +1,11 @@
+id = "judged-rate-exact-match"
+name = "Certified failure rate against gold labels, from an AI judge and a small gold audit"
+level = "verified"
+claim = "judged-rate"
+uses = ["judged-rate-certificate"]
+assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A9-gold-labels"]
+example = "examples/judged_rate/"
+
+[lean]
+template = "OpenTheory.JudgedRate.Claim"
+instances = ["OpenTheory.JudgedRate.bad_frac"]

@@ -3,6 +3,7 @@
 
   ot verify <bundle> [--json]                     check a certificate
   ot certify heldout <artifact> --out <bundle>    write a held-out error certificate (untrusted)
+  ot certify pool-rate commit|prove ...           commit to a pool, then certify its failure rate (untrusted)
 
 Exit codes: 0 accepted, 1 rejected, 2 the verifier could not run (never a verdict).
 """

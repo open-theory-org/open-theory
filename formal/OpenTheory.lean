@@ -64,6 +64,11 @@ import Theory.Learning.PACBayesCodes
 import Specs.QuantizedMLP.PACBayes
 import Foundations.Probability.BinomialTail
 import Specs.HeldOut
+import Foundations.Probability.DesignSampling
+import Foundations.Probability.ChernoffWitness
+import Specs.PoolRate
+import Foundations.Probability.JudgedSampling
+import Specs.JudgedRate
 import Theory.Learning.OccamBinomial
 import Foundations.Arithmetic.Kronecker
 import Models.QuantizedMLP.Packed

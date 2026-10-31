@@ -1142,6 +1142,121 @@ reference decoder's row split of the weight list reduces to the packed rows,
 and the remaining layers are unchanged.
 \end{proof}
 
+\chapter{Design-based certificates from a public seed}
+
+A certifier commits to a pool of $N$ items and to a property $e$ of each item
+(for example ``the deployed model's logged answer is wrong''). A public
+randomness beacon published after both commitments is expanded into $n$ blocks
+of $b$ bits, and block $i$ selects pool index $v_i \bmod N$. The claim is about
+the pool, so no distributional assumption is made: the randomness is the seed's.
+
+\begin{theorem}[Soundness of a pool-rate certificate]\label{thm:pool_rate_sound}
+\lean{OpenTheory.DesignSampling.rate_sound, OpenTheory.DesignSampling.bad_subset, OpenTheory.DesignSampling.card_deriveIndex_fiber_le, OpenTheory.DesignSampling.card_derive_preimage_le, OpenTheory.DesignSampling.sampleLaw_uniformPool, OpenTheory.DesignSampling.card_clopperPearson_le}
+\leanok
+\uses{thm:binomial_test_set}
+Let $R$ be the fraction of the pool with property $e$, fixed before the seed.
+Among all seeds $v\in\{0,\dots,2^b-1\}^n$, those for which some count $k\ge K$
+(the observed count) and some $p\ge0$ with $F_{n,p}(k)\le\delta$ satisfy
+$p<R$ form a fraction at most $(1+N/2^b)^n\,\delta$.
+\end{theorem}
+\begin{proof}
+\leanok
+Each index has at most $\lfloor 2^b/N\rfloor+1$ preimages under reduction
+modulo $N$, so a set $A$ of index tuples has at most
+$|A|(\lfloor 2^b/N\rfloor+1)^n$ preimage seeds. A bad seed maps into the
+Clopper--Pearson event $F_{n,R}(K)\le\delta$. Under $n$ uniform indices this
+event is the event of Theorem~\ref{thm:binomial_test_set} for the uniform law
+on the pool, whose probability of $e$ is $R$, so it has at most $\delta N^n$
+elements. Dividing by $2^{bn}$ gives the bound.
+\end{proof}
+
+\begin{corollary}[Selective publication]\label{cor:selective_publication}
+\lean{OpenTheory.DesignSampling.selective_sound}
+\leanok
+\uses{thm:pool_rate_sound}
+If an issuer commits $M$ properties $e_1,\dots,e_M$ before the seed and
+publishes any one certificate after seeing the sample, the seeds on which the
+published claim can be wrong form a fraction at most
+$(1+N/2^b)^n\sum_j\delta_j$.
+\end{corollary}
+\begin{proof}
+\leanok
+Union bound over the $M$ bad sets of Theorem~\ref{thm:pool_rate_sound}.
+\end{proof}
+
+\begin{lemma}[Chernoff witness for the binomial tail]\label{lem:chernoff_witness}
+\lean{OpenTheory.ChernoffWitness.binomCdf_le_witness, OpenTheory.ChernoffWitness.binomCdf_le_of_witness}
+\leanok
+For $p\in[0,1]$ and $t\in(0,1]$, $F_{n,p}(k)\le(1-p+pt)^n/t^k$. With
+$p=a/b$, $t=u/v$ and $\delta=1/d$, the integer inequality
+$d\,(bv-av+au)^n v^k\le (bv)^n u^k$ implies $F_{n,p}(k)\le\delta$: one
+comparison, whatever $k$.
+\end{lemma}
+\begin{proof}
+\leanok
+Multiply each term $i\le k$ by $t^{i-k}\ge1$ and add the terms $i>k$; the
+binomial theorem sums the result.
+\end{proof}
+
+\begin{definition}[Claim template \texttt{pool-rate}]\label{def:pool_rate_claim}
+\lean{OpenTheory.PoolRate.Claim, OpenTheory.PoolRate.Claim.of_tail, OpenTheory.PoolRate.Claim.of_witness, OpenTheory.PoolRate.Claim.sound}
+\leanok
+\uses{thm:pool_rate_sound, lem:chernoff_witness}
+A certificate proves that at most $k$ of the $n$ sampled bits are set, that
+$p\ge0$ and that $F_{n,p}(k)\le\delta$, either by the exact tail or by a
+Chernoff witness. If the bits are those of a property fixed before the seed,
+the claim $R\le p$ holds unless the seed lies in the set bounded by
+Theorem~\ref{thm:pool_rate_sound}.
+\end{definition}
+
+\begin{lemma}[A true decision procedure is a claim]\label{lem:pool_check}
+\lean{OpenTheory.FastCheck.poolCheck, OpenTheory.FastCheck.poolCheckWitness, OpenTheory.PoolRate.popTree_eq, OpenTheory.PoolRate.card_bitsOf, OpenTheory.PoolRate.hornerState_eq, OpenTheory.PoolRate.tailFast_eq, OpenTheory.PoolRate.Claim.of_poolCheck, OpenTheory.PoolRate.Claim.of_poolCheckWitness}
+\leanok
+\uses{def:pool_rate_claim}
+The checks \texttt{poolCheck} and \texttt{poolCheckWitness} are \texttt{Bool}-valued functions
+in plain natural-number arithmetic, with no import beyond Lean's core: a bit count by halving,
+the tail numerator by Horner's rule (linear in $k$), and the Chernoff comparison. If either returns \texttt{true} on $(x,n,k,\dots)$,
+the \texttt{pool-rate} claim holds for the bits of $x$. A certificate is therefore checked by
+running the function, compiled or in the kernel, without re-proving anything.
+\end{lemma}
+\begin{proof}
+\leanok
+The halving count equals the number of set bits among the first $64\cdot2^l$ bits; for $x<2^n$
+the bits beyond $n$ vanish. After $k$ Horner steps the state holds $\binom nk$, $a^k$ and
+$\sum_{i\le k}\binom ni a^i q^{k-i}$; multiplying by $q^{n-k}$ gives \texttt{tailNumerator}, and for
+$k\ge n$ the binomial theorem gives $b^n$.
+\end{proof}
+
+\section{A judge and a gold audit}
+
+\begin{lemma}[Rectifier identity, uniform prefixes]\label{lem:rectifier}
+\lean{OpenTheory.DesignSampling.poolRate_rectify, OpenTheory.DesignSampling.poolRate_not, OpenTheory.DesignSampling.seedFrac_prefix, OpenTheory.DesignSampling.seedFrac_union_le}
+\leanok
+For any two properties $T$ (true failure) and $J$ (judged failure) of the pool items,
+$R_T = R_J + R_{T\wedge\neg J} - R_{\neg T\wedge J}$ exactly, and $R_{\neg E}=1-R_E$. The first
+$m$ blocks of a uniform seed of $n\ge m$ blocks form a uniform seed of $m$ blocks.
+\end{lemma}
+\begin{proof}
+\leanok
+Count item by item. Every prefix has exactly $(2^b)^{n-m}$ extensions.
+\end{proof}
+
+\begin{theorem}[Exact finite-sample prediction-powered failure rate]\label{thm:judged_rate}
+\lean{OpenTheory.JudgedRate.Claim, OpenTheory.JudgedRate.bad, OpenTheory.JudgedRate.bad_frac, OpenTheory.JudgedRate.Claim.sound, OpenTheory.JudgedRate.Claim.sound_alarms}
+\leanok
+\uses{thm:pool_rate_sound, lem:rectifier, def:pool_rate_claim}
+Let a judge's verdicts be committed for every pool item. From a beacon sample of $n$ items and
+gold labels on its first $m$, certificates $R_J\le p_J$ (judge failures, all $n$),
+$R_{T\wedge\neg J}\le p_A$ (missed failures, first $m$) and optionally $R_{\neg(\neg T\wedge J)}\le p_B$
+(first $m$) give $R_T\le p_J+p_A$, or $R_T\le p_J+p_A+p_B-1$, except on a set of seeds of fraction
+at most $(1+N/2^b)^n\delta_J+(1+N/2^b)^m(\delta_A+\delta_B)$.
+\end{theorem}
+\begin{proof}
+\leanok
+Apply Theorem~\ref{thm:pool_rate_sound} to each part, on the seed or its prefix, and take a union
+bound; outside the bad set the rectifier identity combines the three bounds.
+\end{proof}
+
 \chapter{Gradient-descent plateau and singular learning}
 
 \begin{theorem}[The gradient-descent plateau: exact mode dynamics]\label{thm:plateau_modes}

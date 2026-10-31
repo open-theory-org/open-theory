@@ -27,6 +27,12 @@ class Task:
     trusted: list[str]
     does_not_cover: list[str]
     explain: callable = field(repr=False, default=lambda out: "")
+    # Optional decision procedure run as compiled Lean (`ot_check` arguments), its Lean name with
+    # arguments, the once-proved theorem giving its meaning, and why it would be false.
+    fast: list | None = None
+    fast_call: str = ""
+    fast_meaning: str = ""
+    fast_explain: callable = field(repr=False, default=lambda: "")
 
 
 def parameter_count(m):

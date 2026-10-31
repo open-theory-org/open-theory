@@ -1,0 +1,23 @@
+id = "pool-rate-certificate"
+name = "Design-based pool-rate certificate from a public beacon"
+level = "verified"
+mode = "verified-checker"
+kind = "statistical"
+summary = "A drand round published after the pool and procedure are committed and timestamped selects the sample; the kernel counts failures and checks the tail; a proved theorem bounds the pool rate with no distributional assumption."
+implementation = ["methods/statistical/pool_rate_certificate.py"]
+assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity"]
+trusted = ["Lean kernel (with --kernel) or Lean compiler (default compiled check)", "statements of OpenTheory.FastCheck.poolCheck, PoolRate.Claim.of_poolCheck and DesignSampling.rate_sound", "verifier index derivation and Merkle checks", "drand threshold network", "RFC 3161 authority chosen by whoever runs the verifier"]
+conformance = ["tests/conformance/pool_rate_verify.py"]
+
+[lean]
+spec = ["OpenTheory.PoolRate.Claim", "OpenTheory.FastCheck.poolCheck", "OpenTheory.FastCheck.poolCheckWitness", "OpenTheory.DesignSampling.poolRate", "OpenTheory.DesignSampling.derive", "OpenTheory.DesignSampling.bad"]
+correctness = [
+  "OpenTheory.DesignSampling.rate_sound",
+  "OpenTheory.DesignSampling.selective_sound",
+  "OpenTheory.PoolRate.Claim.sound",
+  "OpenTheory.PoolRate.Claim.of_poolCheck",
+  "OpenTheory.PoolRate.Claim.of_poolCheckWitness",
+  "OpenTheory.PoolRate.Claim.of_tail",
+  "OpenTheory.PoolRate.Claim.of_witness",
+  "OpenTheory.ChernoffWitness.binomCdf_le_of_witness",
+]

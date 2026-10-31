@@ -39,18 +39,24 @@ def run(argv: list[str]) -> int:
     v.add_argument("bundle", help="directory containing certificate.json")
     v.add_argument("--json", action="store_true", help="print the report as JSON")
     v.add_argument("--timeout", type=int, default=1800, help="Lean kernel time limit in seconds")
+    v.add_argument("--compiled", action="store_true",
+                   help="run the decision procedure as compiled code (faster; trusts the Lean compiler, "
+                        "so the result is not labelled verified)")
     c = sub.add_parser("certify", help="produce a certificate (untrusted)")
-    c.add_argument("claim_type", choices=["heldout"])
+    c.add_argument("claim_type", choices=["heldout", "pool-rate"])
     c.add_argument("rest", nargs=argparse.REMAINDER)
     args = ap.parse_args(argv)
 
     if args.cmd == "certify":
         # Producers are untrusted and only ever loaded for `certify`, never by `verify`.
         sys.path.append(str(ROOT / "methods" / "statistical"))
-        from heldout_certificate import main as certify_main
+        if args.claim_type == "pool-rate":
+            from pool_rate_certificate import main as certify_main
+        else:
+            from heldout_certificate import main as certify_main
         certify_main(args.rest)
         return 0
-    r = verify(args.bundle, timeout=args.timeout)
+    r = verify(args.bundle, timeout=args.timeout, compiled=args.compiled)
     if args.json:
         print(json.dumps(r.to_dict(), indent=2, ensure_ascii=False))
     else:

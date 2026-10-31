@@ -11,21 +11,23 @@
       "type": "object",
       "required": ["type", "version"],
       "properties": {
-        "type": {"enum": ["heldout-error"]},
+        "type": {"enum": ["heldout-error", "pool-rate"]},
         "version": {"const": "0.1"},
         "errors": {"type": "integer", "minimum": 0, "description": "claimed held-out error count k"},
+        "count": {"type": "integer", "minimum": 0, "description": "pool-rate: claimed number of sampled failures k"},
+        "witness": {"$ref": "#/$defs/fraction", "description": "pool-rate: optional Chernoff witness t = u/v in (0, 1]"},
         "bound": {"$ref": "#/$defs/fraction", "description": "claimed population error bound p"},
         "delta": {"$ref": "#/$defs/fraction", "description": "failure probability, 1/d with d ≥ 2"}
       }
     },
     "subject": {
       "type": "object",
-      "required": ["model"],
-      "properties": {"model": {"$ref": "#/$defs/file"}}
+      "description": "heldout-error: model; pool-rate: commitment",
+      "properties": {"model": {"$ref": "#/$defs/file"}, "commitment": {"$ref": "#/$defs/file"}}
     },
     "evidence": {
       "type": "object",
-      "required": ["heldout"],
+      "description": "heldout-error: heldout; pool-rate: order, beacon, sample, optional attempts",
       "properties": {
         "heldout": {
           "allOf": [{"$ref": "#/$defs/file"}],
@@ -64,6 +66,7 @@
       }
     }
   },
+  "x-pool-rate": "specs/claims/pool-rate.md: commitment.json, order.tsr (RFC 3161), beacon.json (drand round), sample.json {items: [{index, leaf, proof}], labels?}",
   "x-model-files": {
     "quantized-mlp": "model.json = {model_type: 'quantized-mlp', inputs, hidden, classes, hidden_bias_scale, output_bias_scale, codes: [0..3]*}; heldout.json = {rows: [[x_1..x_inputs, label]]}"
   }

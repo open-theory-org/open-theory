@@ -36,6 +36,10 @@ require mathlib from git
 lean_exe audit_axioms where
   root := `verifier.backends.formal.audit_axioms
 
+-- Certificate decision procedures as compiled code (core Lean only, no Mathlib).
+lean_exe ot_check where
+  root := `verifier.backends.formal.ot_check
+
 -- Narrow, provenance-recorded FoML port for the pinned Mathlib version.
 lean_lib FoML where
   srcDir := "formal/vendors/FoML"

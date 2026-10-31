@@ -42,6 +42,12 @@ RELATION = re.compile(r"[<>≤≥=≠↔→∀∃¬∧∨]|Lipschitz|Integrable|
 FLAG_FN = re.compile(r"^(?:prescribe|classify|compile|dispatch|select|synthesize|verify)[A-Z]")
 BUNDLE_NAME = re.compile(r"grand|master|unification|synthesis|atlas|ultimate|closure|universal_")
 SHORT_PROOF = re.compile(r"^\s*(?:by\s+)?(?:rfl|decide|native_decide|norm_num|simp|trivial)\s*$")
+# Scalar defs whose meaning is a proved theorem, not an invented formula: `binomCdf` is the law of
+# the error count (`BinomialTail.sampleLaw_count_le`), `tailNumerator` its integer numerator
+# (`BinomialTail.tailNumerator_eq`). The `FastCheck` decision-procedure parts are pinned to their
+# Mathlib meaning: `popWord`/`popTree` (`PoolRate.popWord_eq`, `popTree_eq`), `hornerState`,
+# `tailFast` (`PoolRate.hornerState_eq`, `tailFast_eq`). Statements about them are not toy formulas.
+VETTED_DEFS = {"binomCdf", "tailNumerator", "popWord", "popTree", "hornerState", "tailFast"}
 
 
 def blocks(lines: list[str], start: int) -> tuple[str, int]:
@@ -127,7 +133,7 @@ def flags_for(name, header, proof, scalar_defs, flag_defs):
     variables = [(n, t) for n, t in params if not RELATION.search(t)]
     used = set(re.findall(r"[A-Za-z_][A-Za-z_0-9']*", header))
     out = []
-    if variables and all(SCALAR.match(t) for _, t in variables) and used & scalar_defs:
+    if variables and all(SCALAR.match(t) for _, t in variables) and used & (scalar_defs - VETTED_DEFS):
         out.append("toy-formula")
     if used & flag_defs or SHORT_PROOF.match(proof.strip().split("\n")[0]) and "Bool" in header:
         out.append("flag-compiler")

@@ -1,4 +1,5 @@
-"""OpenTheory certificate verifier, v0.1 (standard library only).
+"""OpenTheory certificate verifier, v0.1 (standard library only; `pool-rate` also needs `py_ecc`
+and `openssl` for its beacon and timestamp checks, see verifier/attestations/).
 
 A certificate bundle is a directory holding `certificate.json` and the files it names
 (model, data). Verification follows specs/protocols/verification.md:
@@ -19,6 +20,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import subprocess
 import tempfile
@@ -104,12 +106,23 @@ def load_file(bundle: Path, ref: dict, where: str):
     return obj, actual
 
 
+def lean_command() -> tuple[list[str], dict]:
+    """`lean` with the workspace's LEAN_PATH, without starting `lake` (which costs ~3 s)."""
+    toolchain = (ROOT / "lean-toolchain").read_text().strip()
+    lean = Path.home() / ".elan" / "toolchains" / toolchain.replace("/", "--").replace(":", "---") / "bin" / "lean"
+    if not lean.exists():
+        return ["lake", "env", "lean"], {}
+    paths = [ROOT / ".lake/build/lib/lean", *sorted((ROOT / ".lake/packages").glob("*/.lake/build/lib/lean"))]
+    return [str(lean)], {"LEAN_PATH": ":".join(str(p) for p in paths)}
+
+
 def run_lean(source: str, timeout: int) -> tuple[bool, str]:
+    cmd, env = lean_command()
     with tempfile.TemporaryDirectory(prefix="ot-verify-") as tmp:
         path = Path(tmp) / "Check.lean"
         path.write_text(source, encoding="utf-8")
         try:
-            res = subprocess.run(["lake", "env", "lean", str(path)], cwd=ROOT,
+            res = subprocess.run([*cmd, str(path)], cwd=ROOT, env={**os.environ, **env},
                                  capture_output=True, text=True, timeout=timeout)
         except subprocess.TimeoutExpired:
             raise Reject(f"Lean kernel did not finish within {timeout}s")
@@ -117,6 +130,22 @@ def run_lean(source: str, timeout: int) -> tuple[bool, str]:
             raise RuntimeError("`lake` not found: install elan and run `lake build` in the OpenTheory checkout")
     out = res.stdout + res.stderr
     return res.returncode == 0 and ": error" not in out, out
+
+
+OT_CHECK = ROOT / ".lake/build/bin/ot_check"
+
+
+def run_fast(args: list, timeout: int) -> bool:
+    """Run a decision procedure as compiled Lean (`lake build ot_check`)."""
+    if not OT_CHECK.exists():
+        raise RuntimeError("the compiled checker is missing: run `lake build ot_check`")
+    try:
+        res = subprocess.run([str(OT_CHECK), *map(str, args)], capture_output=True, text=True, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        raise Reject(f"the compiled checker did not finish within {timeout}s")
+    if res.returncode != 0 or res.stdout.strip() not in ("true", "false"):
+        raise RuntimeError(f"ot_check failed: {res.stderr.strip()[:200]}")
+    return res.stdout.strip() == "true"
 
 
 def check_axioms(output: str, theorem: str) -> list[str]:
@@ -132,9 +161,15 @@ def check_axioms(output: str, theorem: str) -> list[str]:
     return axioms
 
 
-def verify(bundle: str | Path, timeout: int = 1800) -> Report:
-    """Verify a certificate bundle (directory with certificate.json, or the JSON file itself)."""
-    from .heldout_error import HANDLERS  # claim-type handlers
+def verify(bundle: str | Path, timeout: int = 1800, compiled: bool = False) -> Report:
+    """Verify a certificate bundle (directory with certificate.json, or the JSON file itself).
+
+    Claim types with a decision procedure have the Lean kernel evaluate it (level from the catalog).
+    `compiled=True` runs the compiled code instead: faster, but it trusts the Lean compiler, so the
+    report is labelled separately and is never `verified` (specs/protocols/assurance-levels.md)."""
+    from .heldout_error import HANDLERS as HELDOUT  # claim-type handlers
+    from .pool_rate import HANDLERS as POOL
+    HANDLERS = {**HELDOUT, **POOL}
 
     t0 = time.time()
     bundle = Path(bundle)
@@ -186,12 +221,26 @@ def verify(bundle: str | Path, timeout: int = 1800) -> Report:
         report.does_not_cover = task.does_not_cover
         report.trusted = [f"Lean kernel ({toolchain})", *task.trusted]
 
-        # 4–5. kernel and axioms
-        ok, out = run_lean(task.lean, timeout)
-        if not ok:
-            raise Reject("the Lean kernel refused the certificate: " + task.explain(out))
-        axioms = check_axioms(out, task.theorem)
-        report.checked = task.checked + [f"axioms of {task.theorem}: {', '.join(axioms) or 'none'} (Lean)"]
+        # 4–5. decision procedure (compiled) or kernel, and axioms
+        if task.fast is not None and compiled:
+            if not run_fast(task.fast, timeout):
+                raise Reject("the decision procedure returned false: " + task.fast_explain())
+            report.checked = task.checked + [
+                f"{task.fast_call} = true (compiled Lean decision procedure, ot_check)",
+                task.fast_meaning]
+            report.level = ("compiled check, not verified: trusts the Lean compiler "
+                            "(run `ot verify` without --compiled for the kernel check)")
+            report.trusted = [f"Lean compiler and runtime ({toolchain}), which run the decision procedure",
+                              f"Lean kernel ({toolchain}), which checked the library theorems at build time",
+                              *task.trusted]
+        else:
+            ok, out = run_lean(task.lean, timeout)
+            if not ok:
+                raise Reject("the Lean kernel refused the certificate: " + task.explain(out))
+            axioms = check_axioms(out, task.theorem)
+            report.checked = task.checked + (
+                [f"{task.fast_call} = true (Lean kernel)", task.fast_meaning] if task.fast is not None else []
+            ) + [f"axioms of {task.theorem}: {', '.join(axioms) or 'none'} (Lean)"]
         report.accepted = True
     except Reject as e:
         report.reason = str(e)

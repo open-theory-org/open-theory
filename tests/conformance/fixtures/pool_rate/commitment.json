@@ -1,0 +1,1 @@
+{"format":"opentheory-pool-commitment/0.1","issuer":"opentheory-example","pool":{"root":"f343e4b98c331d88a195bc7077be4191235cd68fbb83b930a73722d692019158","size":100000},"procedure":{"kind":"exact-match"},"sample":{"n":3000,"delta":{"num":1,"den":1000000}},"beacon":{"chain":"8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce","round":6598916}}
