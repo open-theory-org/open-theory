@@ -8,6 +8,7 @@ implementation = ["methods/statistical/quantized_mlp_certificate.py"]
 assumptions = ["A1-iid", "A4-labels"]
 trusted = ["Lean kernel", "statement of OpenTheory.QuantizedMLP.selected_code_certificate"]
 conformance = ["tests/integration/test_quantized_mlp_certificate.py"]
+references = [{ key = "blumer1987occam", relation = "implements" }, { key = "hoeffding1963probability", relation = "background" }]
 
 [lean]
 spec = ["OpenTheory.QuantizedMLP.classificationLoss"]

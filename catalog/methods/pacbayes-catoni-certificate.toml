@@ -8,6 +8,7 @@ implementation = ["methods/statistical/pacbayes_mlp_certificate.py"]
 assumptions = ["A1-iid", "A2-heldout-independent", "A4-labels"]
 trusted = ["Lean kernel", "statement of OpenTheory.PACBayes.catoni_pacBayes"]
 conformance = ["tests/integration/test_pacbayes_mlp_certificate.py"]
+references = [{ key = "catoni2007pac", relation = "implements" }]
 
 [lean]
 spec = ["OpenTheory.PACBayes.catoni", "OpenTheory.PACBayes.kl"]

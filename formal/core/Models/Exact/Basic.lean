@@ -21,6 +21,8 @@ built from primitives that meet `C`. Each contract proves its class theorem once
 induction (for example `Net.box_sound` in `Models.Exact.Interval`).
 
 Scope: vector primitives `[m] → [n]`. Matrix-shaped primitives (attention) are not covered yet.
+
+References: TorchLean, whose chains and primitives are the proof form [@torchlean].
 -/
 
 open NN.GraphSpec Spec TorchLean

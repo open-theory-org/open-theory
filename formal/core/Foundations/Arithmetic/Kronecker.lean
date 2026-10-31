@@ -14,7 +14,10 @@ naturals with GMP, so one product replaces `d` list multiply-adds.
 The side conditions are themselves cheap to check: a slot bound `< 2^m` on all
 `d` slots of a packed number follows from one bitwise `and` with a mask
 (`slot_lt_of_land_eq_zero`), and a number below `2^(B d)` is exactly the
-packing of its first `d` slots (`pack_slots`). -/
+packing of its first `d` slots (`pack_slots`).
+
+References: [@harvey2009kronecker].
+-/
 
 namespace OpenTheory.Kronecker
 open Finset

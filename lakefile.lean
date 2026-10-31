@@ -6,7 +6,7 @@ package «open_theory» where
 
 -- formal/: the mathematics, the claim templates and the soundness of every check.
 -- `OpenTheory` is the root module (formal/OpenTheory.lean); `Core` owns formal/core/<Layer>/:
--- Foundations → Models → Properties → Theory → Scopes → Specs, each importing only the layers
+-- Checks → Foundations → Models → Properties → Theory → Scopes → Specs, each importing only the layers
 -- before it (tests/regression/check_layers.py).
 @[default_target]
 lean_lib «OpenTheory» where
@@ -14,7 +14,7 @@ lean_lib «OpenTheory» where
 
 lean_lib «Core» where
   srcDir := "formal/core"
-  globs := #[`Foundations, `Models, `Properties, `Theory, `Scopes, `Specs].map .andSubmodules
+  globs := #[`Checks, `Foundations, `Models, `Properties, `Theory, `Scopes, `Specs].map .andSubmodules
 
 -- examples/: kernel-checked certificate instances (generated data + one theorem each).
 @[default_target]
@@ -48,3 +48,8 @@ lean_lib StatLean where
 -- (Courant–Fischer, Eckart–Young–Mirsky, Weyl, Davis–Kahan).
 lean_lib SLT where
   srcDir := "formal/vendors/SLT"
+
+-- The kernel lane of the fast verifier: certificate checks from `Checks.Registry`, evaluated by
+-- the kernel in a core-only environment.
+lean_exe ot_kernel where
+  root := `verifier.backends.formal.kernel_check

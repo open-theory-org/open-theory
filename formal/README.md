@@ -1,11 +1,12 @@
 # formal/: the mathematics (Lean 4 + Mathlib)
 
-Library `OpenTheory`, root module [`OpenTheory.lean`](OpenTheory.lean). Modules live in `formal/core/<Layer>/` and are named by layer (`Foundations.…`, `Models.…`, `Properties.…`, `Theory.…`, `Scopes.…`, `Specs.…`). Declarations keep the `OpenTheory.` namespace.
+Library `OpenTheory`, root module [`OpenTheory.lean`](OpenTheory.lean). Modules live in `formal/core/<Layer>/` and are named by layer (`Checks.…`, `Foundations.…`, `Models.…`, `Properties.…`, `Theory.…`, `Scopes.…`, `Specs.…`). Declarations keep the `OpenTheory.` namespace.
 
 `formal/core/` is built bottom-up. Each layer imports only its own layer and the ones above it in this table (`tests/regression/check_layers.py`). Tensors, layers and their composition come from [TorchLean](https://github.com/lean-dojo/TorchLean).
 
 | Layer | Contents |
 | --- | --- |
+| [Checks](core/Checks/) | Certificate checks in core Lean only (no Mathlib, no TorchLean), so the kernel can evaluate them in a tiny environment; one registry shared by the kernel lane (`ot_kernel`) and the compiled lane (`ot_check`). `MLP`: exact forward pass of a quantized ReLU network on packed integers |
 | [Foundations](core/Foundations/) | Maths not specific to ML: data and samples, probability (including the binomial tail), linear algebra, ridge and first-order optimization, exact arithmetic (Kronecker substitution), Hironaka |
 | [Models](core/Models/) | Model semantics: MLP, attention, transformer, residual, quantized MLP and its packed kernel runner, and [exact integer networks](core/Models/Exact/) (below) |
 | [Properties](core/Properties/) | Yes/no tests on one model output: `Predicts` (strict-margin classification) |

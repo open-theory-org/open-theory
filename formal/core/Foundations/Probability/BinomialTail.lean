@@ -28,6 +28,8 @@ identity `d/dp P(Bin(n,p) ≤ k) = -n · b_{n-1,k}(p)` for Bernstein polynomials
 Unlike Catoni's bound, nothing here is paid for a temperature grid, a prior,
 or simultaneity over posteriors. It applies only to one hypothesis fixed
 independently of the sample.
+
+References: the exact binomial (Clopper–Pearson) bound [@clopper1934use].
 -/
 
 noncomputable section

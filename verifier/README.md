@@ -5,7 +5,7 @@ The trusted core is the **Lean kernel**. Everything here is a thin layer that de
 | Folder | Today |
 | --- | --- |
 | [core/](core/) | `ot verify` engine: protocol steps 1–6 for `heldout-error` v0.1 |
-| [backends/formal/](backends/formal/) | [`audit_axioms.lean`](backends/formal/audit_axioms.lean): axiom and `sorry` audit of every OpenTheory declaration |
+| [backends/formal/](backends/formal/) | [`audit_axioms.lean`](backends/formal/audit_axioms.lean): axiom and `sorry` audit of every OpenTheory declaration. [`kernel_check.lean`](backends/formal/kernel_check.lean) (`ot_kernel`): the kernel lane of the fast checks: builds `check args = true` and hands it straight to the kernel, in a warm process (`--stdin`); `--compare` also runs the compiled lane and reports any disagreement |
 | [backends/statistical/](backends/statistical/) | empty. Statistical checks are Lean theorems today (`formal/core/Specs/`) |
 | [backends/neural/](backends/neural/) | empty |
 | [backends/zk/](backends/zk/) | empty. Will call the zkVM vendor's verifier |

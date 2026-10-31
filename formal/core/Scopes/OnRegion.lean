@@ -10,6 +10,8 @@ output box. `certify_sound`, proved once, turns acceptance into a statement abou
 model over `ℝ` on every real input in the box, together with the fact that the box is not empty.
 
 It applies to every network whose primitives carry interval rules (`Net.Rules IntervalRule`).
+
+References: interval bound propagation [@gowal2018ibp].
 -/
 
 open TorchLean OpenTheory.Exact

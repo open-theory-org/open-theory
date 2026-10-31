@@ -90,3 +90,242 @@
   booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
   year={2019}
 }
+
+% --- Statistical certificates (methods in catalog/methods) ---------------------------------
+
+@article{clopper1934use,
+  title={The use of confidence or fiducial limits illustrated in the case of the binomial},
+  author={Clopper, C. J. and Pearson, E. S.},
+  journal={Biometrika},
+  volume={26},
+  number={4},
+  pages={404--413},
+  year={1934}
+}
+
+@article{hoeffding1963probability,
+  title={Probability inequalities for sums of bounded random variables},
+  author={Hoeffding, Wassily},
+  journal={Journal of the American Statistical Association},
+  volume={58},
+  number={301},
+  pages={13--30},
+  year={1963}
+}
+
+@article{blumer1987occam,
+  title={Occam's Razor},
+  author={Blumer, Anselm and Ehrenfeucht, Andrzej and Haussler, David and Warmuth, Manfred K.},
+  journal={Information Processing Letters},
+  volume={24},
+  number={6},
+  pages={377--380},
+  year={1987}
+}
+
+@book{catoni2007pac,
+  title={{PAC}-Bayesian Supervised Classification: The Thermodynamics of Statistical Learning},
+  author={Catoni, Olivier},
+  series={IMS Lecture Notes Monograph Series},
+  volume={56},
+  publisher={Institute of Mathematical Statistics},
+  year={2007}
+}
+
+@article{aoyagi2005stochastic,
+  title={Stochastic complexities of reduced rank regression in {Bayesian} estimation},
+  author={Aoyagi, Miki and Watanabe, Sumio},
+  journal={Neural Networks},
+  volume={18},
+  number={7},
+  pages={924--933},
+  year={2005}
+}
+
+% --- Exact arithmetic and bound propagation --------------------------------------------------
+
+@article{harvey2009kronecker,
+  title={Faster polynomial multiplication via multipoint {Kronecker} substitution},
+  author={Harvey, David},
+  journal={Journal of Symbolic Computation},
+  volume={44},
+  number={10},
+  pages={1502--1510},
+  year={2009}
+}
+
+@misc{gowal2018ibp,
+  title={On the Effectiveness of Interval Bound Propagation for Training Verifiably Robust Models},
+  author={Gowal, Sven and others},
+  year={2018},
+  eprint={1810.12715},
+  archivePrefix={arXiv}
+}
+
+@misc{torchlean,
+  title={{TorchLean}: formalizing neural networks in {Lean}},
+  author={{TorchLean Team}},
+  howpublished={\url{https://github.com/lean-dojo/TorchLean}},
+  note={Lean 4 library; dependency of this repository}
+}
+
+% --- Verification of tree ensembles (literature note: research/literature/verifiable-traditional-ml.md)
+
+@inproceedings{kantchelian2016evasion,
+  title={Evasion and Hardening of Tree Ensemble Classifiers},
+  author={Kantchelian, Alex and Tygar, J. D. and Joseph, Anthony D.},
+  booktitle={International Conference on Machine Learning (ICML)},
+  year={2016}
+}
+
+@inproceedings{chen2019robustness,
+  title={Robustness Verification of Tree-based Models},
+  author={Chen, Hongge and Zhang, Huan and Si, Si and Li, Yang and Boning, Duane and Hsieh, Cho-Jui},
+  booktitle={Advances in Neural Information Processing Systems (NeurIPS)},
+  year={2019},
+  eprint={1906.03849},
+  archivePrefix={arXiv}
+}
+
+@inproceedings{ranzato2020abstract,
+  title={Abstract Interpretation of Decision Tree Ensemble Classifiers},
+  author={Ranzato, Francesco and Zanella, Marco},
+  booktitle={AAAI Conference on Artificial Intelligence},
+  year={2020}
+}
+
+@misc{tornblom2019formal,
+  title={Formal Verification of Input-Output Mappings of Tree Ensembles},
+  author={T{\"o}rnblom, John and Nadjm-Tehrani, Simin},
+  year={2019},
+  eprint={1905.04194},
+  archivePrefix={arXiv}
+}
+
+@inproceedings{devos2021versatile,
+  title={Versatile Verification of Tree Ensembles},
+  author={Devos, Laurens and Meert, Wannes and Davis, Jesse},
+  booktitle={International Conference on Machine Learning (ICML)},
+  year={2021},
+  eprint={2010.13880},
+  archivePrefix={arXiv}
+}
+
+@inproceedings{calzavara2023verifiable,
+  title={Verifiable Learning for Robust Tree Ensembles},
+  author={Calzavara, Stefano and others},
+  booktitle={ACM Conference on Computer and Communications Security (CCS)},
+  year={2023},
+  eprint={2305.03626},
+  archivePrefix={arXiv}
+}
+
+@inproceedings{calzavara2025boosted,
+  title={Verifiable Boosted Tree Ensembles},
+  author={Calzavara, Stefano and Cazzaro, Lorenzo and Lucchese, Claudio and Pibiri, Giulio Ermanno},
+  booktitle={IEEE Symposium on Security and Privacy (S\&P)},
+  year={2025},
+  eprint={2402.14988},
+  archivePrefix={arXiv}
+}
+
+% --- Fairness verification ---------------------------------------------------------------------
+
+@inproceedings{albarghouthi2017fairsquare,
+  title={{FairSquare}: Probabilistic Verification of Program Fairness},
+  author={Albarghouthi, Aws and D'Antoni, Loris and Drews, Samuel and Nori, Aditya V.},
+  booktitle={Proceedings of the ACM on Programming Languages (OOPSLA)},
+  year={2017}
+}
+
+@inproceedings{bastani2019verifair,
+  title={Probabilistic Verification of Fairness Properties via Concentration},
+  author={Bastani, Osbert and Zhang, Xin and Solar-Lezama, Armando},
+  booktitle={Proceedings of the ACM on Programming Languages (OOPSLA)},
+  year={2019}
+}
+
+@inproceedings{ghosh2021justicia,
+  title={Justicia: A Stochastic {SAT} Approach to Formally Verify Fairness},
+  author={Ghosh, Bishwamittra and Basu, Debabrota and Meel, Kuldeep S.},
+  booktitle={AAAI Conference on Artificial Intelligence},
+  volume={35},
+  number={9},
+  pages={7554--7563},
+  year={2021}
+}
+
+% --- Proving without revealing (zero knowledge) -------------------------------------------------
+
+@inproceedings{zhang2020zkdt,
+  title={Zero Knowledge Proofs for Decision Tree Predictions and Accuracy},
+  author={Zhang, Jiaheng and Fang, Zhiyong and Zhang, Yupeng and Song, Dawn},
+  booktitle={ACM Conference on Computer and Communications Security (CCS)},
+  year={2020}
+}
+
+@inproceedings{shamsabadi2023profitt,
+  title={Confidential-{PROFITT}: Confidential {PROof} of {FaIr} Training of Trees},
+  author={Shamsabadi, Ali Shahin and others},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2023}
+}
+
+@misc{yadav2024fairproof,
+  title={{FairProof}: Confidential and Certifiable Fairness for Neural Networks},
+  author={Yadav, Chhavi and others},
+  year={2024},
+  howpublished={\url{https://neurips.cc/virtual/2024/106939}}
+}
+
+@inproceedings{waiwitlikhit2024zkaudit,
+  title={Trustless Audits without Revealing Data or Models},
+  author={Waiwitlikhit, Suppakit and Stoica, Ion and Sun, Yi and Hashimoto, Tatsunori and Kang, Daniel},
+  booktitle={International Conference on Machine Learning (ICML)},
+  series={PMLR},
+  volume={235},
+  year={2024}
+}
+
+@inproceedings{luck2026certified,
+  title={Certified in Theory, Broken in Practice: Assumption Gaps in Cryptographic Model Certification},
+  author={Luck, Carter and Franzese-McLaughlin, Olive and Masserova, Elisaweta and Takahashi, Akira and Polychroniadou, Antigoni and Papernot, Nicolas},
+  booktitle={USENIX Security Symposium},
+  year={2026},
+  eprint={2607.21839},
+  archivePrefix={arXiv}
+}
+
+% --- Checking results with a small trusted checker -----------------------------------------------
+
+@inproceedings{tan2021cakelpr,
+  title={cake\_lpr: Verified Propagation Redundancy Checking in {CakeML}},
+  author={Tan, Yong Kiam and Heule, Marijn J. H. and Myreen, Magnus O.},
+  booktitle={Tools and Algorithms for the Construction and Analysis of Systems (TACAS)},
+  year={2021},
+  doi={10.1007/978-3-030-72013-1_12}
+}
+
+@misc{desmartin2024checker,
+  title={Towards a Certified Proof Checker for Deep Neural Network Verification},
+  author={Desmartin, Remi and others},
+  year={2023},
+  eprint={2307.06299},
+  archivePrefix={arXiv}
+}
+
+% --- Regulation ---------------------------------------------------------------------------------
+
+@misc{pra2023ss1,
+  title={{SS1/23} -- Model risk management principles for banks},
+  author={{Prudential Regulation Authority}},
+  year={2023},
+  howpublished={\url{https://www.bankofengland.co.uk/prudential-regulation/publication/2023/may/model-risk-management-principles-for-banks-ss}}
+}
+
+@misc{euaiact2024,
+  title={Regulation ({EU}) 2024/1689 laying down harmonised rules on artificial intelligence ({AI} Act)},
+  author={{European Parliament and Council of the European Union}},
+  year={2024},
+  howpublished={\url{https://artificialintelligenceact.eu/article/15/}}
+}

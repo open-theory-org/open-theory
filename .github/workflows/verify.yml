@@ -42,6 +42,9 @@ jobs:
       - name: Check formal/core layering
         run: python3 tests/regression/check_layers.py
 
+      - name: Check that every citation resolves
+        run: python3 tests/regression/check_references.py
+
       - name: Fail if committed graph is stale
         run: python3 blueprint/export_blueprint.py --check
 
@@ -57,6 +60,11 @@ jobs:
 
       - name: "Conformance: demo (1 accept, 4 rejects)"
         run: tests/conformance/certified_accuracy.sh
+
+      - name: "Conformance: fast checks, kernel and compiled lanes agree"
+        run: |
+          lake build ot_kernel
+          python3 tests/conformance/fast_check.py
 
       - name: Upload blueprint graph
         uses: actions/upload-artifact@v4

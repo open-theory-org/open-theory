@@ -132,6 +132,61 @@ The rule: a closed prover may produce the evidence, but checking it must never n
 
 ## 6. Roadmap
 
+**Revision 2026-10-31: first user and new priority.** The first user is a bank (for example
+Barclays) that wants to check the reliability and robustness of production models and show the
+result to regulators, auditors and counterparties. The milestone below comes first. Phases 3
+(white-box LLM certificates) and 4 (global white-box bounds) are paused until it ships. The rungs
+phases A–G (sampling, label audit, agent gate, …) continue and feed it. Landscape and sources:
+`research/literature/verifiable-traditional-ml.md`.
+
+### Milestone: certified credit-model report
+
+For one production-style credit model (gradient-boosted trees, for example LightGBM on a public
+credit dataset), a report in which every line is a certificate a third party re-checks with
+`ot verify` / `ot_kernel`, with its level, assumptions and sources.
+
+| Report line | Claim | How | Builds on |
+| --- | --- | --- | --- |
+| Performance on production data | error rate; AUC and calibration (new templates) | binomial bounds on committed, beacon-sampled production rows (commit the model first, then sample [@luck2026certified]) | `heldout-error`, rungs phase A |
+| Stability | the same claims per time window | one certificate per window | the above |
+| Local robustness | the decision is constant on a box around an applicant | exact for tree ensembles (polynomial ℓ∞ for large-spread ensembles [@calzavara2025boosted]); intervals for logistic regression and MLPs | `Scopes/OnRegion` |
+| Monotonicity | the score never decreases in chosen features (income, …) | per-tree check, a sufficient condition for additive ensembles [@devos2021versatile] | new property |
+| Fairness | approval-rate gap between groups, with confidence | one rate claim per group | `RateClaim`, rungs phase B (labels) |
+| Binding and privacy | the certified model is the deployed one, without revealing it | model hash first; zero-knowledge or TEE later, integrated not built [@zhang2020zkdt; @waiwitlikhit2024zkaudit] | `specs/evidence/` |
+
+Primitives to add: **tree ensembles** (exact semantics with rational thresholds), **logistic
+regression**, **preprocessing** (scaling, binning, one-hot). Every check lives in
+`formal/core/Checks/` (core Lean only) with its soundness theorem proved once in the library.
+
+The report maps each line to what the regulator asks: independent validation (SS1/23 principle 4
+[@pra2023ss1]) and accuracy and robustness (EU AI Act Article 15 [@euaiact2024]).
+
+Order:
+
+1. Tree-ensemble primitive: exact semantics, then its Lean statements for review (section 7).
+2. Monotonicity and local robustness checks for tree ensembles, in both lanes.
+3. AUC, calibration and fairness templates on top of `RateClaim`.
+4. End-to-end example on a public credit dataset, and the report format.
+5. The zero-knowledge or TEE path for showing results without the model.
+
+**Verification lanes** (decided 2026-10-31). A check proved sound once is run per certificate by
+the Lean kernel (`ot_kernel`, about 1–2 ms for 100k parameters; label `verified`) or by compiled
+code (`ot_check`, faster; trusts the Lean compiler, so labelled separately, never `verified`).
+Built: one registry for both lanes, differential testing in CI (`ot_kernel --compare`), kernel
+re-check on demand. Planned: a second, independent checker that must agree; if a user requires
+it, a checker compiled by a verified compiler, as `cake_lpr` does for SAT proofs
+[@tan2021cakelpr].
+
+**Sources.** Every method cites its sources in `blueprint/src/references.bib`, from manifests
+(`references = [{ key, relation }]`), Lean docstrings and Markdown (`[@key]`) and the blueprint
+(`\cite`); `tests/regression/check_references.py` fails on unknown keys.
+
+**Deferred.** The soundness proof of the packed MLP check `mlp-exact` (the check stays,
+`experimental`); attention and transformer primitives; further speed work.
+
+### Earlier phases (2026-10-27)
+
+
 **Phase 0 (week 0–1): housekeeping.**
 Commit the rework on a branch. Add CI (`lake build`, axiom audit, `check_lean_decls.py`,
 `tests/regression/statement_gate.py --fail`, `check_catalog.py` on new files). Decide on IP before pushing (section 8).
@@ -233,5 +288,8 @@ Deprioritised until a customer pays for verification: economics, trading, tokens
 2. **Flagship 2 vs 3 first.** Robust accuracy (Phase 2) is fully kernel-checked and the most
    defensible. LLM certificates (Phase 3) are more visible and closer to alignment work. The two
    can run in parallel if there are two people.
-3. **First external user.** Phase 3 is the natural pitch to safety teams and auditors. Phase 5 is
-   the pitch to Structure customers.
+3. **First external user.** Decided 2026-10-31: a bank checking its production models (see the
+   milestone in section 6). Phase 3 remains the pitch to safety teams; Phase 5 to Structure
+   customers.
+4. **Verification lanes.** Decided 2026-10-31: `verified` means checked by the Lean kernel; a
+   compiled check is labelled separately (section 6).

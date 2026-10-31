@@ -5,7 +5,7 @@ Layout: [docs/architecture/repository.md](docs/architecture/repository.md).
 
 ## Source of truth
 
-- Mathematics: `formal/core/**/*.lean` (layers `Foundations.…` → `Models.…` → `Theory.…` → `Specs.…`, each importing only earlier layers; declarations in `OpenTheory.`) and `blueprint/src/content.tex`
+- Mathematics: `formal/core/**/*.lean` (layers `Checks.…` → `Foundations.…` → `Models.…` → `Properties.…` → `Theory.…` → `Scopes.…` → `Specs.…`, each importing only earlier layers, `Checks` only Lean's core; declarations in `OpenTheory.`) and `blueprint/src/content.tex`
 - Assurance levels: `specs/protocols/assurance-levels.md`, with one manifest per method in `catalog/methods/`
 - Platform feed: `blueprint/blueprint.json` (regenerate with `python3 blueprint/export_blueprint.py`)
 - Local agents: `interfaces/mcp/` (stdio). Do not add an HTTP API on this repo.
