@@ -1,56 +1,60 @@
-import Foundations.Arithmetic.FastCheck
+import Checks.Registry
 
-/-! # `ot_check`: run certificate decision procedures as compiled code
+/-! # `ot_check`: certificate checks run as compiled code
 
-  ot_check pool <x> <n> <k> <a> <b> <d>
-  ot_check pool-witness <x> <n> <k> <a> <b> <u> <v> <d>
-  ot_check CHECK + CHECK + ...                 (true when all are)
+The compiled lane of the fast verifier. Same requests as `ot_kernel`:
 
-Numbers are decimal or `0x` hexadecimal. Prints `true` or `false` and exits 0, or exits 2 on a
-usage error. The functions run are the `FastCheck` definitions themselves, compiled; what `true`
-means is proved once in `Specs.PoolRate` (`Claim.of_poolCheck`, `Claim.of_poolCheckWitness`). -/
+    ot_check NAME ARGS... [+ NAME ARGS...]    prints true iff every check is accepted
 
-open OpenTheory.FastCheck
+Numbers are decimal or `0x` hexadecimal; exit code 2 on a usage error. Each check is the
+registry entry's `run`, the compiled form of the constant `ot_kernel` hands to the kernel. A
+compiled run trusts the Lean compiler, so its result is never labelled `verified`
+(specs/protocols/assurance-levels.md); `ot_kernel --compare` checks that both lanes agree.
+-/
 
-def hexDigit (c : Char) : Option Nat :=
-  if '0' ≤ c ∧ c ≤ '9' then some (c.toNat - '0'.toNat)
-  else if 'a' ≤ c ∧ c ≤ 'f' then some (c.toNat - 'a'.toNat + 10)
-  else if 'A' ≤ c ∧ c ≤ 'F' then some (c.toNat - 'A'.toNat + 10)
+open OpenTheory.Checks
+
+def hexVal (b : UInt8) : Option Nat :=
+  if 48 ≤ b && b ≤ 57 then some (b - 48).toNat
+  else if 97 ≤ b && b ≤ 102 then some (b - 87).toNat
+  else if 65 ≤ b && b ≤ 70 then some (b - 55).toNat
   else none
 
-/-- Parse a decimal or `0x` hexadecimal natural number. -/
+/-- Hex digits `bs[i:j]`, by halving so that a megabit number parses in linear-log time. -/
+partial def parseHex (bs : ByteArray) (i j : Nat) : Option Nat :=
+  if j - i ≤ 15 then
+    (List.range (j - i)).foldlM (fun acc k => (hexVal bs[i + k]!).map (acc * 16 + ·)) 0
+  else
+    let m := (i + j) / 2
+    return ((← parseHex bs i m) <<< (4 * (j - m))) ||| (← parseHex bs m j)
+
 def parseNat (s : String) : Option Nat :=
-  let (base, digits) := if s.startsWith "0x" then (16, (s.drop 2).toString.toList) else (10, s.toList)
-  if digits.isEmpty then none else
-  digits.foldlM (fun acc c => do
-    let d ← hexDigit c
-    if d < base then some (acc * base + d) else none) 0
+  if s.startsWith "0x" then
+    let bs := (s.drop 2).toString.toUTF8
+    if bs.size == 0 then none else parseHex bs 0 bs.size
+  else s.toNat?
 
-def check : List String → Option Bool
-  | ["pool", x, n, k, a, b, d] => do
-    return poolCheck (← parseNat x) (← parseNat n) (← parseNat k) (← parseNat a) (← parseNat b)
-      (← parseNat d)
-  | ["pool-witness", x, n, k, a, b, u, v, d] => do
-    return poolCheckWitness (← parseNat x) (← parseNat n) (← parseNat k) (← parseNat a)
-      (← parseNat b) (← parseNat u) (← parseNat v) (← parseNat d)
-  | _ => none
+/-- Split a request into checks at `+`. -/
+def splitChecks (words : List String) : List (List String) :=
+  let (cur, done) := words.foldl (fun (cur, done) w =>
+    if w == "+" then ([], cur.reverse :: done) else (w :: cur, done)) ([], [])
+  ((cur.reverse :: done).reverse).filter (!·.isEmpty)
 
-/-- Split arguments at `+`. -/
-def splitPlus : List String → List (List String)
-  | [] => [[]]
-  | "+" :: rest => [] :: splitPlus rest
-  | a :: rest =>
-    match splitPlus rest with
-    | [] => [[a]]
-    | g :: gs => (a :: g) :: gs
+/-- One check, or why the request is malformed. -/
+def runCheck (words : List String) : Except String Bool := do
+  let name := words.head!
+  let some e := entries.find? (·.cli == name) | throw s!"unknown check '{name}'"
+  let some args := words.tail.mapM parseNat | throw s!"bad number in '{name}'"
+  if let .nats k := e.shape then
+    if args.length != k then throw s!"{name} takes {k} arguments, got {args.length}"
+  return e.run args
 
-/-- Several checks separated by `+`: true when all are. -/
-def checkAll (args : List String) : Option Bool :=
-  (splitPlus args).foldlM (fun acc group => do return acc && (← check group)) true
+def usage : String :=
+  "usage: ot_check NAME ARGS... [+ NAME ARGS...]\nchecks: " ++ ", ".intercalate (entries.map (·.cli))
 
-def main (args : List String) : IO UInt32 := do
-  match checkAll args with
-  | some r => IO.println (if r then "true" else "false"); return 0
-  | none =>
-    IO.eprintln "usage: ot_check CHECK [+ CHECK ...], CHECK = pool x n k a b d | pool-witness x n k a b u v d"
-    return 2
+def main (argv : List String) : IO UInt32 := do
+  let checks := splitChecks argv
+  if checks.isEmpty then IO.eprintln usage; return 2
+  match checks.mapM runCheck with
+  | .ok rs => IO.println (toString (rs.all id)); return 0
+  | .error msg => IO.eprintln s!"{msg}\n{usage}"; return 2

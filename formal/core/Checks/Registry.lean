@@ -1,4 +1,5 @@
 import Checks.MLP
+import Checks.PoolRate
 
 /-!
 # Registry of certificate checks
@@ -33,6 +34,10 @@ structure Entry where
 
 def entries : List Entry :=
   [ { cli := "mlp-exact", const := "OpenTheory.Checks.MLP.check", shape := .records 7 9 "OpenTheory.Checks.MLP.Layer.mk",
-      prepare := MLP.prepare, run := fun args => MLP.checkFlat (MLP.prepare args) } ]
+      prepare := MLP.prepare, run := fun args => MLP.checkFlat (MLP.prepare args) },
+    { cli := "pool", const := "OpenTheory.Checks.poolCheck", shape := .nats 7,
+      run := fun | [x, n, l, k, a, b, d] => poolCheck x n l k a b d | _ => false },
+    { cli := "pool-witness", const := "OpenTheory.Checks.poolCheckWitness", shape := .nats 9,
+      run := fun | [x, n, l, k, a, b, u, v, d] => poolCheckWitness x n l k a b u v d | _ => false } ]
 
 end OpenTheory.Checks

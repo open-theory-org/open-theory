@@ -56,7 +56,8 @@ signature, previous signature), `sample.json` (`items` with `index`, `leaf`, `pr
    choose the sample.
 3. Every `vᵢ` and `idxᵢ` recomputed; each item's inclusion proof checked against `pool.root`.
 4. Every bit recomputed with the committed procedure; the Lean kernel counts them.
-5. The decision procedure `OpenTheory.FastCheck.poolCheck` (or `poolCheckWitness`) returns `true`
+5. The registered check `OpenTheory.Checks.poolCheck` (or `poolCheckWitness`; registry names `pool`,
+   `pool-witness`) returns `true`
    on the packed bits, evaluated by the Lean kernel (`verified`). `ot verify --compiled` runs it as
    compiled code instead (faster; trusts the Lean compiler, so it is labelled separately and never
    `verified`).
@@ -80,8 +81,9 @@ the claim, not an assumption.
 
 ## Prior art
 
-Committing to test-item hashes and revealing a beacon-selected subset is proposed in
+Fixed audit sets can be gamed by the certified party; committing first and sampling after is the
+fix [@luck2026certified]. Committing to test-item hashes and revealing a beacon-selected subset is proposed in
 [arXiv:2510.07575](https://arxiv.org/abs/2510.07575). Election risk-limiting audits
-(Lindeman & Stark, 2012) use public randomness to bound the risk of a wrong outcome. New here: a
+[@lindeman2012gentle] use public randomness to bound the risk of a wrong outcome. New here: a
 machine-checked proof from seed bits to the bound, accounting for selective publication, and a
 certificate the verifier checks end to end.

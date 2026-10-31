@@ -6,11 +6,16 @@ kind = "statistical"
 summary = "A committed judge's verdicts on a large beacon sample, and gold labels on a small prefix of it, bound the true failure rate through the rectifier identity true = judged + missed − false alarms; each part is a pool-rate check."
 implementation = ["methods/statistical/pool_rate_certificate.py"]
 assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A9-gold-labels"]
-trusted = ["Lean kernel (with --kernel) or Lean compiler (default compiled check)", "statements of OpenTheory.FastCheck.poolCheck, PoolRate.Claim.of_poolCheck, JudgedRate.Claim.sound and JudgedRate.bad_frac", "verifier index derivation and Merkle checks", "drand threshold network", "RFC 3161 authority chosen by whoever runs the verifier"]
+trusted = ["Lean kernel (ot_kernel; ot_check runs are labelled not verified)", "statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck, JudgedRate.Claim.sound and JudgedRate.bad_frac", "verifier index derivation and Merkle checks", "drand threshold network", "RFC 3161 authority chosen by whoever runs the verifier"]
 conformance = ["tests/conformance/judged_rate_verify.py"]
+references = [
+  { key = "angelopoulos2023prediction", relation = "adapts", note = "exact finite-sample bounds for a failure rate on a committed pool, from Clopper-Pearson parts and a union bound, instead of asymptotic intervals" },
+  { key = "clopper1934use", relation = "implements" },
+  { key = "luck2026certified", relation = "background" },
+]
 
 [lean]
-spec = ["OpenTheory.JudgedRate.Claim", "OpenTheory.JudgedRate.missed", "OpenTheory.JudgedRate.notAlarm", "OpenTheory.JudgedRate.bad", "OpenTheory.FastCheck.poolCheck"]
+spec = ["OpenTheory.JudgedRate.Claim", "OpenTheory.JudgedRate.missed", "OpenTheory.JudgedRate.notAlarm", "OpenTheory.JudgedRate.bad", "OpenTheory.Checks.poolCheck"]
 correctness = [
   "OpenTheory.JudgedRate.Claim.sound",
   "OpenTheory.JudgedRate.Claim.sound_alarms",

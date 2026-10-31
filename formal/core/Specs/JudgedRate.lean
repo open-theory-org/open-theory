@@ -18,6 +18,8 @@ By the rectifier identity (`poolRate_rectify`) the true failure rate is at most 
 `(1 + N/2^b)ⁿ δJ + (1 + N/2^b)ᵐ (δA + δB)` (`bad_frac`). This is an exact, finite-sample
 version of prediction-powered inference for a failure rate: the gold labels only pay for the
 grader's errors, not for the model's. With the issuer's labels as the grader it is a label audit.
+
+References: [@angelopoulos2023prediction].
 -/
 
 open Finset OpenTheory.BinomialTail OpenTheory.DesignSampling

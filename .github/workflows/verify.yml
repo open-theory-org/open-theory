@@ -65,6 +65,14 @@ jobs:
         run: |
           lake build ot_kernel
           python3 tests/conformance/fast_check.py
+          python3 tests/conformance/pool_check_lanes.py
+
+      - name: "Conformance: pool-rate and judged-rate certificates (recorded drand rounds)"
+        run: |
+          lake build ot_check
+          python3 -m pip install py_arkworks_bls12381 || python3 -m pip install py_ecc
+          python3 tests/conformance/pool_rate_verify.py
+          python3 tests/conformance/judged_rate_verify.py
 
       - name: Upload blueprint graph
         uses: actions/upload-artifact@v4

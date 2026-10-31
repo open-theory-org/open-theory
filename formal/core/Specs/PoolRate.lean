@@ -1,6 +1,6 @@
 import Foundations.Probability.DesignSampling
 import Foundations.Probability.ChernoffWitness
-import Foundations.Arithmetic.FastCheck
+import Checks.PoolRate
 
 /-!
 # Claim template `pool-rate`, v0.1
@@ -16,7 +16,7 @@ a property `e` fixed before the seed, then either the pool rate of `e` is at mos
 lies in a set of seeds of fraction at most `(1 + N/2^b)ⁿ · δ`.
 
 A certificate is checked without re-proving anything: the verifier runs the `Bool` check
-`FastCheck.poolCheck` (or `poolCheckWitness`) on the packed bits, compiled or in the kernel, and
+`Checks.poolCheck` (or `poolCheckWitness`) on the packed bits, in the kernel or compiled, and
 `Claim.of_poolCheck` (proved once, here) says that `true` gives the claim for `bitsOf x n`.
 
 The verifier (`verifier/core/`) also checks the bindings Lean cannot see: the commitments precede
@@ -24,7 +24,7 @@ the beacon round, the round is authentic, and each sampled item is the pool item
 (Merkle inclusion). See `specs/claims/pool-rate.md`.
 -/
 
-open Finset OpenTheory.BinomialTail OpenTheory.DesignSampling OpenTheory.FastCheck
+open Finset OpenTheory.BinomialTail OpenTheory.DesignSampling OpenTheory.Checks
 
 namespace OpenTheory.PoolRate
 
@@ -81,7 +81,7 @@ theorem popWord_eq (fuel word : ℕ) :
   | zero => simp [popWord]
   | succ fuel ih =>
     rw [popWord, ih, sum_range_succ']
-    simp only [Nat.testBit_succ]
+    simp only [Nat.testBit_shiftRight, Nat.add_comm 1]
     rcases Nat.mod_two_eq_zero_or_one word with h | h
     · simp [h]
     · simp [h]; omega
@@ -91,15 +91,12 @@ theorem popTree_eq (l x : ℕ) :
   induction l generalizing x with
   | zero => simp [popTree, popWord_eq]
   | succ l ih =>
-    rw [popTree, ih, ih, show 64 * 2 ^ (l + 1) = 64 * 2 ^ l + 64 * 2 ^ l by ring, sum_range_add]
+    rw [popTree]
+    simp only [Nat.shiftLeft_eq, one_mul]
+    rw [ih, ih, show 64 * 2 ^ (l + 1) = 64 * 2 ^ l + 64 * 2 ^ l by ring, sum_range_add]
     congr 1
     · exact sum_congr rfl fun i hi => by simp [mem_range.1 hi]
-    · exact sum_congr rfl fun i _ => by rw [← Nat.shiftRight_eq_div_pow, Nat.testBit_shiftRight]
-
-theorem le_levels (n : ℕ) : n ≤ 64 * 2 ^ levels n := by
-  have h := Nat.lt_log2_self (n := (n + 63) / 64)
-  unfold levels
-  omega
+    · exact sum_congr rfl fun i _ => by rw [Nat.testBit_shiftRight]
 
 /-- The set bits of `x < 2ⁿ` among its first `n` bits, counted up to any `M ≥ n`. -/
 theorem card_bitsOf {x n M : ℕ} (hx : x < 2 ^ n) (hM : n ≤ M) :
@@ -152,23 +149,32 @@ theorem tailFast_eq {n k a b : ℕ} (hab : a ≤ b) : tailFast n k a b = tailNum
     rw [show n - i = (n - k) + (k - i) by have := mem_range.1 hi; omega, pow_add]
     ring
 
+/-- `x >>> n = 0` says `x < 2ⁿ`. -/
+theorem lt_of_shiftRight_eq_zero {x n : ℕ} (h : x >>> n = 0) : x < 2 ^ n := by
+  rw [Nat.shiftRight_eq_div_pow] at h
+  by_contra hc
+  have := Nat.div_pos (Nat.le_of_not_lt hc) (by positivity)
+  omega
+
 /-- **A `true` exact-tail check is a claim.** -/
-theorem Claim.of_poolCheck {x n k a b d : ℕ} (h : poolCheck x n k a b d = true) :
+theorem Claim.of_poolCheck {x n l k a b d : ℕ} (h : poolCheck x n l k a b d = true) :
     Claim (bitsOf x n) k ((a : ℝ) / b) (1 / d) := by
-  simp only [poolCheck, Bool.and_eq_true, decide_eq_true_eq] at h
-  obtain ⟨⟨⟨⟨⟨hx, hk⟩, hab⟩, hb⟩, hd⟩, ht⟩ := h
+  simp only [poolCheck, Bool.and_eq_true, decide_eq_true_eq, beq_iff_eq] at h
+  obtain ⟨⟨⟨⟨⟨⟨hx, hl⟩, hk⟩, hab⟩, hb⟩, hd⟩, ht⟩ := h
+  rw [Nat.shiftLeft_eq] at hl
   refine Claim.of_tail ?_ hab hb hd (by rwa [tailFast_eq hab] at ht)
-  rw [card_bitsOf hx (le_levels n), ← popTree_eq]
+  rw [card_bitsOf (lt_of_shiftRight_eq_zero hx) hl, ← popTree_eq]
   exact hk
 
 /-- **A `true` witness check is a claim.** -/
-theorem Claim.of_poolCheckWitness {x n k a b u v d : ℕ}
-    (h : poolCheckWitness x n k a b u v d = true) :
+theorem Claim.of_poolCheckWitness {x n l k a b u v d : ℕ}
+    (h : poolCheckWitness x n l k a b u v d = true) :
     Claim (bitsOf x n) k ((a : ℝ) / b) (1 / d) := by
-  simp only [poolCheckWitness, Bool.and_eq_true, decide_eq_true_eq] at h
-  obtain ⟨⟨⟨⟨⟨⟨⟨hx, hk⟩, hab⟩, hb⟩, hu⟩, huv⟩, hd⟩, hw⟩ := h
+  simp only [poolCheckWitness, Bool.and_eq_true, decide_eq_true_eq, beq_iff_eq] at h
+  obtain ⟨⟨⟨⟨⟨⟨⟨⟨hx, hl⟩, hk⟩, hab⟩, hb⟩, hu⟩, huv⟩, hd⟩, hw⟩ := h
+  rw [Nat.shiftLeft_eq] at hl
   refine Claim.of_witness ?_ hab hb hu huv hd hw
-  rw [card_bitsOf hx (le_levels n), ← popTree_eq]
+  rw [card_bitsOf (lt_of_shiftRight_eq_zero hx) hl, ← popTree_eq]
   exact hk
 
 end OpenTheory.PoolRate

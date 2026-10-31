@@ -6,11 +6,18 @@ kind = "statistical"
 summary = "A drand round published after the pool and procedure are committed and timestamped selects the sample; the kernel counts failures and checks the tail; a proved theorem bounds the pool rate with no distributional assumption."
 implementation = ["methods/statistical/pool_rate_certificate.py"]
 assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity"]
-trusted = ["Lean kernel (with --kernel) or Lean compiler (default compiled check)", "statements of OpenTheory.FastCheck.poolCheck, PoolRate.Claim.of_poolCheck and DesignSampling.rate_sound", "verifier index derivation and Merkle checks", "drand threshold network", "RFC 3161 authority chosen by whoever runs the verifier"]
+trusted = ["Lean kernel (ot_kernel; ot_check runs are labelled not verified)", "statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck and DesignSampling.rate_sound", "verifier index derivation and Merkle checks", "drand threshold network", "RFC 3161 authority chosen by whoever runs the verifier"]
 conformance = ["tests/conformance/pool_rate_verify.py"]
+references = [
+  { key = "luck2026certified", relation = "background" },
+  { key = "lindeman2012gentle", relation = "adapts", note = "public-randomness sampling from election audits, applied to a committed pool of model outputs, with a machine-checked bound" },
+  { key = "clopper1934use", relation = "implements" },
+  { key = "chernoff1952measure", relation = "implements" },
+  { key = "laurie2021rfc9162", relation = "implements" },
+]
 
 [lean]
-spec = ["OpenTheory.PoolRate.Claim", "OpenTheory.FastCheck.poolCheck", "OpenTheory.FastCheck.poolCheckWitness", "OpenTheory.DesignSampling.poolRate", "OpenTheory.DesignSampling.derive", "OpenTheory.DesignSampling.bad"]
+spec = ["OpenTheory.PoolRate.Claim", "OpenTheory.Checks.poolCheck", "OpenTheory.Checks.poolCheckWitness", "OpenTheory.DesignSampling.poolRate", "OpenTheory.DesignSampling.derive", "OpenTheory.DesignSampling.bad"]
 correctness = [
   "OpenTheory.DesignSampling.rate_sound",
   "OpenTheory.DesignSampling.selective_sound",

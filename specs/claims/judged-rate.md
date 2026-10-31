@@ -25,7 +25,7 @@ as the triangle bound `true ≤ judged + P(judge ≠ gold)`, since a missed fail
 **Lean.** `OpenTheory.JudgedRate.Claim` in `formal/core/Specs/JudgedRate.lean`. Meaning:
 `Claim.sound` (without `alarms`) and `Claim.sound_alarms`, with `bad_frac` for the seeds; the gold
 sample is a prefix of the judged one, sound by `DesignSampling.seedFrac_prefix`. Each part is checked
-by `FastCheck.poolCheck` (or `poolCheckWitness`) and turned into a claim by `PoolRate.Claim.of_poolCheck`.
+by `Checks.poolCheck` (or `poolCheckWitness`) and turned into a claim by `PoolRate.Claim.of_poolCheck`.
 
 ## Protocol
 
@@ -55,7 +55,7 @@ assumption: a bad judge loosens the bound, it never makes it wrong.
 
 ## Prior art
 
-Prediction-powered inference (Angelopoulos, Bates, Fannjiang, Jordan, Zrnic, *Science* 2023) and
+Prediction-powered inference [@angelopoulos2023prediction] and
 its finite-sample variants combine model-predicted labels with a small gold set. New here: an exact
 finite-sample bound for a failure rate on a committed pool, from Clopper–Pearson parts, proved in
 Lean and checked per certificate by a decision procedure.

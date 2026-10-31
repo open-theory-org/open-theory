@@ -44,7 +44,7 @@ BUNDLE_NAME = re.compile(r"grand|master|unification|synthesis|atlas|ultimate|clo
 SHORT_PROOF = re.compile(r"^\s*(?:by\s+)?(?:rfl|decide|native_decide|norm_num|simp|trivial)\s*$")
 # Scalar defs whose meaning is a proved theorem, not an invented formula: `binomCdf` is the law of
 # the error count (`BinomialTail.sampleLaw_count_le`), `tailNumerator` its integer numerator
-# (`BinomialTail.tailNumerator_eq`). The `FastCheck` decision-procedure parts are pinned to their
+# (`BinomialTail.tailNumerator_eq`). The `Checks` decision-procedure parts are pinned to their
 # Mathlib meaning: `popWord`/`popTree` (`PoolRate.popWord_eq`, `popTree_eq`), `hornerState`,
 # `tailFast` (`PoolRate.hornerState_eq`, `tailFast_eq`). Statements about them are not toy formulas.
 VETTED_DEFS = {"binomCdf", "tailNumerator", "popWord", "popTree", "hornerState", "tailFast"}

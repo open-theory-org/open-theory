@@ -21,6 +21,9 @@ on `(Fin (2 ^ b))ⁿ` (random-oracle model of the beacon expansion).
 
 `(1 + N/2^b)ⁿ` is the cost of reducing modulo `N`. For `b = 256` and `n, N < 2⁶⁴` it is below
 `1 + 2⁻¹²⁷`. That `e` is a fixed function, not a function of the seed, is the commitment order.
+
+References: commit-then-sample [@luck2026certified]; public randomness in election audits
+[@lindeman2012gentle].
 -/
 
 noncomputable section

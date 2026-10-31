@@ -7,6 +7,8 @@ import Foundations.Probability.BinomialTail
 `t = e^{-λ}`. The certifier searches for a good `t`; the kernel checks one integer inequality
 instead of summing the `k + 1` terms of `tailNumerator`. With the best `t` the bound equals
 `exp(-n · kl(k/n ‖ p))`, so it is looser than the exact tail, but its cost does not grow with `k`.
+
+References: [@chernoff1952measure].
 -/
 
 open OpenTheory.BinomialTail

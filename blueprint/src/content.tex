@@ -1148,7 +1148,9 @@ A certifier commits to a pool of $N$ items and to a property $e$ of each item
 (for example ``the deployed model's logged answer is wrong''). A public
 randomness beacon published after both commitments is expanded into $n$ blocks
 of $b$ bits, and block $i$ selects pool index $v_i \bmod N$. The claim is about
-the pool, so no distributional assumption is made: the randomness is the seed's.
+the pool, so no distributional assumption is made: the randomness is the seed's. Fixed audit
+sets can be gamed by the certified party \cite{luck2026certified}; election risk-limiting audits
+use public randomness in the same way \cite{lindeman2012gentle}.
 
 \begin{theorem}[Soundness of a pool-rate certificate]\label{thm:pool_rate_sound}
 \lean{OpenTheory.DesignSampling.rate_sound, OpenTheory.DesignSampling.bad_subset, OpenTheory.DesignSampling.card_deriveIndex_fiber_le, OpenTheory.DesignSampling.card_derive_preimage_le, OpenTheory.DesignSampling.sampleLaw_uniformPool, OpenTheory.DesignSampling.card_clopperPearson_le}
@@ -1187,7 +1189,7 @@ Union bound over the $M$ bad sets of Theorem~\ref{thm:pool_rate_sound}.
 \begin{lemma}[Chernoff witness for the binomial tail]\label{lem:chernoff_witness}
 \lean{OpenTheory.ChernoffWitness.binomCdf_le_witness, OpenTheory.ChernoffWitness.binomCdf_le_of_witness}
 \leanok
-For $p\in[0,1]$ and $t\in(0,1]$, $F_{n,p}(k)\le(1-p+pt)^n/t^k$. With
+For $p\in[0,1]$ and $t\in(0,1]$, $F_{n,p}(k)\le(1-p+pt)^n/t^k$ \cite{chernoff1952measure}. With
 $p=a/b$, $t=u/v$ and $\delta=1/d$, the integer inequality
 $d\,(bv-av+au)^n v^k\le (bv)^n u^k$ implies $F_{n,p}(k)\le\delta$: one
 comparison, whatever $k$.
@@ -1210,14 +1212,16 @@ Theorem~\ref{thm:pool_rate_sound}.
 \end{definition}
 
 \begin{lemma}[A true decision procedure is a claim]\label{lem:pool_check}
-\lean{OpenTheory.FastCheck.poolCheck, OpenTheory.FastCheck.poolCheckWitness, OpenTheory.PoolRate.popTree_eq, OpenTheory.PoolRate.card_bitsOf, OpenTheory.PoolRate.hornerState_eq, OpenTheory.PoolRate.tailFast_eq, OpenTheory.PoolRate.Claim.of_poolCheck, OpenTheory.PoolRate.Claim.of_poolCheckWitness}
+\lean{OpenTheory.Checks.poolCheck, OpenTheory.Checks.poolCheckWitness, OpenTheory.PoolRate.popTree_eq, OpenTheory.PoolRate.card_bitsOf, OpenTheory.PoolRate.lt_of_shiftRight_eq_zero, OpenTheory.PoolRate.hornerState_eq, OpenTheory.PoolRate.tailFast_eq, OpenTheory.PoolRate.Claim.of_poolCheck, OpenTheory.PoolRate.Claim.of_poolCheckWitness}
 \leanok
 \uses{def:pool_rate_claim}
 The checks \texttt{poolCheck} and \texttt{poolCheckWitness} are \texttt{Bool}-valued functions
-in plain natural-number arithmetic, with no import beyond Lean's core: a bit count by halving,
+in plain natural-number arithmetic, in the \texttt{Checks} layer (Lean's core only): a bit count by halving
+(its depth $l$ a witness checked by $n\le 64\cdot 2^l$),
 the tail numerator by Horner's rule (linear in $k$), and the Chernoff comparison. If either returns \texttt{true} on $(x,n,k,\dots)$,
 the \texttt{pool-rate} claim holds for the bits of $x$. A certificate is therefore checked by
-running the function, compiled or in the kernel, without re-proving anything.
+running the function in the kernel (\texttt{ot\_kernel}), without re-proving anything; a compiled
+run (\texttt{ot\_check}) is labelled separately.
 \end{lemma}
 \begin{proof}
 \leanok
@@ -1249,7 +1253,8 @@ Let a judge's verdicts be committed for every pool item. From a beacon sample of
 gold labels on its first $m$, certificates $R_J\le p_J$ (judge failures, all $n$),
 $R_{T\wedge\neg J}\le p_A$ (missed failures, first $m$) and optionally $R_{\neg(\neg T\wedge J)}\le p_B$
 (first $m$) give $R_T\le p_J+p_A$, or $R_T\le p_J+p_A+p_B-1$, except on a set of seeds of fraction
-at most $(1+N/2^b)^n\delta_J+(1+N/2^b)^m(\delta_A+\delta_B)$.
+at most $(1+N/2^b)^n\delta_J+(1+N/2^b)^m(\delta_A+\delta_B)$. It is an exact, finite-sample form of
+prediction-powered inference \cite{angelopoulos2023prediction}.
 \end{theorem}
 \begin{proof}
 \leanok

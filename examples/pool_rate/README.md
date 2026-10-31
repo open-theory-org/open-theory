@@ -19,7 +19,7 @@ ot certify pool-rate commit --pool /tmp/ot-pool/pool.jsonl --n 3000 --delta-den 
 ot certify pool-rate prove --commitment /tmp/ot-commit --pool /tmp/ot-pool/pool.jsonl \
     --labels /tmp/ot-pool/labels.json --out /tmp/ot-bundle
 
-# 3. Anyone: verify (~1 s; `--compiled` ~0.2 s). Needs `lake build ot_check`, `openssl` and
+# 3. Anyone: verify (~0.3 s). Needs `lake build ot_kernel` (and `ot_check` for --compiled), `openssl` and
 #    `pip install py_arkworks_bls12381` (or the slower pure-Python `py_ecc`).
 OT_TSA_ROOTS=.ot-test-tsa-roots ot verify /tmp/ot-bundle              # the Lean kernel runs the check: verified
 OT_TSA_ROOTS=.ot-test-tsa-roots ot verify /tmp/ot-bundle --compiled   # compiled check, faster, not verified
@@ -37,7 +37,7 @@ to trust in `verifier/attestations/tsa_roots/`.
 | Commitment timestamped before the round | RFC 3161 token, against the verifier's trusted roots |
 | Round is authentic | BLS signature on the pinned drand mainnet chain |
 | Sample is the beacon's | every index recomputed from the round signature; every item's Merkle inclusion in the committed root |
-| Failures and bound | each bit recomputed (`output ≠ label`); `FastCheck.poolCheck` counts them and checks the binomial tail (or a Chernoff witness at scale), compiled or in the kernel; its meaning is proved once (`Claim.of_poolCheck`, `rate_sound`) |
+| Failures and bound | each bit recomputed (`output ≠ label`); `Checks.poolCheck` counts them and checks the binomial tail (or a Chernoff witness at scale), in the kernel (`ot_kernel`); its meaning is proved once (`Claim.of_poolCheck`, `rate_sound`) |
 | Selective publication | δ summed over every commitment the issuer declares for the round |
 
 The report lists what is assumed (A5 beacon, A6 timestamp authority, A7 one issuer identity) and

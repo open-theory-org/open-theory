@@ -12,7 +12,7 @@ picks the sample. On the pool, exactly, `true failures = judged failures + misse
 
     true rate ≤ UCB(judged, 20,000 items) + UCB(missed, 2,000) − LCB(false alarms, 2,000)
 
-with each bound an exact binomial tail checked by `FastCheck.poolCheck`, and a union bound over
+with each bound an exact binomial tail checked by `Checks.poolCheck`, and a union bound over
 the three (`JudgedRate.bad_frac`). Gold labels only pay for the judge's mistakes. A bad judge makes
 the bound looser, never wrong. With the issuer's own labels as the "judge" this is a label audit.
 

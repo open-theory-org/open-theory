@@ -132,19 +132,21 @@ def run_lean(source: str, timeout: int) -> tuple[bool, str]:
     return res.returncode == 0 and ": error" not in out, out
 
 
-OT_CHECK = ROOT / ".lake/build/bin/ot_check"
+OT_CHECK = ROOT / ".lake/build/bin/ot_check"    # compiled lane
+OT_KERNEL = ROOT / ".lake/build/bin/ot_kernel"  # kernel lane
 
 
-def run_fast(args: list, timeout: int) -> bool:
-    """Run a decision procedure as compiled Lean (`lake build ot_check`)."""
-    if not OT_CHECK.exists():
-        raise RuntimeError("the compiled checker is missing: run `lake build ot_check`")
+def run_fast(args: list, timeout: int, compiled: bool = False) -> bool:
+    """Run registered checks (Checks/Registry.lean): in the kernel (`ot_kernel`) or compiled (`ot_check`)."""
+    exe = OT_CHECK if compiled else OT_KERNEL
+    if not exe.exists():
+        raise RuntimeError(f"{exe.name} is missing: run `lake build {exe.name}`")
     try:
-        res = subprocess.run([str(OT_CHECK), *map(str, args)], capture_output=True, text=True, timeout=timeout)
+        res = subprocess.run([str(exe), *map(str, args)], capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
-        raise Reject(f"the compiled checker did not finish within {timeout}s")
+        raise Reject(f"{exe.name} did not finish within {timeout}s")
     if res.returncode != 0 or res.stdout.strip() not in ("true", "false"):
-        raise RuntimeError(f"ot_check failed: {res.stderr.strip()[:200]}")
+        raise RuntimeError(f"{exe.name} failed: {res.stderr.strip()[:200]}")
     return res.stdout.strip() == "true"
 
 
@@ -221,26 +223,33 @@ def verify(bundle: str | Path, timeout: int = 1800, compiled: bool = False) -> R
         report.does_not_cover = task.does_not_cover
         report.trusted = [f"Lean kernel ({toolchain})", *task.trusted]
 
-        # 4–5. decision procedure (compiled) or kernel, and axioms
-        if task.fast is not None and compiled:
-            if not run_fast(task.fast, timeout):
-                raise Reject("the decision procedure returned false: " + task.fast_explain())
-            report.checked = task.checked + [
-                f"{task.fast_call} = true (compiled Lean decision procedure, ot_check)",
-                task.fast_meaning]
-            report.level = ("compiled check, not verified: trusts the Lean compiler "
-                            "(run `ot verify` without --compiled for the kernel check)")
-            report.trusted = [f"Lean compiler and runtime ({toolchain}), which run the decision procedure",
-                              f"Lean kernel ({toolchain}), which checked the library theorems at build time",
-                              *task.trusted]
+        # 4–5. registered decision procedure (kernel lane, or compiled on request), or a Lean file
+        if task.fast is not None:
+            if not run_fast(task.fast, timeout, compiled):
+                lane = "the compiled check" if compiled else "the Lean kernel"
+                raise Reject(f"{lane} returned false: " + task.fast_explain())
+            if compiled:
+                report.checked = task.checked + [f"{task.fast_call} = true (compiled lane, ot_check)",
+                                                 task.fast_meaning]
+                report.level = ("compiled check, not verified: trusts the Lean compiler "
+                                "(run `ot verify` without --compiled for the kernel check)")
+                report.trusted = [f"Lean compiler and runtime ({toolchain}), which ran the decision procedure",
+                                  f"Lean kernel ({toolchain}), which checked the library theorems at build time",
+                                  *task.trusted]
+            else:
+                report.checked = task.checked + [f"{task.fast_call} = true (Lean kernel, ot_kernel)",
+                                                 task.fast_meaning]
+                report.trusted = [f"Lean kernel ({toolchain}), which evaluated the decision procedure and "
+                                  "checked the library theorems at build time",
+                                  "ot_kernel's translation of the certificate's numbers into the proposition "
+                                  "`check args = true` (verifier/backends/formal/kernel_check.lean)",
+                                  *task.trusted]
         else:
             ok, out = run_lean(task.lean, timeout)
             if not ok:
                 raise Reject("the Lean kernel refused the certificate: " + task.explain(out))
             axioms = check_axioms(out, task.theorem)
-            report.checked = task.checked + (
-                [f"{task.fast_call} = true (Lean kernel)", task.fast_meaning] if task.fast is not None else []
-            ) + [f"axioms of {task.theorem}: {', '.join(axioms) or 'none'} (Lean)"]
+            report.checked = task.checked + [f"axioms of {task.theorem}: {', '.join(axioms) or 'none'} (Lean)"]
         report.accepted = True
     except Reject as e:
         report.reason = str(e)

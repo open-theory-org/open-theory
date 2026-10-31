@@ -10,7 +10,7 @@ is trusted: the certificate states the integer inequality
 
 def tail_numerator(n, k, a, b):
     """b^n · P(Bin(n, a/b) ≤ k) for a ≤ b: `OpenTheory.BinomialTail.tailNumerator`, computed by
-    Horner's rule like `OpenTheory.FastCheck.tailFast` (linear in k)."""
+    Horner's rule like `OpenTheory.Checks.tailFast` (linear in k)."""
     if n <= k:
         return b ** n
     q, c, p, s = b - a, 1, 1, 1

@@ -7,8 +7,8 @@ The bundle carries data only. Both handlers
   3. recompute every sampled index from the round signature and check each sampled item's Merkle
      inclusion in the committed pool,
   4. compute the sampled bits with the committed procedure,
-  5. run the decision procedure `OpenTheory.FastCheck.poolCheck` on each bit vector, in the kernel
-     (or compiled with `--compiled`, which is not `verified`); its meaning is proved once,
+  5. run the registered check `OpenTheory.Checks.poolCheck` on each bit vector, in the kernel
+     (`ot_kernel`; or compiled with `--compiled`, which is not `verified`); its meaning is proved once,
   6. sum δ over every commitment the issuer declares for the same round.
 The Lean theorems `DesignSampling.rate_sound` (`pool-rate`) and `JudgedRate.bad_frac` with
 `JudgedRate.Claim.sound` (`judged-rate`) turn 1–5 into the guarantee. Steps 1–4 and 6 are this
@@ -30,7 +30,6 @@ from .heldout_error import Task, parse_fraction
 
 DOMAIN = b"opentheory/pool-rate/v0.1"
 COMMITMENT_FORMAT = "opentheory-pool-commitment/0.1"
-THEOREM = "OTVerify.certificate"
 PROCEDURES = ("exact-match", "judged-exact-match")
 MAX_N = 50_000  # v0.1: bundle size (one inclusion proof per item) and kernel-mode budget
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
@@ -230,39 +229,20 @@ def parse_part(obj, where: str):
     return k, num, den, witness
 
 
+def levels(n: int) -> int:
+    """Halving depth `l` with `n ≤ 64 · 2ˡ`, the witness `Checks.poolCheck` verifies."""
+    return max(0, ((n + 63) // 64 - 1).bit_length())
+
+
 def check_args(bits: list[bool], part, d: int) -> list[str]:
-    """Arguments of `FastCheck.poolCheck` / `poolCheckWitness` (as for `ot_check`)."""
+    """A request for `Checks.poolCheck` / `poolCheckWitness` (registry names `pool`, `pool-witness`)."""
     k, num, den, witness = part
+    n = len(bits)
     x = hex(sum(1 << i for i, bit in enumerate(bits) if bit))
     if witness is None:
-        return ["pool", x, str(len(bits)), str(k), str(num), str(den), str(d)]
-    return ["pool-witness", x, str(len(bits)), str(k), str(num), str(den), str(witness[0]), str(witness[1]), str(d)]
-
-
-def lean_source(groups: list[list[str]]) -> str:
-    """Kernel mode: the same decision procedures, evaluated by the kernel. Imports core Lean only."""
-    props = [f"{'poolCheck' if g[0] == 'pool' else 'poolCheckWitness'} {' '.join(g[1:])} = true" for g in groups]
-    parts = "".join(f"set_option maxRecDepth 100000 in\ntheorem part{i} : {p} := by decide +kernel\n\n"
-                    for i, p in enumerate(props))
-    conj = " ∧ ".join(f"({p})" for p in props)
-    proof = "⟨" + ", ".join(f"part{i}" for i in range(len(props))) + "⟩" if len(props) > 1 else "part0"
-    return f"""import Foundations.Arithmetic.FastCheck
-
-namespace OTVerify
-open OpenTheory.FastCheck
-
-{parts}/-- Written by the verifier from the certificate's parameters. -/
-theorem certificate : {conj} := {proof}
-
-end OTVerify
-
-#print axioms {THEOREM}
-"""
-
-
-def explain(out: str) -> str:
-    m = re.search(r"Check\.lean:\d+:\d+: error[^\n]*\n?(.*)", out)
-    return "the decision procedure is false" + (f" ({m.group(1).strip()[:200]})" if m else "")
+        return ["pool", x, str(n), str(levels(n)), str(k), str(num), str(den), str(d)]
+    return ["pool-witness", x, str(n), str(levels(n)), str(k), str(num), str(den),
+            str(witness[0]), str(witness[1]), str(d)]
 
 
 def holds(bits: list[bool], part, d: int) -> bool:
@@ -332,7 +312,7 @@ def handle(bundle: Path, cert: dict, load_file) -> Task:
     checked += [f"{n} bits recomputed with 'exact-match' (verifier): {ones} set",
                 f"attempt accounting over {count} declared commitment(s): total δ = {total}"]
     trusted = [
-        "statements of OpenTheory.FastCheck, PoolRate.Claim.of_poolCheck, DesignSampling.rate_sound "
+        "statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck, DesignSampling.rate_sound "
         "and selective_sound",
         "this verifier's index derivation, Merkle and exact-match code (verifier/core/pool_rate.py, merkle.py)",
         "SHA-256 as a random oracle for the beacon expansion (A5-beacon)",
@@ -342,8 +322,8 @@ def handle(bundle: Path, cert: dict, load_file) -> Task:
                        "labels a rule fixed before the round would give (they were not committed)")
     reason = lambda: why_false("claim", bits, part, d)
     return Task(
-        lean=lean_source([args]),
-        theorem=THEOREM,
+        lean="",
+        theorem="",
         guarantee="pool-rate-exact-match",
         words=(f"At most {num / den:.4%} of the {size} committed pool items fail the procedure 'exact-match' "
                f"(logged output ≠ label, canonical JSON). Wrong with probability ≤ {float(total):.3g} "
@@ -356,9 +336,8 @@ def handle(bundle: Path, cert: dict, load_file) -> Task:
             "whether the labels are correct: the rate is relative to them",
             "commitments the issuer made to the same round and did not declare (A7-issuer-identity)",
         ],
-        explain=lambda out: reason() if ": error" in out else explain(out),
         fast=args,
-        fast_call=f"OpenTheory.FastCheck.{describe(part, d, n)}",
+        fast_call=f"OpenTheory.Checks.{describe(part, d, n)}",
         fast_meaning=(f"meaning, proved once: OpenTheory.PoolRate.Claim.of_{fn} turns it into "
                       f"Claim (bitsOf x {n}) {k} ({num}/{den}) (1/{d}), and DesignSampling.rate_sound "
                       "into the bound over seeds"),
@@ -408,8 +387,8 @@ def handle_judged(bundle: Path, cert: dict, load_file) -> Task:
     ]
     reason = lambda: first_false(named)
     return Task(
-        lean=lean_source(groups),
-        theorem=THEOREM,
+        lean="",
+        theorem="",
         guarantee="judged-rate-exact-match",
         words=(f"At most {float(bound):.4%} of the {size} committed pool items fail against gold labels "
                f"(logged output ≠ gold, canonical JSON), from judge verdicts on {n} sampled items and gold "
@@ -418,7 +397,7 @@ def handle_judged(bundle: Path, cert: dict, load_file) -> Task:
                f"Gold-only estimate on the {m} audited items: {sum(fail)}/{m} = {sum(fail) / m:.2%}."),
         checked=checked,
         trusted=[
-            "statements of OpenTheory.FastCheck, PoolRate.Claim.of_poolCheck, JudgedRate.Claim.sound, "
+            "statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck, JudgedRate.Claim.sound, "
             "Claim.sound_alarms and JudgedRate.bad_frac",
             "this verifier's index derivation, Merkle and exact-match code (verifier/core/pool_rate.py, merkle.py)",
             "SHA-256 as a random oracle for the beacon expansion (A5-beacon)",
@@ -428,9 +407,8 @@ def handle_judged(bundle: Path, cert: dict, load_file) -> Task:
             "whether the gold labels are correct: the rate is relative to them (A9-gold-labels)",
             "commitments the issuer made to the same round and did not declare (A7-issuer-identity)",
         ],
-        explain=lambda out: reason() if ": error" in out else explain(out),
         fast=args,
-        fast_call="OpenTheory.FastCheck: " + "; ".join(
+        fast_call="OpenTheory.Checks: " + "; ".join(
             f"{nm}: {describe(part, d, len(bits))}" for nm, bits, part, d in named),
         fast_meaning=(f"meaning, proved once: PoolRate.Claim.of_poolCheck on each part, then "
                       f"JudgedRate.{theorem} gives true rate ≤ {bound} unless the seed is in JudgedRate.bad, "
