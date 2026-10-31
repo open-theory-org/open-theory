@@ -69,6 +69,8 @@ import Foundations.Probability.ChernoffWitness
 import Specs.PoolRate
 import Foundations.Probability.JudgedSampling
 import Specs.JudgedRate
+import Foundations.Probability.SeedBlocks
+import Specs.RateGap
 import Theory.Learning.OccamBinomial
 import Foundations.Arithmetic.Kronecker
 import Models.QuantizedMLP.Packed

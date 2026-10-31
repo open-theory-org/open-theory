@@ -1262,6 +1262,25 @@ Apply Theorem~\ref{thm:pool_rate_sound} to each part, on the seed or its prefix,
 bound; outside the bad set the rectifier identity combines the three bounds.
 \end{proof}
 
+\section{Comparing two pools}
+
+\begin{theorem}[Rate gap and ratio between two committed pools]\label{thm:rate_gap}
+\lean{OpenTheory.DesignSampling.seedFrac_restrict, OpenTheory.RateGap.bad_frac, OpenTheory.RateGap.Claim.sound, OpenTheory.RateGap.interval_sound, OpenTheory.RateGap.gap_sound, OpenTheory.RateGap.ratio_sound}
+\leanok
+\uses{thm:pool_rate_sound, lem:rectifier}
+Two committed pools $A$ and $B$ and a property fixed before one beacon round; the first $n_A$
+blocks of the seed sample $A$, the next $n_B$ sample $B$ (fixed blocks of a uniform seed are
+uniform). Upper bounds on the rate of the property and of its complement in each pool give, except
+with probability at most $(1+N_A/2^b)^{n_A}(\delta_A+\delta_A')+(1+N_B/2^b)^{n_B}(\delta_B+\delta_B')$
+over the seed: both rates lie in $[1-q,p]$; $|r_A-r_B|\le\max(p_A+q_B-1,\,p_B+q_A-1)$; and
+$c\,r_B\le r_A$ whenever $c\,p_B\le 1-q_A$ (the four-fifths rule is $c=4/5$).
+\end{theorem}
+\begin{proof}
+\leanok
+Each pool's blocks are uniform, so each of the four rate claims is sound by
+Theorem~\ref{thm:pool_rate_sound}; take a union bound, and combine the intervals outside the bad set.
+\end{proof}
+
 \chapter{Gradient-descent plateau and singular learning}
 
 \begin{theorem}[The gradient-descent plateau: exact mode dynamics]\label{thm:plateau_modes}

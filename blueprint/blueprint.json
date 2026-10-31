@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-31T23:07:09.680430+00:00",
+  "generatedAt": "2026-10-31T23:10:22.231631+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 105,
+  "nodesCount": 106,
   "nodes": [
     {
       "id": "def:sample",
@@ -1621,6 +1621,29 @@
       "informalSketch": "Apply Theorem~\\ref{thm:pool_rate_sound} to each part, on the seed or its prefix, and take a union\nbound; outside the bad set the rectifier identity combines the three bounds."
     },
     {
+      "id": "thm:rate_gap",
+      "kind": "theorem",
+      "title": "Rate gap and ratio between two committed pools",
+      "leanName": "OpenTheory.DesignSampling.seedFrac_restrict",
+      "leanNames": [
+        "OpenTheory.DesignSampling.seedFrac_restrict",
+        "OpenTheory.RateGap.bad_frac",
+        "OpenTheory.RateGap.Claim.sound",
+        "OpenTheory.RateGap.interval_sound",
+        "OpenTheory.RateGap.gap_sound",
+        "OpenTheory.RateGap.ratio_sound"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "thm:pool_rate_sound",
+        "lem:rectifier"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Each pool's blocks are uniform, so each of the four rate claims is sound by\nTheorem~\\ref{thm:pool_rate_sound}; take a union bound, and combine the intervals outside the bad set."
+    },
+    {
       "id": "thm:plateau_modes",
       "kind": "theorem",
       "title": "The gradient-descent plateau: exact mode dynamics",
@@ -2206,14 +2229,11 @@
     {
       "id": "def:spec",
       "kind": "definition",
-      "title": "Observable, domain, aggregate, specification and guarantee",
+      "title": "Property, scope, specification and guarantee",
       "leanName": "OpenTheory.Property",
       "leanNames": [
         "OpenTheory.Property",
-        "OpenTheory.Quantity",
-        "OpenTheory.Observable",
-        "OpenTheory.Domain",
-        "OpenTheory.Aggregate",
+        "OpenTheory.Scope",
         "OpenTheory.Spec",
         "OpenTheory.Spec.Target",
         "OpenTheory.Sound"
@@ -2254,8 +2274,7 @@
         "OpenTheory.judgedRate_sound",
         "OpenTheory.judgedRate_alarms_sound",
         "OpenTheory.seedLaw",
-        "OpenTheory.seedLaw_apply",
-        "OpenTheory.poolRate_eq_card"
+        "OpenTheory.seedLaw_apply"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
