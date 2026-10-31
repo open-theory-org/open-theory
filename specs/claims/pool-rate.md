@@ -1,7 +1,8 @@
 +++
 id = "pool-rate"
-property = "no-event"
-scope = "population-pool"
+observable = "event"
+domain = "pool"
+aggregate = "meanLe"
 models = ["any-system"]
 lean = ["OpenTheory.PoolRate.Claim", "OpenTheory.PoolRate.Claim.of_poolCheck"]
 sound = ["OpenTheory.poolRate_sound"]

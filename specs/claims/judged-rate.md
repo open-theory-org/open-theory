@@ -1,7 +1,8 @@
 +++
 id = "judged-rate"
-property = "no-event"
-scope = "population-pool"
+observable = "event"
+domain = "pool"
+aggregate = "meanLe"
 models = ["any-system"]
 lean = ["OpenTheory.JudgedRate.Claim"]
 sound = ["OpenTheory.judgedRate_sound", "OpenTheory.judgedRate_alarms_sound"]

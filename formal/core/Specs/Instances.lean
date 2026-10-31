@@ -7,18 +7,18 @@ import Scopes.OnRegion
 /-!
 # The claim templates as instances of one construction
 
-Each claim template of the repository is a specification (a property and a scope, `Specs.Basic`)
-whose certificates give the guarantee `Sound`: the probability that the check accepts a false
+Each claim template of the repository is a specification (an observable, a domain and an
+aggregate, `Specs.Basic`) whose certificates give the guarantee `Sound`: the probability that the check accepts a false
 claim is at most `δ`, uniformly over the parameters the certifier chooses after seeing the
 evidence. These theorems are the meaning of every certificate; the registries in `specs/` and the
 catalog refer to them by name. See `docs/specs.md`.
 
-| Template | Property | Scope | Randomness | δ |
-| --- | --- | --- | --- | --- |
-| `OnRegion` | the model predicts `c` | region (a box) | none | `0` |
-| `heldout-error` | the loss is `0` | population | IID sample from any `D` | `δ` |
-| `pool-rate` | the event does not occur | population | beacon seed over a pool | `(1 + N/2^b)ⁿ δ` |
-| `judged-rate` | the true event does not occur | population | beacon seed, judge + gold audit | `(1 + N/2^b)ⁿ δJ + (1 + N/2^b)ᵐ δA` |
+| Template | Observable | Domain | Aggregate | Randomness | δ |
+| --- | --- | --- | --- | --- | --- |
+| `OnRegion` | property: predicts `c` | region (a box) | all | none | `0` |
+| `heldout-error` | property: wrong | distribution `D` | rate ≤ `p` | IID sample from any `D` | `δ` |
+| `pool-rate` | property: the event | committed pool | rate ≤ `p` | beacon seed | `(1 + N/2^b)ⁿ δ` |
+| `judged-rate` | property: the true event | committed pool | rate ≤ `pJ + pA` | beacon seed, judge + gold audit | `(1 + N/2^b)ⁿ δJ + (1 + N/2^b)ᵐ δA` |
 -/
 
 open MeasureTheory
@@ -33,8 +33,8 @@ theorem onRegion_sound {m k : ℕ} (g : Exact.Net m k) (r : g.Rules Exact.Interv
     (θ : g.Params) :
     Sound (Measure.dirac ())
       (fun _ (bc : Exact.Box × Fin k) => OnRegion.certify g r θ bc.1 bc.2 = true)
-      (fun bc => (⟨fun θ x => Predicts (g.eval θ x) bc.2, .region {x | Exact.InBox bc.1 x}⟩ :
-        Spec g.Params (TorchLean.Tensor ℝ [m])).Target θ (fun _ => 0)) 0 := by
+      (fun bc => (⟨.property fun θ x => Predicts (g.eval θ x) bc.2,
+        .region {x | Exact.InBox bc.1 x}, .all⟩ : Spec g.Params (TorchLean.Tensor ℝ [m])).Target θ) 0 := by
   rw [sound_exact_iff]
   rintro ⟨b, c⟩ h
   exact fun x hx => (OnRegion.certify_sound g r θ b c h).2 x hx
@@ -50,12 +50,11 @@ theorem heldOut_sound {H Z : Type*} [MeasurableSpace Z] {ℓ : H → Z → ℝ} 
     Sound (StatLean.StatisticalLearning.sampleLaw D n)
       (fun s (kp : ℕ × ℝ) => BinomialTail.numErrors ℓ s h ≤ kp.1 ∧ 0 ≤ kp.2 ∧
         BinomialTail.binomCdf n kp.1 kp.2 ≤ δ)
-      (fun kp => (⟨fun h z => ℓ h z = 0, .population kp.2⟩ : Spec H Z).Target h D.real) δ := by
-  have hset : {z | ¬ ℓ h z = 0} = {z | ℓ h z = 1} := by
-    ext z; rcases h01 z with h0 | h1 <;> simp [*]
+      (fun kp => (⟨.property fun h z => ℓ h z = 1, .distribution ‹_› D, .meanLe kp.2⟩ :
+        Spec H Z).Target h) δ := by
   refine (measure_mono fun s hs => ?_).trans (BinomialTail.clopperPearson h01 hmeas δ)
   obtain ⟨⟨k, p⟩, ⟨hk, hp, hcdf⟩, hnot⟩ := hs
-  simp only [Spec.target_population, not_le, hset] at hnot
+  simp only [Spec.target_meanLe_distribution, not_le] at hnot
   rw [← BinomialTail.risk_eq_measureReal h01 hmeas] at hnot
   exact BinomialTail.mem_clopperPearson_event h01 hmeas hk hp hcdf hnot
 
@@ -78,6 +77,12 @@ theorem seedLaw_apply {n b : ℕ} (S : Set (Fin n → Fin (2 ^ b))) :
     exact Fintype.card_subtype _
   · rw [← ENNReal.ofReal_natCast]; push_cast; rfl
 
+open Classical in
+/-- The pool rate of `e` is its fraction of pool items (whatever the decidability instance). -/
+theorem poolRate_eq_card {N : ℕ} (e : Fin N → Prop) :
+    DesignSampling.poolRate e = ((Finset.univ.filter fun j => e j).card : ℝ) / N := by
+  unfold DesignSampling.poolRate; congr 3
+
 /-- **`pool-rate`.** For every property `e` fixed before the seed, the probability over seeds that
 the claim holds for some count and bound `p` while more than a fraction `p` of the pool has `e` is
 at most `(1 + N/2^b)ⁿ · δ`. -/
@@ -86,16 +91,16 @@ theorem poolRate_sound {N n b : ℕ} [NeZero N] (e : Fin N → Prop) [DecidableP
     Sound (seedLaw n b)
       (fun seed (kp : ℕ × ℝ) =>
         PoolRate.Claim (fun i => decide (e (DesignSampling.derive seed i))) kp.1 kp.2 δ)
-      (fun kp => (⟨fun (_ : Unit) j => ¬ e j, .population kp.2⟩ : Spec Unit (Fin N)).Target ()
-        (DesignSampling.uniformPool N).real)
+      (fun kp => (⟨.property fun (_ : Unit) j => e j, .pool N id, .meanLe kp.2⟩ :
+        Spec Unit (Fin N)).Target ())
       ((1 + (N : ℝ) / 2 ^ b) ^ n * δ) := by
   have hsub : {seed : Fin n → Fin (2 ^ b) | ∃ kp : ℕ × ℝ,
       PoolRate.Claim (fun i => decide (e (DesignSampling.derive seed i))) kp.1 kp.2 δ ∧
-      ¬ (⟨fun (_ : Unit) j => ¬ e j, .population kp.2⟩ : Spec Unit (Fin N)).Target ()
-        (DesignSampling.uniformPool N).real} ⊆ DesignSampling.bad e δ := by
+      ¬ (⟨.property fun (_ : Unit) j => e j, .pool N id, .meanLe kp.2⟩ :
+        Spec Unit (Fin N)).Target ()} ⊆ DesignSampling.bad e δ := by
     rintro seed ⟨⟨k, p⟩, hc, hnot⟩
-    simp only [Spec.target_population, not_not, DesignSampling.uniformPool_real, not_le] at hnot
-    exact (PoolRate.Claim.sound e seed hc).resolve_left (not_le.2 hnot)
+    simp only [Spec.target_meanLe_pool, id, not_le] at hnot
+    exact (PoolRate.Claim.sound e seed hc).resolve_left (by rw [poolRate_eq_card, not_le]; convert hnot)
   unfold Sound
   refine (measure_mono hsub).trans ?_
   rw [seedLaw_apply]
@@ -113,14 +118,15 @@ theorem judgedRate_sound {N n m b : ℕ} [NeZero N] (eT eJ : Fin N → Prop) [De
           (fun i => decide (JudgedRate.missed eT eJ
             (DesignSampling.derive (DesignSampling.prefixSeed h s) i)))
           ps.1 ps.2.1 ps.2.2.1 ps.2.2.2 δJ δA)
-      (fun ps => (⟨fun (_ : Unit) j => ¬ eT j, .population (ps.2.2.1 + ps.2.2.2)⟩ :
-        Spec Unit (Fin N)).Target () (DesignSampling.uniformPool N).real)
+      (fun ps => (⟨.property fun (_ : Unit) j => eT j, .pool N id, .meanLe (ps.2.2.1 + ps.2.2.2)⟩ :
+        Spec Unit (Fin N)).Target ())
       ((1 + (N : ℝ) / 2 ^ b) ^ n * δJ + (1 + (N : ℝ) / 2 ^ b) ^ m * δA) := by
   unfold Sound
   refine (measure_mono (t := JudgedRate.bad eT eJ h δJ δA 0) ?_).trans ?_
   · rintro s ⟨⟨kJ, kA, pJ, pA⟩, hc, hnot⟩
-    simp only [Spec.target_population, not_not, DesignSampling.uniformPool_real, not_le] at hnot
-    exact (JudgedRate.Claim.sound eT eJ h s hc).resolve_left (not_le.2 hnot)
+    simp only [Spec.target_meanLe_pool, id, not_le] at hnot
+    exact (JudgedRate.Claim.sound eT eJ h s hc).resolve_left
+      (by rw [poolRate_eq_card, not_le]; convert hnot)
   · rw [seedLaw_apply]
     refine ENNReal.ofReal_le_ofReal ((JudgedRate.bad_frac eT eJ h hJ hA le_rfl).trans ?_)
     simp
@@ -138,14 +144,15 @@ theorem judgedRate_alarms_sound {N n m b : ℕ} [NeZero N] (eT eJ : Fin N → Pr
           ps.1.1 ps.1.2.1 ps.2.1 ps.2.2.1 δJ δA ∧
         PoolRate.Claim (fun i => decide (JudgedRate.notAlarm eT eJ
           (DesignSampling.derive (DesignSampling.prefixSeed h s) i))) ps.1.2.2 ps.2.2.2 δB)
-      (fun ps => (⟨fun (_ : Unit) j => ¬ eT j, .population (ps.2.1 + ps.2.2.1 + ps.2.2.2 - 1)⟩ :
-        Spec Unit (Fin N)).Target () (DesignSampling.uniformPool N).real)
+      (fun ps => (⟨.property fun (_ : Unit) j => eT j, .pool N id,
+        .meanLe (ps.2.1 + ps.2.2.1 + ps.2.2.2 - 1)⟩ : Spec Unit (Fin N)).Target ())
       ((1 + (N : ℝ) / 2 ^ b) ^ n * δJ + (1 + (N : ℝ) / 2 ^ b) ^ m * (δA + δB)) := by
   unfold Sound
   refine (measure_mono (t := JudgedRate.bad eT eJ h δJ δA δB) ?_).trans ?_
   · rintro s ⟨⟨⟨kJ, kA, kB⟩, ⟨pJ, pA, pB⟩⟩, ⟨hc, hb⟩, hnot⟩
-    simp only [Spec.target_population, not_not, DesignSampling.uniformPool_real, not_le] at hnot
-    exact (JudgedRate.Claim.sound_alarms eT eJ h s hc hb).resolve_left (not_le.2 hnot)
+    simp only [Spec.target_meanLe_pool, id, not_le] at hnot
+    exact (JudgedRate.Claim.sound_alarms eT eJ h s hc hb).resolve_left
+      (by rw [poolRate_eq_card, not_le]; convert hnot)
   · rw [seedLaw_apply]
     exact ENNReal.ofReal_le_ofReal (by
       have := JudgedRate.bad_frac (b := b) eT eJ h hJ hA hB

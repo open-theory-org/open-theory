@@ -1,4 +1,5 @@
 +++
+kind = "property"
 id = "predicts"
 object = "learned function"
 test = "the model's scores rank class c strictly above every other class on x"

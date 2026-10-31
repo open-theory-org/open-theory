@@ -1,7 +1,8 @@
 +++
 id = "heldout-error"
-property = "zero-loss"
-scope = "population-iid"
+observable = "wrong"
+domain = "distribution"
+aggregate = "meanLe"
 models = ["quantized-mlp"]
 lean = ["OpenTheory.HeldOut.Claim", "OpenTheory.HeldOut.Claim.of_tail"]
 sound = ["OpenTheory.heldOut_sound"]

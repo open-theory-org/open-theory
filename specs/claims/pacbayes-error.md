@@ -1,7 +1,8 @@
 +++
 id = "pacbayes-error"
-property = "zero-loss"
-scope = "population-iid"
+observable = "wrong"
+domain = "distribution"
+aggregate = "meanLe"
 models = ["quantized-mlp"]
 lean = ["OpenTheory.PACBayes.catoni_pacBayes"]
 sound = []         # bridge to `Sound` planned

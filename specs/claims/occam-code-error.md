@@ -1,7 +1,8 @@
 +++
 id = "occam-code-error"
-property = "zero-loss"
-scope = "population-iid"
+observable = "wrong"
+domain = "distribution"
+aggregate = "meanLe"
 models = ["quantized-mlp"]
 lean = ["OpenTheory.QuantizedMLP.selected_code_certificate"]
 sound = []         # bridge to `Sound` planned: the bound is uniform over every code the learner may select

@@ -1,7 +1,8 @@
 +++
 id = "mlp-exact"
-property = "exact-output"
-scope = "region"
+observable = "exact-output"
+domain = "region"
+aggregate = "all"
 models = ["relu-mlp"]
 lean = ["OpenTheory.Checks.MLP.check"]
 sound = []         # open: the theorem that acceptance implies the claim is not proved yet

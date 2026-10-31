@@ -85,40 +85,65 @@ region or of most inputs of a population, gives every kind of claim below.
 
 # Specifications
 
-A property alone says nothing about which inputs matter. A **scope** says where the property must
-hold:
+A specification says what is looked at, where, and what is asked of it. It has three fields.
 
-| Scope | Meaning | How it is checked |
-| --- | --- | --- |
-| **Region** | on every input of a set (a box around an applicant, a finite list of inputs) | exactly: the kernel evaluates a check whose soundness is proved once |
-| **Population** | on all but a fraction `p` of the population the evidence was sampled from | statistically: an exact binomial bound on a sample, with confidence `1 − δ` |
+**The observable.** A property (a yes/no test, as above), or a **quantity**: a value of the model
+on one input in `[0, 1]`, such as a bounded loss or a score. Calibration and the Brier score need
+quantities. A property's value is `1` where it holds and `0` elsewhere, so its mean over a
+population is its rate. The input may be a tuple: a pair `(x, x')` for monotonicity and individual
+fairness, a pair `(pos, neg)` for AUC, a whole trace for an agent.
 
-A **specification** is a property together with its scope, and its **target** is what it asks of a
-model:
+**The domain.** Which inputs the specification is about:
+
+| Domain | Meaning |
+| --- | --- |
+| Region `R` | every input of a set: a box around an applicant, a finite list of inputs |
+| Committed pool | a finite pool of items fixed before any sample is drawn, each with weight `1/N` |
+| Distribution `D` | the population the examples were drawn from, known only through an assumption (A1) |
+| Pair | two of the above, compared with each other: two groups, two time windows, two versions |
+
+A pool and a distribution are different claims with different assumptions, which is why the domain
+names its population.
+
+**The aggregate.** What is asked of the domain: the observable holds everywhere (`all`); its mean,
+or rate, is at most or at least a bound (`meanLe`, `meanGe`); a quantile is at most a bound
+(`quantileLe`); and on a pair, the two means differ by at most `ε` (`gapLe`) or have a ratio at
+least `c` (`ratioGe`).
 
 ```lean
-inductive Scope (X : Type*)
-  | region (R : Set X)
-  | population (p : ℝ)
+inductive Observable (M X)  | property (P : M → X → Prop) | quantity (Q : M → X → ℝ)
+inductive Domain (X)        | region (R : Set X) | pool (N : ℕ) (item : Fin N → X)
+                            | distribution (D : Measure X) | pair (d₁ d₂ : Domain X)
+inductive Aggregate         | all | meanLe (a) | meanGe (a) | quantileLe (α t)
+                            | gapLe (ε) | ratioGe (c)
 
-structure Spec (M X : Type*) where
-  property : Property M X
-  scope    : Scope X
-
-def Spec.Target (σ : Spec M X) (m : M) (weight : Set X → ℝ) : Prop :=
-  match σ.scope with
-  | .region R     => ∀ x ∈ R, σ.property m x
-  | .population p => weight {x | ¬ σ.property m x} ≤ p
+structure Spec (M X) where
+  observable : Observable M X
+  domain     : Domain X
+  aggregate  : Aggregate
 ```
 
-`weight` is the population: a data distribution `D` for an IID sample, the fraction of a committed
-pool for a design-based sample.
+Its **target**, `Spec.Target σ m`, is what it asks of the model `m`. Combinations without a
+meaning, such as a mean over a region or a gap over a single domain, have the target `False`: no
+certificate can establish them. Every known claim fits:
+
+| Claim | Observable | Domain | Aggregate |
+| --- | --- | --- | --- |
+| error rate on production data | property: wrong | committed pool | rate ≤ `p` |
+| held-out error | property: wrong | distribution | rate ≤ `p` |
+| local robustness | property: predicts `c` | region (a ball) | all |
+| monotonicity | property on `(x, x')`: `x ≤ x' ⇒ f(x) ≤ f(x')` | region | all |
+| calibration, Brier score | quantity | committed pool | mean ≤ `m` |
+| demographic parity | property: approved | pair of pools (two groups) | gap ≤ `ε` |
+| disparate impact | property: approved | pair of pools | ratio ≥ `0.8` |
+| AUC | property on `(pos, neg)`: ranked correctly | pairs from two pools | rate ≥ `q` |
+| latency p99 | quantity | committed pool of runs | quantile ≤ `t` |
 
 A **claim** is a specification with its numbers filled in, for one model: "this model predicts
 class 0 on every input within 3 of `x₀`", "this model errs on at most 3% of the population, with
 confidence 99.9%". A **certificate** is the evidence that a verifier checks for one claim.
 
-Every certificate gives the same guarantee, whatever its scope:
+Every certificate gives the same guarantee, whatever its specification:
 
 ```lean
 def Sound (P : Measure Ω) (accepts : Ω → Θ → Prop) (target : Θ → Prop) (δ : ℝ) : Prop :=
@@ -127,9 +152,14 @@ def Sound (P : Measure Ω) (accepts : Ω → Θ → Prop) (target : Θ → Prop)
 
 In words: **over the randomness of how the evidence was collected, the probability that the check
 accepts a claim that is false is at most `δ`**, even when the certifier chooses the claim (the
-count, the bound, the box) after seeing the evidence. For a region scope there is no randomness and
+count, the bound, the box) after seeing the evidence. For a region there is no randomness and
 `δ = 0`: an accepted claim is true. This one sentence is what a certificate means, and what a
 regulator or an auditor can rely on.
+
+A specification is checkable when a rule proves `Sound` for its combination of aggregate, domain,
+observable and model family. Each rule is proved once, for every observable of its class; the open
+ones, in the order the bank milestone needs them, are trees on regions, gaps and ratios between
+pools, means of quantities, then AUC (`specs/taxonomy.md`).
 
 
 # Assurance

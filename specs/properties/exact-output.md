@@ -1,4 +1,5 @@
 +++
+kind = "property"
 id = "exact-output"
 object = "learned function"
 test = "the network outputs exactly Y on the input x"

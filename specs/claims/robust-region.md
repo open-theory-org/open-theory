@@ -1,7 +1,8 @@
 +++
 id = "robust-region"
-property = "predicts"
-scope = "region"
+observable = "predicts"
+domain = "region"
+aggregate = "all"
 models = ["relu-mlp"]
 lean = ["OpenTheory.OnRegion.certify", "OpenTheory.OnRegion.certify_sound", "OpenTheory.OnRegion.robust_of_certify"]
 sound = ["OpenTheory.onRegion_sound"]
