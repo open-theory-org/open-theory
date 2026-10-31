@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-31T23:10:22.231631+00:00",
+  "generatedAt": "2026-10-31T23:23:43.867586+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
   "nodesCount": 106,
@@ -2229,11 +2229,14 @@
     {
       "id": "def:spec",
       "kind": "definition",
-      "title": "Property, scope, specification and guarantee",
+      "title": "Observable, domain, aggregate, specification and guarantee",
       "leanName": "OpenTheory.Property",
       "leanNames": [
         "OpenTheory.Property",
-        "OpenTheory.Scope",
+        "OpenTheory.Quantity",
+        "OpenTheory.Observable",
+        "OpenTheory.Domain",
+        "OpenTheory.Aggregate",
         "OpenTheory.Spec",
         "OpenTheory.Spec.Target",
         "OpenTheory.Sound"
@@ -2274,7 +2277,8 @@
         "OpenTheory.judgedRate_sound",
         "OpenTheory.judgedRate_alarms_sound",
         "OpenTheory.seedLaw",
-        "OpenTheory.seedLaw_apply"
+        "OpenTheory.seedLaw_apply",
+        "OpenTheory.poolRate_eq_card"
       ],
       "statementFormalized": true,
       "proofFormalized": true,

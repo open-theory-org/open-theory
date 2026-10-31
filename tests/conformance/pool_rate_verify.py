@@ -186,7 +186,7 @@ def main():
         "labels_after_sampling_flipped": (flip_labels, None, False),
         "cherry_picked_item": (lambda b: cherry_pick(b, pool, tree, P.merkle), "the beacon selects pool index", False),
         "hidden_failure": (hide_failure, "Merkle inclusion fails", False),
-        "dropped_item": (drop_item, "the commitment fixes n", False),
+        "dropped_item": (drop_item, "the commitment fixes", False),
         "forged_beacon": (forge_beacon, "invalid drand signature", False),
         "other_round": (other_round, "differs from the committed round", False),
         "commitment_edited_after_stamp": (edit_commitment, "timestamp token is invalid", False),

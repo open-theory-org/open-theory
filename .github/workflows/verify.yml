@@ -76,6 +76,7 @@ jobs:
           python3 -m pip install py_arkworks_bls12381 || python3 -m pip install py_ecc
           python3 tests/conformance/pool_rate_verify.py
           python3 tests/conformance/judged_rate_verify.py
+          python3 tests/conformance/rate_gap_verify.py
 
       - name: Upload blueprint graph
         uses: actions/upload-artifact@v4

@@ -1,5 +1,6 @@
 import Foundations.Probability.SeedBlocks
 import Specs.Instances
+import Specs.Basic
 
 /-!
 # Claim template `rate-gap`, v0.1
@@ -135,25 +136,75 @@ theorem interval_sound (h1 : 0 ≤ δA) (h2 : 0 ≤ δA') (h3 : 0 ≤ δB) (h4 :
       (δTotal NA NB nA nB b δA δA' δB δB') :=
   sound_of_bad h1 h2 h3 h4 fun _ _ hc hn => hc.sound.resolve_left hn
 
-/-- **Rate gap** (demographic parity difference for approvals of two groups). -/
+/-! ### The two aggregates as specs on a pair of pools -/
+
+/-- The property on the two pools at once: items of `A` on the left, of `B` on the right. -/
+def pairEvent (eA : Fin NA → Prop) (eB : Fin NB → Prop) : Property Unit (Fin NA ⊕ Fin NB) :=
+  fun _ x => Sum.elim eA eB x
+
+/-- The pair domain: pool `A` (`NA` items) and pool `B` (`NB` items). -/
+def pools (NA NB : ℕ) : Domain (Fin NA ⊕ Fin NB) := .pair (.pool NA Sum.inl) (.pool NB Sum.inr)
+
+omit [DecidablePred eA] [DecidablePred eB] in
+theorem mean_poolA : (Observable.property (pairEvent eA eB)).mean () (.pool NA Sum.inl) =
+    some (poolRate eA) := by
+  classical
+  simp only [Observable.mean, NeZero.ne NA, ite_false, Observable.value, pairEvent, Sum.elim_inl,
+    poolRate]
+  congr 2
+  rw [Finset.card_filter]
+  push_cast
+  exact Finset.sum_congr rfl fun j _ => by by_cases h : eA j <;> simp [h]
+
+omit [DecidablePred eA] [DecidablePred eB] in
+theorem mean_poolB : (Observable.property (pairEvent eA eB)).mean () (.pool NB Sum.inr) =
+    some (poolRate eB) := by
+  classical
+  simp only [Observable.mean, NeZero.ne NB, ite_false, Observable.value, pairEvent, Sum.elim_inr,
+    poolRate]
+  congr 2
+  rw [Finset.card_filter]
+  push_cast
+  exact Finset.sum_congr rfl fun j _ => by by_cases h : eB j <;> simp [h]
+
+omit [DecidablePred eA] [DecidablePred eB] in
+/-- The `gapLe` target on the pair is the gap between the two pool rates. -/
+theorem target_gap (ε : ℝ) :
+    (⟨.property (pairEvent eA eB), pools NA NB, .gapLe ε⟩ : Spec Unit (Fin NA ⊕ Fin NB)).Target () ↔
+      |poolRate eA - poolRate eB| ≤ ε := by
+  simp [Spec.Target, pools, mean_poolA, mean_poolB]
+
+omit [DecidablePred eA] [DecidablePred eB] in
+/-- The `ratioGe` target on the pair is the ratio of the two pool rates. -/
+theorem target_ratio (c : ℝ) :
+    (⟨.property (pairEvent eA eB), pools NA NB, .ratioGe c⟩ : Spec Unit (Fin NA ⊕ Fin NB)).Target () ↔
+      c * poolRate eB ≤ poolRate eA := by
+  simp [Spec.Target, pools, mean_poolA, mean_poolB]
+
+/-- **Rate gap** (demographic parity difference for approvals of two groups): the spec
+`(property, pair of pools, gapLe ε)` with `ε = max (pA + qB − 1) (pB + qA − 1)`. -/
 theorem gap_sound (h1 : 0 ≤ δA) (h2 : 0 ≤ δA') (h3 : 0 ≤ δB) (h4 : 0 ≤ δB') :
     Sound (seedLaw (nA + nB) b) (fun s θ => Claim eA eB s θ δA δA' δB δB')
-      (fun θ => |poolRate eA - poolRate eB| ≤ max (θ.pA + θ.qB - 1) (θ.pB + θ.qA - 1))
+      (fun θ => (⟨.property (pairEvent eA eB), pools NA NB,
+        .gapLe (max (θ.pA + θ.qB - 1) (θ.pB + θ.qA - 1))⟩ : Spec Unit (Fin NA ⊕ Fin NB)).Target ())
       (δTotal NA NB nA nB b δA δA' δB δB') := by
   refine sound_of_bad h1 h2 h3 h4 fun _ θ hc hn => hc.sound.resolve_left fun hi => hn ?_
   obtain ⟨a1, a2, b1, b2⟩ := hi
+  rw [target_gap]
   exact abs_sub_le_iff.2 ⟨le_max_of_le_left (by linarith), le_max_of_le_right (by linarith)⟩
 
-/-- **Rate ratio** (the four-fifths rule is `c = 4/5`): a claim with `c · pB ≤ 1 − qA` certifies
-`c · rB ≤ rA`. -/
+/-- **Rate ratio** (the four-fifths rule is `c = 4/5`): the spec `(property, pair of pools,
+ratioGe c)`, certified by a claim with `c · pB ≤ 1 − qA`. -/
 theorem ratio_sound {c : ℝ} (hc0 : 0 ≤ c) (h1 : 0 ≤ δA) (h2 : 0 ≤ δA') (h3 : 0 ≤ δB)
     (h4 : 0 ≤ δB') :
     Sound (seedLaw (nA + nB) b)
       (fun s θ => Claim eA eB s θ δA δA' δB δB' ∧ c * θ.pB ≤ 1 - θ.qA)
-      (fun _ => c * poolRate eB ≤ poolRate eA)
+      (fun _ => (⟨.property (pairEvent eA eB), pools NA NB, .ratioGe c⟩ :
+        Spec Unit (Fin NA ⊕ Fin NB)).Target ())
       (δTotal NA NB nA nB b δA δA' δB δB') := by
   refine sound_of_bad h1 h2 h3 h4 fun _ θ ⟨hc, hcq⟩ hn => hc.sound.resolve_left fun hi => hn ?_
   obtain ⟨a1, a2, b1, b2⟩ := hi
+  rw [target_ratio]
   calc c * poolRate eB ≤ c * θ.pB := mul_le_mul_of_nonneg_left b2 hc0
     _ ≤ 1 - θ.qA := hcq
     _ ≤ poolRate eA := a1

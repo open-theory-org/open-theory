@@ -51,10 +51,10 @@ def read_pool(path: Path) -> list:
         return [json.loads(line) for line in f if line.strip()]
 
 
-def derive_indices(round_: int, signature: bytes, n: int, size: int) -> list[int]:
+def derive_indices(round_: int, signature: bytes, n: int, size: int, start: int = 0) -> list[int]:
     head = DOMAIN + round_.to_bytes(8, "big") + signature
     return [int.from_bytes(hashlib.sha256(head + i.to_bytes(8, "big")).digest(), "big") % size
-            for i in range(n)]
+            for i in range(start, start + n)]
 
 
 # ---------------------------------------------------------------- drand
@@ -200,6 +200,13 @@ def commit(args) -> None:
         if args.alarms_delta_den:
             audit["delta_alarms"] = {"num": 1, "den": args.alarms_delta_den}
         commitment["sample"]["audit"] = audit
+    if args.pool_b:
+        pool_b = read_pool(args.pool_b)
+        tree_b = merkle.levels([merkle.leaf_hash(merkle.canonical(x)) for x in pool_b])
+        commitment["procedure"] = {"kind": "two-pool-match", "positive": json.loads(args.positive)}
+        commitment["pool_b"] = {"root": merkle.root(tree_b).hex(), "size": len(pool_b)}
+        commitment["sample"]["n_b"] = args.n_b
+        commitment["sample"]["deltas"] = [{"num": 1, "den": d} for d in args.deltas]
     sha = write_json(out / "commitment.json", commitment)
     if args.tsa_url:
         token = tsa_url(sha, args.tsa_url)
@@ -238,7 +245,34 @@ def prove(args) -> None:
     same = lambda x, y: merkle.canonical(x) == merkle.canonical(y)
     b = args.scale
     sample = {"items": items}
-    if commitment["procedure"]["kind"] == "judged-exact-match":
+    if commitment["procedure"]["kind"] == "two-pool-match":
+        pool_b = read_pool(args.pool_b)
+        tree_b = merkle.levels([merkle.leaf_hash(merkle.canonical(x)) for x in pool_b])
+        if merkle.root(tree_b).hex() != commitment["pool_b"]["root"]:
+            sys.exit("error: pool B does not match the commitment")
+        n_b, size_b = commitment["sample"]["n_b"], commitment["pool_b"]["size"]
+        idx_b = derive_indices(round_, bytes.fromhex(beacon["signature"]), n_b, size_b, start=n)
+        sample["items_b"] = [{"index": i, "leaf": pool_b[i],
+                              "proof": [h.hex() for h in merkle.inclusion_proof(tree_b, i)]} for i in idx_b]
+        positive = commitment["procedure"]["positive"]
+        ka = sum(same(pool[i]["output"], positive) for i in indices)
+        kb = sum(same(pool_b[i]["output"], positive) for i in idx_b)
+        ds = [x["den"] for x in commitment["sample"]["deltas"]]
+        parts = {"upperA": tightest(n, ka, ds[0], b, args.witness), "lowerA": tightest(n, n - ka, ds[1], b, args.witness),
+                 "upperB": tightest(n_b, kb, ds[2], b, args.witness), "lowerB": tightest(n_b, n_b - kb, ds[3], b, args.witness)}
+        pA, qA, pB, qB = (parts[k]["bound"]["num"] for k in ("upperA", "lowerA", "upperB", "lowerB"))
+        if args.aggregate == "gap":
+            eps = max(0, pA + qB - b, pB + qA - b)
+            claim = {"type": "rate-gap", "version": "0.1", "epsilon": {"num": eps, "den": b}, **parts}
+            summary = (f"A: {ka}/{n}, B: {kb}/{n_b}; certified rates A in [{1 - qA / b:.2%}, {pA / b:.2%}], "
+                       f"B in [{1 - qB / b:.2%}, {pB / b:.2%}]; claim: gap ≤ {eps / b:.2%}")
+        else:
+            cn, cd = map(int, args.c.split("/"))
+            claim = {"type": "rate-ratio", "version": "0.1", "c": {"num": cn, "den": cd}, **parts}
+            ok = cn * pB <= cd * (b - qA)
+            summary = (f"A: {ka}/{n}, B: {kb}/{n_b}; certified A ≥ {1 - qA / b:.2%}, B ≤ {pB / b:.2%}; "
+                       f"ratio A/B ≥ {(b - qA) / pB:.3f}; claim c = {args.c}" + ("" if ok else " (NOT certified)"))
+    elif commitment["procedure"]["kind"] == "judged-exact-match":
         audit = commitment["sample"]["audit"]
         m = audit["m"]
         gold_map = json.loads(args.gold.read_text())
@@ -295,7 +329,8 @@ def prove(args) -> None:
         "subject": {"commitment": ref("commitment.json")},
         "evidence": {"order": {"kind": "rfc3161", "token": ref("order.tsr")},
                      "beacon": ref("beacon.json"), "sample": ref("sample.json")},
-        "assumptions": ASSUMPTIONS + (["A9-gold-labels"] if claim["type"] == "judged-rate" else []),
+        "assumptions": ASSUMPTIONS + {"judged-rate": ["A9-gold-labels"], "rate-gap": ["A10-group-membership"],
+                                      "rate-ratio": ["A10-group-membership"]}.get(claim["type"], []),
         "pins": {"lean_toolchain": (ROOT / "lean-toolchain").read_text().strip(), "opentheory_commit": head},
     }
     write_json(out / "certificate.json", cert)
@@ -318,6 +353,11 @@ def main(argv=None) -> None:
     c.add_argument("--test-tsa", type=Path, default=Path(".ot-test-tsa"),
                    help="directory of a local TEST authority, created if missing")
     c.add_argument("--audit-m", type=int, help="judged-rate: gold labels on the first m sampled items")
+    c.add_argument("--pool-b", type=Path, help="rate-gap / rate-ratio: the second pool (JSON lines)")
+    c.add_argument("--n-b", type=int, help="rate-gap / rate-ratio: sample size in pool B")
+    c.add_argument("--positive", default='"approve"', help="rate-gap / rate-ratio: the counted output, as JSON")
+    c.add_argument("--deltas", type=int, nargs=4, default=[4000, 4000, 4000, 4000],
+                   help="rate-gap / rate-ratio: δ = 1/d for upper A, lower A, upper B, lower B")
     c.add_argument("--audit-delta-den", type=int, default=1000, help="judged-rate: δ of the missed part")
     c.add_argument("--alarms-delta-den", type=int, help="judged-rate: δ of the false-alarm part (optional)")
     c.add_argument("--out", type=Path, required=True)
@@ -326,6 +366,9 @@ def main(argv=None) -> None:
     v.add_argument("--pool", type=Path, required=True)
     v.add_argument("--labels", type=Path, help="JSON {index: label} for items whose leaf has no label")
     v.add_argument("--gold", type=Path, help="judged-rate: JSON {index: gold label}")
+    v.add_argument("--pool-b", type=Path, help="rate-gap / rate-ratio: the second pool")
+    v.add_argument("--aggregate", choices=["gap", "ratio"], default="gap")
+    v.add_argument("--c", default="4/5", help="rate-ratio: c (the four-fifths rule is 4/5)")
     v.add_argument("--beacon", type=Path, help="recorded round (default: fetch from drand)")
     v.add_argument("--scale", type=int, default=100_000, help="bound resolution 1/scale")
     v.add_argument("--witness", action="store_true", help="always use a Chernoff witness")

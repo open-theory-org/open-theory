@@ -30,16 +30,17 @@ from .heldout_error import Task, parse_fraction
 
 DOMAIN = b"opentheory/pool-rate/v0.1"
 COMMITMENT_FORMAT = "opentheory-pool-commitment/0.1"
-PROCEDURES = ("exact-match", "judged-exact-match")
+PROCEDURES = ("exact-match", "judged-exact-match", "two-pool-match")
 MAX_N = 50_000  # v0.1: bundle size (one inclusion proof per item) and kernel-mode budget
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 
 
-def derive_indices(round_: int, signature: bytes, n: int, size: int) -> list[int]:
-    """Block `i` is SHA-256(DOMAIN ‖ round ‖ signature ‖ i) read big-endian; the index is it mod size."""
+def derive_indices(round_: int, signature: bytes, n: int, size: int, start: int = 0) -> list[int]:
+    """Block `i` is SHA-256(DOMAIN ‖ round ‖ signature ‖ i) read big-endian; the index is it mod size.
+    Blocks `start … start + n − 1` (a second pool uses the blocks after the first's)."""
     head = DOMAIN + round_.to_bytes(8, "big") + signature
     return [int.from_bytes(hashlib.sha256(head + i.to_bytes(8, "big")).digest(), "big") % size
-            for i in range(n)]
+            for i in range(start, start + n)]
 
 
 def attestation(name: str):
@@ -106,6 +107,23 @@ def parse_commitment(c: dict, where: str) -> dict:
         if "delta_alarms" in audit:
             dB = one_over(audit["delta_alarms"], f"{where}.sample.audit.delta_alarms")
         out.update(m=m, dA=dA, dB=dB, total=Fraction(1, d) + Fraction(1, dA) + (Fraction(1, dB) if dB else 0))
+    if kind == "two-pool-match":
+        if "positive" not in proc:
+            raise Reject(f"{where}.procedure: two-pool-match needs the committed 'positive' output")
+        pool_b = require(c, "pool_b", dict, where)
+        root_b = require(pool_b, "root", str, f"{where}.pool_b")
+        size_b = require(pool_b, "size", int, f"{where}.pool_b")
+        if not HEX64.match(root_b) or size_b < 1:
+            raise Reject(f"{where}.pool_b: need a 64-hex-digit root and size ≥ 1")
+        n_b = require(sample, "n_b", int, f"{where}.sample")
+        if not 1 <= n_b <= MAX_N:
+            raise Reject(f"{where}.sample.n_b must be in [1, {MAX_N}]")
+        deltas = require(sample, "deltas", list, f"{where}.sample")
+        if len(deltas) != 4:
+            raise Reject(f"{where}.sample.deltas: need four δ (upper A, lower A, upper B, lower B)")
+        ds = [one_over(x, f"{where}.sample.deltas[{i}]") for i, x in enumerate(deltas)]
+        out.update(positive=proc["positive"], root_b=bytes.fromhex(root_b), size_b=size_b, n_b=n_b,
+                   ds=ds, total=sum((Fraction(1, x) for x in ds), Fraction(0)))
     beacon = require(c, "beacon", dict, where)
     chain = require(beacon, "chain", str, f"{where}.beacon")
     round_ = require(beacon, "round", int, f"{where}.beacon")
@@ -115,6 +133,30 @@ def parse_commitment(c: dict, where: str) -> dict:
         raise Reject(f"{where}.beacon.round must be ≥ 1")
     out.update(chain=chain, round=round_)
     return out
+
+
+def sampled_leaves(items: list, where0: str, indices: list[int], size: int, root: bytes) -> list:
+    """Each item is the committed pool item at the beacon's index (Merkle inclusion)."""
+    if len(items) != len(indices):
+        raise Reject(f"{where0}: {len(items)} items, the commitment fixes {len(indices)}")
+    leaves = []
+    for i, (item, idx) in enumerate(zip(items, indices)):
+        where = f"{where0}[{i}]"
+        if not isinstance(item, dict):
+            raise Reject(f"{where} must be an object")
+        if require(item, "index", int, where) != idx:
+            raise Reject(f"{where}.index is {item['index']}, but the beacon selects pool index {idx}")
+        try:
+            proof = [bytes.fromhex(h) for h in require(item, "proof", list, where)]
+        except (TypeError, ValueError):
+            raise Reject(f"{where}.proof must be hex strings")
+        leaf = item.get("leaf")
+        if not merkle.verify_inclusion(idx, size, merkle.leaf_hash(merkle.canonical(leaf)), proof, root):
+            raise Reject(f"{where}: not the committed pool item at index {idx} (Merkle inclusion fails)")
+        if not isinstance(leaf, dict) or "output" not in leaf:
+            raise Reject(f"{where}.leaf: the procedure needs an object with 'output'")
+        leaves.append(leaf)
+    return leaves
 
 
 def check_protocol(bundle: Path, cert: dict, load_file, kind: str):
@@ -161,29 +203,15 @@ def check_protocol(bundle: Path, cert: dict, load_file, kind: str):
     except drand.BackendUnavailable as e:
         raise RuntimeError(str(e))
 
-    # 3. The sample: recomputed indices and Merkle inclusion in the committed pool.
+    # 3. The sample: recomputed indices and Merkle inclusion in the committed pool(s).
     sample, _ = load_file(bundle, require(evidence, "sample", dict, "evidence"), "evidence.sample")
-    items = require(sample, "items", list, "sample")
+    leaves = sampled_leaves(require(sample, "items", list, "sample"), "sample.items",
+                            derive_indices(c["round"], sig, c["n"], c["size"]), c["size"], c["root"])
+    if "n_b" in c:
+        c["leaves_b"] = sampled_leaves(
+            require(sample, "items_b", list, "sample"), "sample.items_b",
+            derive_indices(c["round"], sig, c["n_b"], c["size_b"], start=c["n"]), c["size_b"], c["root_b"])
     n, size = c["n"], c["size"]
-    if len(items) != n:
-        raise Reject(f"sample: {len(items)} items, the commitment fixes n = {n}")
-    leaves = []
-    for i, (item, idx) in enumerate(zip(items, derive_indices(c["round"], sig, n, size))):
-        where = f"sample.items[{i}]"
-        if not isinstance(item, dict):
-            raise Reject(f"{where} must be an object")
-        if require(item, "index", int, where) != idx:
-            raise Reject(f"{where}.index is {item['index']}, but the beacon selects pool index {idx}")
-        try:
-            proof = [bytes.fromhex(h) for h in require(item, "proof", list, where)]
-        except (TypeError, ValueError):
-            raise Reject(f"{where}.proof must be hex strings")
-        leaf = item.get("leaf")
-        if not merkle.verify_inclusion(idx, size, merkle.leaf_hash(merkle.canonical(leaf)), proof, c["root"]):
-            raise Reject(f"{where}: not the committed pool item at index {idx} (Merkle inclusion fails)")
-        if not isinstance(leaf, dict) or "output" not in leaf:
-            raise Reject(f"{where}.leaf: the procedure needs an object with 'output'")
-        leaves.append(leaf)
 
     # 6. Attempt accounting: every commitment the issuer declares for this round.
     attempts, total = [commitment_sha], c["total"]
@@ -417,4 +445,83 @@ def handle_judged(bundle: Path, cert: dict, load_file) -> Task:
     )
 
 
-HANDLERS = {"pool-rate": handle, "judged-rate": handle_judged}
+# ---------------------------------------------------------------- rate-gap, rate-ratio
+
+def handle_two_pools(bundle: Path, cert: dict, load_file) -> Task:
+    """Two committed pools from one round: four rate claims, then a gap or a ratio
+    (`RateGap.gap_sound`, `RateGap.ratio_sound`)."""
+    claim = cert["claim"]
+    ctype = claim["type"]
+    if require(claim, "version", str, "claim") != "0.1":
+        raise Reject("claim.version must be '0.1'")
+    parts = [parse_part(require(claim, k, dict, "claim"), f"claim.{k}")
+             for k in ("upperA", "lowerA", "upperB", "lowerB")]
+    c, leaves_a, _, checked, (count, total) = check_protocol(bundle, cert, load_file, "two-pool-match")
+    leaves_b = c["leaves_b"]
+    pos_a = [same(leaf["output"], c["positive"]) for leaf in leaves_a]
+    pos_b = [same(leaf["output"], c["positive"]) for leaf in leaves_b]
+    named = [("upper A", pos_a, parts[0], c["ds"][0]), ("lower A", [not x for x in pos_a], parts[1], c["ds"][1]),
+             ("upper B", pos_b, parts[2], c["ds"][2]), ("lower B", [not x for x in pos_b], parts[3], c["ds"][3])]
+    groups = [check_args(bits, part, d) for _, bits, part, d in named]
+    args = [a for g in groups for a in (*g, "+")][:-1]
+    pA, qA, pB, qB = (Fraction(pt[1], pt[2]) for pt in parts)
+    lowA, lowB = 1 - qA, 1 - qB
+    if ctype == "rate-gap":
+        eps = Fraction(*parse_fraction(require(claim, "epsilon", dict, "claim"), "claim.epsilon"))
+        certified = max(pA + qB - 1, pB + qA - 1)
+        if eps < certified:
+            raise Reject(f"claim.epsilon = {eps} is below the gap the bounds certify, {certified}")
+        words = (f"The rate of output = {merkle.canonical(c['positive']).decode()} differs by at most {float(eps):.2%} "
+                 f"between the {c['size']} items of pool A and the {c['size_b']} items of pool B "
+                 f"(certified rates: A in [{float(lowA):.2%}, {float(pA):.2%}], B in [{float(lowB):.2%}, {float(pB):.2%}]).")
+        theorem = "RateGap.gap_sound"
+        guarantee = "rate-gap-two-pools"
+    else:
+        cr = Fraction(*parse_fraction(require(claim, "c", dict, "claim"), "claim.c"))
+        if cr * pB > lowA:
+            raise Reject(f"claim.c = {cr}: c · pB = {float(cr * pB):.4f} exceeds the lower bound "
+                         f"1 − qA = {float(lowA):.4f} for pool A, so the ratio is not certified")
+        words = (f"The rate of output = {merkle.canonical(c['positive']).decode()} in pool A ({c['size']} items) is at "
+                 f"least {float(cr):.3g} × the rate in pool B ({c['size_b']} items) "
+                 f"(certified rates: A ≥ {float(lowA):.2%}, B ≤ {float(pB):.2%}).")
+        theorem = "RateGap.ratio_sound"
+        guarantee = "rate-ratio-two-pools"
+    words += (f" Wrong with probability ≤ {float(total):.3g} (+2^{SLACK(max(c['n'], c['n_b']), max(c['size'], c['size_b']))}) "
+              f"over the drand round, summed over the issuer's {count} declared commitment(s) to round {c['round']}. "
+              f"Observed {sum(pos_a)}/{c['n']} in A and {sum(pos_b)}/{c['n_b']} in B.")
+    checked += [
+        f"{c['n_b']} indices for pool B recomputed from the round signature (blocks {c['n']}…{c['n'] + c['n_b'] - 1}); "
+        f"each item's Merkle inclusion in pool root {c['root_b'].hex()[:16]}… (N = {c['size_b']})",
+        f"bits recomputed (output = committed positive value): {sum(pos_a)}/{c['n']} in A, {sum(pos_b)}/{c['n_b']} in B",
+        f"attempt accounting over {count} declared commitment(s): total δ = {total}",
+    ]
+    reason = lambda: first_false(named)
+    return Task(
+        lean="",
+        theorem="",
+        guarantee=guarantee,
+        words=words,
+        checked=checked,
+        trusted=[
+            f"statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck, {theorem} and "
+            "DesignSampling.seedFrac_restrict",
+            "this verifier's index derivation, Merkle and output-match code (verifier/core/pool_rate.py, merkle.py)",
+            "SHA-256 as a random oracle for the beacon expansion (A5-beacon)",
+        ],
+        does_not_cover=[
+            "items outside the two committed pools (other periods, other applicants)",
+            "whether the pools are the right groups (A10-group-membership) or the rate the right metric",
+            "why the rates differ: a gap is not evidence of a cause",
+            "commitments the issuer made to the same round and did not declare (A7-issuer-identity)",
+        ],
+        fast=args,
+        fast_call="OpenTheory.Checks: " + "; ".join(
+            f"{nm}: {describe(part, d, len(bits))}" for nm, bits, part, d in named),
+        fast_meaning=(f"meaning, proved once: PoolRate.Claim.of_poolCheck on each part, then OpenTheory.{theorem} "
+                      "over the seed (pool A on the first blocks, pool B on the next)"),
+        fast_explain=reason,
+    )
+
+
+HANDLERS = {"pool-rate": handle, "judged-rate": handle_judged,
+            "rate-gap": handle_two_pools, "rate-ratio": handle_two_pools}

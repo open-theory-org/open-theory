@@ -6,7 +6,7 @@ levels in `catalog/`. Do not edit by hand. A claim is an observable × a domain 
 
 | Model | Observable | Region | Pool | Distribution | Pair |
 | --- | --- | --- | --- | --- | --- |
-| [any-system](models/any-system.md) | [event](properties/event.md) | — | [`judged-rate`](claims/judged-rate.md) meanLe (**verified**)<br>[`pool-rate`](claims/pool-rate.md) meanLe (**verified**) | — | — |
+| [any-system](models/any-system.md) | [event](properties/event.md) | — | [`judged-rate`](claims/judged-rate.md) meanLe (**verified**)<br>[`pool-rate`](claims/pool-rate.md) meanLe (**verified**) | — | [`rate-gap`](claims/rate-gap.md) gapLe (**verified**)<br>[`rate-ratio`](claims/rate-ratio.md) ratioGe (**verified**) |
 | [quantized-mlp](models/quantized-mlp.md) | [wrong](properties/wrong.md) | — | — | [`heldout-error`](claims/heldout-error.md) meanLe (**verified**)<br>[`occam-code-error`](claims/occam-code-error.md) meanLe (**verified**, no `Sound` bridge yet)<br>[`pacbayes-error`](claims/pacbayes-error.md) meanLe (**verified**, no `Sound` bridge yet) | — |
 | [relu-mlp](models/relu-mlp.md) | [exact-output](properties/exact-output.md) | [`mlp-exact`](claims/mlp-exact.md) all (**experimental**, no `Sound` bridge yet) | — | — | — |
 | [relu-mlp](models/relu-mlp.md) | [predicts](properties/predicts.md) | [`robust-region`](claims/robust-region.md) all (theorem) | — | — | — |
@@ -22,4 +22,6 @@ guarantee `Sound` is proved but no method uses it yet; `statement`: the template
 | [`occam-code-error`](claims/occam-code-error.md) | wrong | distribution | meanLe | open | — | occam-code-certificate | A1-iid, A4-labels |
 | [`pacbayes-error`](claims/pacbayes-error.md) | wrong | distribution | meanLe | open | — | pacbayes-catoni-certificate | A1-iid, A2-heldout-independent, A4-labels |
 | [`pool-rate`](claims/pool-rate.md) | event | pool | meanLe | `poolRate_sound` | `pool`, `pool-witness` | pool-rate-certificate | A5-beacon, A6-timestamp, A7-issuer-identity |
+| [`rate-gap`](claims/rate-gap.md) | event | pool × pool | gapLe | `gap_sound` | `pool`, `pool-witness` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A10-group-membership |
+| [`rate-ratio`](claims/rate-ratio.md) | event | pool × pool | ratioGe | `ratio_sound` | `pool`, `pool-witness` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A10-group-membership |
 | [`robust-region`](claims/robust-region.md) | predicts | region | all | `onRegion_sound` | — | — | A3-model-binding |

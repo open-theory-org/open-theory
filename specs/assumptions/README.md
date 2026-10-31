@@ -50,3 +50,11 @@ Made auditable by giving users signed receipts with inclusion proofs.
 `judged-rate` bounds the rate of failures against gold labels, supplied after sampling for the
 audited items by a labeller independent of the issuer. The bound holds if they are the labels that a
 rule fixed before the round would give. Used by `judged-rate`.
+
+## A10-group-membership: each item's pool is its group
+
+`rate-gap` and `rate-ratio` compare two committed pools, one per group. The claim is about the
+groups as recorded or inferred when the pools were committed: protected attributes are often
+missing in credit data and inferred (for example by a proxy model), and the claim is then about the
+inferred groups. Used by `rate-gap`, `rate-ratio`.
+
