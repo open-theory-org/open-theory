@@ -4,6 +4,7 @@ id = "wrong"
 object = "statistical predictor"
 test = "the model's prediction on the labelled example z is wrong (its {0,1} loss is 1)"
 lean = ["OpenTheory.Wrong"]
+needs = []
 references = []
 +++
 # Property: wrong

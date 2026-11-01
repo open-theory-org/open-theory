@@ -4,6 +4,7 @@ id = "event"
 object = "behavior"
 test = "a committed procedure's bit is set on the pool item j (the logged answer is wrong, the monitor fires, the policy is violated)"
 lean = ["OpenTheory.Event"]
+needs = []
 references = []
 +++
 # Property: event

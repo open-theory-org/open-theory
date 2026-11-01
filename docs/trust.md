@@ -6,7 +6,7 @@ defined in [language.md](language.md); the levels in
 [specs/protocols/assurance-levels.md](../specs/protocols/assurance-levels.md).
 
 Running example: the credit model's approval of Alice is robust on her box
-(`tree-robust`, `δ = 0`).
+(`robust-decision`, `δ = 0`).
 
 ## 1. The chain from the world to the answer
 
@@ -39,7 +39,7 @@ Each arrow can fail in its own way, and each is covered by exactly one of three 
 They are independent: a `verified` method run in the compiled lane under A3 and A11 is a different
 statement from the same method run by the kernel. A result therefore carries all three:
 
-> `tree-robust` · method `verified` · kernel lane · `δ = 0` · assumes A3, A11
+> `robust-decision` · method `verified` · kernel lane · `δ = 0` · assumes A3, A11
 
 ## 3. The level: what is proved about the method
 
@@ -111,13 +111,13 @@ about something other than the world.
 
 | Claim type | Level | Lanes | δ | Assumptions (bridges) |
 | --- | --- | --- | --- | --- |
-| `tree-robust`, `tree-monotone` | verified | kernel, compiled | 0 | A3, A11 (model) |
+| `robust-decision` (trees), `monotone-feature` | verified | kernel, compiled | 0 | A3, A11 (model) |
 | `heldout-error` | verified | kernel (`ot verify`) | δ | A1, A2 (law), A4 (observable), A3 (model) |
 | `pool-rate` | verified | kernel, compiled | `(1 + N/2²⁵⁶)ⁿ δ` | A5, A6, A7 (law), A12 (domain) |
 | `judged-rate` | verified | kernel, compiled | sum of parts | A5, A6, A7 (law), A9 (observable), A12 (domain) |
 | `rate-gap`, `rate-ratio` | verified | kernel, compiled | sum of parts | A5, A6, A7 (law), A10, A12 (domain) |
 | `occam-code-error`, `pacbayes-error` | verified | kernel | stated per claim type | A1 (law), A4 (observable), A3 (model); A2 (law) for PAC-Bayes |
-| `robust-region` | theorem, no method yet | — | 0 | A3 (model) |
+| `robust-decision` (networks) | theorem, no method yet | — | 0 | A3 (model) |
 | `mlp-exact` | experimental | kernel, compiled | — | A3 (model) |
 
 The authoritative versions are generated: [catalog/README.md](../catalog/README.md) (levels and

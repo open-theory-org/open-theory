@@ -26,8 +26,8 @@ from registry import LEVELS, ROOT, SPECS, cards, catalog, establishing, feeders 
 COVERAGE = SPECS / "coverage.md"
 RELATIONS = {"implements", "adapts", "formalizes", "background", "contrasts"}
 FIELDS = {
-    "models": {"id", "family", "type", "lean", "references"},
-    "properties": {"id", "kind", "object", "test", "lean", "references"},
+    "models": {"id", "family", "type", "implements", "lean", "references"},
+    "properties": {"id", "kind", "object", "test", "lean", "needs", "references"},
     "domains": {"id", "kind", "randomness", "assumptions", "lean", "references"},
     "claims": {"id", "observable", "domain", "aggregate", "models", "lean", "claim_types", "assumptions",
                "references"},
@@ -77,7 +77,7 @@ def main() -> int:
                 errors.append(f"{where}: missing fields {sorted(missing)}")
             if card.get("id") != cid:
                 errors.append(f"{where}: id {card.get('id')!r} must match the file name {cid!r}")
-            for name in card.get("lean", []) + card.get("claim_types", []):
+            for name in card.get("lean", []) + card.get("claim_types", []) + card.get("needs", []) + card.get("implements", []):
                 if name not in declared:
                     errors.append(f"{where}: unknown Lean declaration {name}")
             for ref in card.get("references", []):
@@ -116,9 +116,16 @@ def main() -> int:
             needed = {a for d in doms for a in d.get("assumptions", [])}
             for a in sorted(needed - set(c.get("assumptions", []))):
                 errors.append(f"{where}: omits assumption {a} of its domain")
+        needs = set((reg["properties"].get(c.get("observable"), (None, {}))[1] or {}).get("needs", []))
         for m in c.get("models", []):
             if m not in reg["models"]:
                 errors.append(f"{where}: unknown model {m!r}")
+                continue
+            # a model family can be asked a property only if it provides what the property needs
+            missing = needs - set(reg["models"][m][1].get("implements", []))
+            if missing:
+                errors.append(f"{where}: model {m!r} does not implement {sorted(missing)}, needed by "
+                              f"property {c.get('observable')!r}")
         for k in ("methods", "checks"):
             if k in c:
                 errors.append(f"{where}: '{k}' is derived from catalog/methods (`establishes`, `checks`); remove it")

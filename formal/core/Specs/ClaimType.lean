@@ -7,7 +7,7 @@ import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
 A **claim type** is a specification with its numbers left as parameters, together with how the
 evidence is collected, what the check accepts, and the theorem that gives the guarantee:
 
-| Field | Meaning | Example (`tree-robust`) |
+| Field | Meaning | Example (`robust-decision`, trees) |
 | --- | --- | --- |
 | `Param` | what a certificate fills in, possibly after seeing the evidence | a box, a decision, one bound per tree |
 | `Evidence`, `law` | the randomness of how the evidence is collected | `Unit`, the Dirac measure |

@@ -9,8 +9,8 @@ randomness and `δ = 0`: an accepted claim is true.
 
 | Claim | Observable | Domain | Aggregate |
 | --- | --- | --- | --- |
-| `tree-robust` | property: the decision is `c` | region (a box) | all |
-| `tree-monotone` | property on pairs: raising feature `j` moves the score in the stated direction | region (pairs in a box) | all |
+| `robust-decision` | property: the decision is `c` | region (a box) | all |
+| `monotone-feature` | property on pairs: raising feature `j` moves the score in the stated direction | region (pairs in a box) | all |
 -/
 
 open MeasureTheory
@@ -19,7 +19,7 @@ namespace OpenTheory
 
 open Checks.Tree
 
-/-- **`tree-robust`.** For every box `B`, decision `c` and per-tree bounds `ms` the kernel accepts
+/-- **`robust-decision`** (trees). For every box `B`, decision `c` and per-tree bounds `ms` the kernel accepts
 (`robustCertK`, what `ot_kernel` evaluates), the ensemble's decision is `c` on every real input of
 `B`. -/
 theorem treeRobust_sound (e : Ensemble) :
@@ -32,7 +32,7 @@ theorem treeRobust_sound (e : Ensemble) :
   rw [robustCertK_eq] at h
   exact fun x hx => robustCert_sound e ms B c h x hx
 
-/-- **`tree-monotone`.** For every box `B`, feature `j`, direction and cuts the kernel accepts
+/-- **`monotone-feature`** (trees). For every box `B`, feature `j`, direction and cuts the kernel accepts
 (`monotoneCertK`), raising feature `j` of an input of `B` (within `B`, the other features fixed)
 never lowers the ensemble's score if `up`, never raises it otherwise. -/
 theorem treeMonotone_sound (e : Ensemble) :

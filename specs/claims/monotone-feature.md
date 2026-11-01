@@ -1,5 +1,5 @@
 +++
-id = "tree-monotone"
+id = "monotone-feature"
 observable = "monotone"
 domain = "region"
 aggregate = "all"
@@ -9,10 +9,12 @@ claim_types = ["OpenTheory.ClaimTypes.treeMonotone"]
 assumptions = ["A3-model-binding", "A11-tree-translation"]
 references = [{ key = "devos2021versatile", relation = "implements" }]
 +++
-# Claim: monotonicity of a tree ensemble in one feature (`tree-monotone`)
+# Claim: monotonicity in one feature (`monotone-feature`)
 
 **Statement.** On the box `B`, raising feature `j` (all other features fixed) never lowers the
-ensemble's score (or, decreasing, never raises it). With an unbounded box it is global.
+model's score (or, decreasing, never raises it). With an unbounded box it is global. One spec for
+every family that provides a score (`HasScore`); today one claim type, for tree ensembles
+(`ClaimTypes.treeMonotone`).
 
 **Spec.** Observable: the property on pairs "raising `j` moves the score in the stated direction".
 Domain: the region of pairs `{(x, x') | B.Mem x ∧ B.Mem x'}`. Aggregate: `all`.

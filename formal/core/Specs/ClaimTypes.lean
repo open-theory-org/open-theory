@@ -2,6 +2,7 @@ import Specs.ClaimType
 import Specs.Instances
 import Specs.RateGap
 import Specs.Tree
+import Properties.Network
 
 /-!
 # The claim types
@@ -9,34 +10,34 @@ import Specs.Tree
 One term of `ClaimType` per claim type of `specs/claims/`: each card names its terms here
 (`claim_types = [...]`), and `tests/regression/check_spec_shapes.py` checks that the card's
 observable, domain, aggregate and model are those of the term. The specification is stated with
-the named properties of `Properties/`; the guarantee is the `Sound` theorem proved with the
+the properties of `Properties/Interface.lean` (one per card, shared by every model family that
+provides it) and `Properties/Basic.lean`; the guarantee is the `Sound` theorem proved with the
 claim type's check.
 
 | Term | Card | Evidence | δ |
 | --- | --- | --- | --- |
-| `robustRegion` | `robust-region` | none | `0` |
+| `robustRegion`, `treeRobust` | `robust-decision` | none | `0` |
 | `heldOut` | `heldout-error` | IID sample | `δ` |
 | `occam` | `occam-code-error` | IID training sample | `2·4ᵈ·exp(−2nε²)` |
 | `pacBayes` | `pacbayes-error` | IID sample independent of the prior | `δ` |
 | `poolRate` | `pool-rate` | beacon seed | `(1 + N/2^b)ⁿ δ` |
 | `judgedRate`, `judgedRateAlarms` | `judged-rate` | beacon seed | sums of the parts |
 | `rateGap`, `rateRatio` | `rate-gap`, `rate-ratio` | one beacon round, two pools | `RateGap.δTotal` |
-| `treeRobust`, `treeMonotone` | `tree-robust`, `tree-monotone` | none | `0` |
+| `treeMonotone` | `monotone-feature` | none | `0` |
 -/
 
 open MeasureTheory
 
 namespace OpenTheory.ClaimTypes
 
-/-- **`robust-region`**: a ReLU network predicts `c` on every input of a box. -/
+/-- **`robust-decision`**, for ReLU networks: the network decides `c` on every input of a box. -/
 noncomputable def robustRegion {m k : ℕ} (g : Exact.Net m k) (r : g.Rules Exact.IntervalRule)
     (θ : g.Params) : ClaimType g.Params (TorchLean.Tensor ℝ [m]) where
   Param := Exact.Box × Fin k
   Evidence := Unit
   law := Measure.dirac ()
   accepts := fun _ bc => OnRegion.certify g r θ bc.1 bc.2 = true
-  spec := fun bc => ⟨.property fun θ x => Predicts (g.eval θ x) bc.2,
-    .region {x | Exact.InBox bc.1 x}, .all⟩
+  spec := fun bc => ⟨.property (Decides bc.2), .region {x | Exact.InBox bc.1 x}, .all⟩
   model := fun _ => θ
   δ := 0
   sound := onRegion_sound g r θ
@@ -164,25 +165,25 @@ noncomputable def rateRatio {NA NB nA nB b : ℕ} [NeZero NA] [NeZero NB] (eA : 
   δ := RateGap.δTotal NA NB nA nB b δA δA' δB δB'
   sound := RateGap.ratio_sound hc h1 h2 h3 h4
 
-/-- **`tree-robust`**: a tree ensemble's decision is `c` on every input of a box. -/
+/-- **`robust-decision`**, for tree ensembles: the decision is `c` on every input of a box. -/
 noncomputable def treeRobust (e : Checks.Tree.Ensemble) : ClaimType Checks.Tree.Ensemble (ℕ → ℝ) where
   Param := Checks.Tree.Box × Bool × List Int
   Evidence := Unit
   law := Measure.dirac ()
   accepts := fun _ θ => Checks.Tree.robustCertK e.base e.τ e.trees θ.2.2 θ.1 θ.2.1 = true
-  spec := fun θ => ⟨.property (Checks.Tree.Ensemble.Decides θ.2.1), .region {x | θ.1.Mem x}, .all⟩
+  spec := fun θ => ⟨.property (Decides θ.2.1), .region {x | θ.1.Mem x}, .all⟩
   model := fun _ => e
   δ := 0
   sound := treeRobust_sound e
 
-/-- **`tree-monotone`**: a tree ensemble is monotone in one feature on a box. -/
+/-- **`monotone-feature`**, for tree ensembles: the score is monotone in one feature on a box. -/
 noncomputable def treeMonotone (e : Checks.Tree.Ensemble) :
     ClaimType Checks.Tree.Ensemble ((ℕ → ℝ) × (ℕ → ℝ)) where
   Param := Checks.Tree.Box × ℕ × Bool × List Checks.Tree.Cuts
   Evidence := Unit
   law := Measure.dirac ()
   accepts := fun _ θ => Checks.Tree.monotoneCertK θ.2.1 θ.2.2.1 e.trees θ.1 θ.2.2.2 = true
-  spec := fun θ => ⟨.property (Checks.Tree.MonotoneIn θ.2.1 θ.2.2.1),
+  spec := fun θ => ⟨.property (MonotoneIn θ.2.1 θ.2.2.1),
     .region {xx | θ.1.Mem xx.1 ∧ θ.1.Mem xx.2}, .all⟩
   model := fun _ => e
   δ := 0

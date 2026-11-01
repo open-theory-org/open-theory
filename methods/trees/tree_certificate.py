@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Robustness and monotonicity certificates for tree ensembles (untrusted producer).
 
-Writes a certificate bundle for `ot verify` (claim types `tree-robust`, `tree-monotone`), or the raw
+Writes a certificate bundle for `ot verify` (claim cards `robust-decision`, `monotone-feature`), or the raw
 request that `ot_kernel` checks. The translation of the model to integers, the witnesses and the
 encoding are the verifier's own (`verifier/core/trees.py`): the verifier recomputes them, so this
 producer adds nothing to what is trusted. What an accepted check means is proved once in Lean
@@ -79,12 +79,12 @@ def main() -> int:
     assumptions = ["A3-model-binding", "A11-tree-translation"]
     if a.cmd == "robust":
         box = json.loads(a.box.read_text())
-        claim = {"type": "tree-robust", "version": "0.1", "decision": "approve" if a.approve else "decline",
+        claim = {"type": "robust-decision", "version": "0.1", "decision": "approve" if a.approve else "decline",
                  "tau": str(a.tau), "box": box}
         cli, (req, _) = "tree-robust", robust_request(model, box, a.approve, a.tau)
     else:
         box = json.loads(a.box.read_text()) if a.box else {}
-        claim = {"type": "tree-monotone", "version": "0.1", "feature": a.feature,
+        claim = {"type": "monotone-feature", "version": "0.1", "feature": a.feature,
                  "direction": "increasing" if a.up else "decreasing", "box": box}
         res = monotone_request(model, a.feature, a.up, box)
         if res is None:

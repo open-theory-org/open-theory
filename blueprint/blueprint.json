@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-01T17:44:19.214308+00:00",
+  "generatedAt": "2026-11-01T18:33:46.486377+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
   "nodesCount": 114,
@@ -2301,8 +2301,8 @@
         "OpenTheory.Checks.Tree.monotoneCert",
         "OpenTheory.Checks.Tree.monotoneCert_sound",
         "OpenTheory.Checks.Tree.monoCut_sound",
-        "OpenTheory.Checks.Tree.Raised",
-        "OpenTheory.Checks.Tree.Ordered"
+        "OpenTheory.Raised",
+        "OpenTheory.Ordered"
       ],
       "statementFormalized": true,
       "proofFormalized": true,
@@ -2385,8 +2385,10 @@
         "OpenTheory.ClaimType.Claim",
         "OpenTheory.Wrong",
         "OpenTheory.Event",
-        "OpenTheory.Checks.Tree.Ensemble.Decides",
-        "OpenTheory.Checks.Tree.MonotoneIn"
+        "OpenTheory.Decides",
+        "OpenTheory.HasDecision",
+        "OpenTheory.HasScore",
+        "OpenTheory.MonotoneIn"
       ],
       "statementFormalized": true,
       "proofFormalized": false,

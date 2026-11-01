@@ -2,6 +2,7 @@
 id = "tree-ensemble"
 family = "Decision-tree ensembles (gradient boosting, random forests) with a threshold decision: approve when τ ≤ base + Σ trees, integer-scaled thresholds and leaves"
 type = "OpenTheory.Checks.Tree.Ensemble"     # the Lean type a spec quantifies over (Spec M X: M)
+implements = ["OpenTheory.HasDecision", "OpenTheory.HasScore"]   # instances in Properties/ (the properties it can be asked)
 lean = ["OpenTheory.Checks.Tree.Tree", "OpenTheory.Checks.Tree.Ensemble", "OpenTheory.Checks.Tree.Tree.eval", "OpenTheory.Checks.Tree.Ensemble.score"]
 references = [{ key = "devos2021versatile", relation = "background" }, { key = "chen2019robustness", relation = "background" }]
 +++

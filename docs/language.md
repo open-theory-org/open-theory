@@ -16,7 +16,8 @@ card in `specs/` (or a manifest in `catalog/`) that names it, and CI checks that
 | Object | What it is | In Lean | Written in | Running example |
 | --- | --- | --- | --- | --- |
 | **Model family** | a set of models, all of one Lean type `M` | the type `M` | `specs/models/` (field `type`) | tree ensembles, `Checks.Tree.Ensemble` |
-| **Property** | a yes/no test of a model on **one** input | a named definition `P : Property M X` (`M → X → Prop`) | `specs/properties/` (fields `kind`, `lean`) | `decision`: `Ensemble.Decides c`, "the model's decision on `x` is `c`" |
+| **Model interface** | what a family's models do, whatever their structure: decide (`HasDecision M X Y`), score (`HasScore M X`) | classes, with one instance per family (`Properties/Tree.lean`, `Properties/Network.lean`) | model card field `implements` | trees implement both; ReLU networks implement `HasDecision` |
+| **Property** | a yes/no test of a model on **one** input, stated once against the interface | a named definition `P : Property M X` (`M → X → Prop`), e.g. `Decides y` for every `[HasDecision M X Y]` | `specs/properties/` (fields `kind`, `lean`, `needs`) | `decision`: `Decides c`, "the model's decision on `x` is `c`", for trees and networks alike |
 | **Quantity** | a value of a model on one input, in `[0, 1]` (a loss, a score) | `Q : Quantity M X` (`M → X → ℝ`) | `specs/properties/` (`kind = "quantity"`) | — (calibration will be the first) |
 | **Observable** | a property or a quantity; a property's value is `1` where it holds, so its mean is its rate | `Observable M X`: `.property P`, `.quantity Q` | — | `.property (Ensemble.Decides c)` |
 | **Domain** | which inputs: a region, a committed pool, a distribution, or a pair of these | `Domain X`: `.region`, `.pool`, `.distribution`, `.pair` | `specs/domains/` | the region "income within ±5% of Alice's" |
@@ -37,7 +38,7 @@ Changing one field gives another claim type:
 | --- | --- |
 | domain: committed pool of this month's applicants; aggregate: `meanLe p`; property: "wrongly declined" | `pool-rate` |
 | domain: pair of pools (two groups); aggregate: `gapLe ε`; property: "approved" | `rate-gap` (demographic parity) |
-| property on pairs `(x, x')`: "raising income does not lower the score" | `tree-monotone` |
+| property on pairs `(x, x')`: "raising income does not lower the score" | `monotone-feature` |
 | observable: a quantity (the predicted probability's squared error); aggregate: `meanLe m` | calibration (next) |
 
 ## 2. The claim type, and the one guarantee
@@ -63,7 +64,7 @@ has no randomness: `δ = 0`, and an accepted claim is true (`sound_exact_iff`).
 
 | Claim type | Evidence | δ |
 | --- | --- | --- |
-| `robustRegion`, `treeRobust`, `treeMonotone` | none | `0` |
+| `robustRegion` (networks), `treeRobust` (trees): both `robust-decision`; `treeMonotone` | none | `0` |
 | `heldOut`, `occam`, `pacBayes` | an IID sample | stated per claim type |
 | `poolRate`, `judgedRate`, `rateGap`, `rateRatio` | a public beacon seed | stated per claim type |
 
@@ -114,7 +115,7 @@ Each kind of object is written once and named everywhere else:
 
 | To add | You write | Everything else |
 | --- | --- | --- |
-| a model family | its Lean type, a model card | reuses every property and claim type stated for any `M` |
+| a model family | its Lean type, its instances of the interface, a model card (`implements`) | every property it implements applies as it is; each card about such a property gains one claim type (its check and proof) for the family |
 | a property | one named definition, a property card | combines with every domain and aggregate already proved |
 | a claim type | one `ClaimType` term (its check and `Sound` proof), a claim card | composes with every other claim (`Sound.and`), appears in the coverage and the catalog |
 | a method | a producer, a manifest, a conformance test | gets its level derived, its row in "what proves what" |
@@ -129,6 +130,7 @@ aggregate, one guarantee) is fixed, and every new piece is checked against it by
 | every proof, with no `sorry` and only the standard axioms | `lake build`, `audit_axioms.lean` |
 | every Lean name in a card, a manifest or the blueprint exists | `check_lean_decls.py`, `check_specs.py`, `check_catalog.py` |
 | each claim card's named property, observable kind, domain, aggregate and model are those of its `ClaimType` terms | `check_spec_shapes.py` |
+| every model of a claim card implements what its property needs | `check_specs.py` |
 | an aggregate is used only on a domain where it has a meaning; a claim type lists its domain's assumptions and its methods' | `check_specs.py` |
 | every assumption says which Lean object it bridges | `check_specs.py` |
 | a method's level is the one its links support; a guarantee's level is that of its weakest method | `check_catalog.py` |

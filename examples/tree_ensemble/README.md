@@ -13,7 +13,7 @@ python3 methods/trees/tree_certificate.py monotone examples/tree_ensemble/model_
 python3 methods/trees/tree_certificate.py monotone examples/tree_ensemble/model_lightgbm.json 1 --down --check
 ```
 
-Each accepted request is a claim of [`tree-robust`](../../specs/claims/tree-robust.md) or
-[`tree-monotone`](../../specs/claims/tree-monotone.md): true for the integer ensemble, with
+Each accepted request is a claim of [`robust-decision`](../../specs/claims/robust-decision.md) or
+[`monotone-feature`](../../specs/claims/monotone-feature.md): true for the integer ensemble, with
 `δ = 0`, under A3 and A11 (`specs/assumptions/`). The kernel takes about half a millisecond for
 each.

@@ -181,7 +181,7 @@ matters. Planned, in order:
 
 | Check | Today (kernel) | Plan | Proof obligations |
 | --- | --- | --- | --- |
-| `tree-robust`, `tree-monotone` | 0.16 s / 1.4 s for 500 trees | packed form: trees padded to complete depth `D` in heap order; each split's feature bound gathered for all nodes at once by one product (Kronecker substitution [@harvey2009kronecker], as in `Checks/MLP`); reachability level by level with shifts and masks; leaves against bounds or cuts by one subtraction with guard bits | a packed semantics with `packed_eq : check (pack e) = robustCert e …`; padding preserves `Tree.eval` |
+| `tree-robust`, `tree-monotone` (checks) | 0.16 s / 1.4 s for 500 trees | packed form: trees padded to complete depth `D` in heap order; each split's feature bound gathered for all nodes at once by one product (Kronecker substitution [@harvey2009kronecker], as in `Checks/MLP`); reachability level by level with shifts and masks; leaves against bounds or cuts by one subtraction with guard bits | a packed semantics with `packed_eq : check (pack e) = robustCert e …`; padding preserves `Tree.eval` |
 | `pool-sample` | 1.2 s for 20,000 items | indices `bᵢ mod N` and bits in packed numbers | `drawnBits` packed, `poolSample_eq` |
 | `pool-witness` | 0.48 s for 20,000 bits | the Chernoff inequality at lower precision (rounded witness powers, checked upward) | a rounding lemma for the witness |
 3. AUC, calibration and fairness templates on top of `RateClaim`.

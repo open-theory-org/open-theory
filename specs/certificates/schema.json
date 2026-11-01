@@ -30,8 +30,8 @@
             "judged-rate",
             "rate-gap",
             "rate-ratio",
-            "tree-robust",
-            "tree-monotone"
+            "robust-decision",
+            "monotone-feature"
           ]
         },
         "version": {
@@ -64,18 +64,18 @@
             "approve",
             "decline"
           ],
-          "description": "tree-robust: the decision on every input of the box"
+          "description": "robust-decision: the decision on every input of the box"
         },
         "tau": {
           "type": [
             "string",
             "number"
           ],
-          "description": "tree-robust: approve when the raw score is at least tau (default 0)"
+          "description": "robust-decision: approve when the raw score is at least tau (default 0)"
         },
         "box": {
           "type": "object",
-          "description": "tree-robust, tree-monotone: {feature index: [lo, hi]}, null for an open end",
+          "description": "robust-decision, monotone-feature: {feature index: [lo, hi]}, null for an open end",
           "additionalProperties": {
             "type": "array",
             "minItems": 2,
@@ -85,20 +85,20 @@
         "feature": {
           "type": "integer",
           "minimum": 0,
-          "description": "tree-monotone: the feature"
+          "description": "monotone-feature: the feature"
         },
         "direction": {
           "enum": [
             "increasing",
             "decreasing"
           ],
-          "description": "tree-monotone"
+          "description": "monotone-feature"
         }
       }
     },
     "subject": {
       "type": "object",
-      "description": "heldout-error, tree-robust, tree-monotone: model; pool-rate, judged-rate, rate-gap, rate-ratio: commitment",
+      "description": "heldout-error, robust-decision, monotone-feature: model; pool-rate, judged-rate, rate-gap, rate-ratio: commitment",
       "properties": {
         "model": {
           "$ref": "#/$defs/file"

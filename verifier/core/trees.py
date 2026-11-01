@@ -1,4 +1,5 @@
-"""Claim types `tree-robust` and `tree-monotone` v0.1 (specs/claims/tree-robust.md, tree-monotone.md).
+"""Claim cards `robust-decision` and `monotone-feature` v0.1, for tree ensembles
+(specs/claims/robust-decision.md, monotone-feature.md).
 
 The bundle holds the model (`subject.model`: a LightGBM `dump_model()` JSON [@ke2017lightgbm], or the plain format
 below) and the claim. The verifier
@@ -316,4 +317,5 @@ def handle_monotone(bundle: Path, cert: dict, load_file) -> Task:
         expect_show=show)
 
 
-HANDLERS = {"tree-robust": handle_robust, "tree-monotone": handle_monotone}
+# certificates name the claim card; a card serves several families, told apart by the subject
+HANDLERS = {"robust-decision": handle_robust, "monotone-feature": handle_monotone}

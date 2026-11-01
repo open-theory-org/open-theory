@@ -1,27 +1,17 @@
 import Models.Tree.Basic
-import Properties.Basic
+import Properties.Interface
 
 /-!
-# Properties of tree ensembles
+# Tree ensembles provide a decision and a score
 
-The two properties the tree claim types use, named so that their cards (`decision`, `monotone`)
-bind to them: the decision on one input, and monotonicity on a pair of inputs.
+An ensemble decides `true` (approve) when `τ ≤ score`, and its score is `base + Σ trees`; the
+properties `Decides` and `MonotoneIn` of `Properties/Interface.lean` apply to it as they are.
 -/
 
 namespace OpenTheory.Checks.Tree
 
-/-- The order a monotonicity claim asks for: `a ≤ b` if increasing, `b ≤ a` if decreasing. -/
-def Ordered (up : Bool) (a b : ℝ) : Prop := if up then a ≤ b else b ≤ a
+instance : HasDecision Ensemble (ℕ → ℝ) Bool := ⟨fun e x c => (e.Approves x ↔ c = true)⟩
 
-/-- Two inputs that differ only in feature `j`, the second at least the first there. -/
-def Raised (j : ℕ) (x x' : ℕ → ℝ) : Prop := (∀ i, i ≠ j → x i = x' i) ∧ x j ≤ x' j
-
-/-- **`decision`.** The ensemble's decision on `x` is `c` (approve when `c`). -/
-def Ensemble.Decides (c : Bool) : Property Ensemble (ℕ → ℝ) := fun e x => (e.Approves x ↔ c = true)
-
-/-- **`monotone`.** On a pair `(x, x')` where `x'` raises feature `j` of `x`, the score moves in
-the stated direction (up if `up`). -/
-def MonotoneIn (j : ℕ) (up : Bool) : Property Ensemble ((ℕ → ℝ) × (ℕ → ℝ)) :=
-  fun e xx => Raised j xx.1 xx.2 → Ordered up (e.score xx.1) (e.score xx.2)
+noncomputable instance : HasScore Ensemble (ℕ → ℝ) := ⟨Ensemble.score⟩
 
 end OpenTheory.Checks.Tree

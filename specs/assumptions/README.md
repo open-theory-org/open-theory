@@ -94,14 +94,14 @@ inferred groups. Used by `rate-gap`, `rate-ratio`.
 
 **Bridges:** model. the integer ensemble is the deployed LightGBM model, scaled.
 
-`tree-robust` and `tree-monotone` are about the integer ensemble in the request. The producer
+The tree claim types of `robust-decision` and `monotone-feature` are about the integer ensemble in the request. The producer
 (`methods/trees/tree_certificate.py`) reads the deployed model (a LightGBM dump) and scales each
 feature and the leaves by powers of two, exactly, since doubles are dyadic. The two models then take
 the same decision on every input without missing values, provided the deployed runtime compares
 `x ≤ threshold` in the same precision as its dump. Not covered: missing values (`NaN` routing by
 `default_left`), categorical splits and `missing_type: Zero` (both refused), and preprocessing
 before the model. Anyone can re-run the deterministic translation from the model file to check
-it. Used by `tree-robust`, `tree-monotone`.
+it. Used by `robust-decision` and `monotone-feature`, for trees.
 
 ## A12-commitment-binding: the checked items are the committed ones
 

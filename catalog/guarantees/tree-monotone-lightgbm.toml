@@ -1,7 +1,7 @@
 id = "tree-monotone-lightgbm"
 name = "Certified monotonicity of a tree ensemble (LightGBM) in one feature"
 level = "verified"
-claim = "tree-monotone"
+claim = "monotone-feature"
 uses = ["tree-ensemble-check"]
 assumptions = ["A3-model-binding", "A11-tree-translation"]
 example = "examples/tree_ensemble/"

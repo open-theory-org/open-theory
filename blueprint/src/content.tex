@@ -1785,7 +1785,7 @@ its leaf is within the bound; sum over the trees.
 \end{proof}
 
 \begin{theorem}[Monotonicity certificate]\label{thm:tree_monotone}
-\lean{OpenTheory.Checks.Tree.monotoneCert, OpenTheory.Checks.Tree.monotoneCert_sound, OpenTheory.Checks.Tree.monoCut_sound, OpenTheory.Checks.Tree.Raised, OpenTheory.Checks.Tree.Ordered}
+\lean{OpenTheory.Checks.Tree.monotoneCert, OpenTheory.Checks.Tree.monotoneCert_sound, OpenTheory.Checks.Tree.monoCut_sound, OpenTheory.Raised, OpenTheory.Ordered}
 \leanok
 \uses{def:tree_ensemble}
 If, in every tree, at every split on feature $j$ that $B$ reaches on both sides, a cut $c$
@@ -1850,15 +1850,17 @@ The Dirac measure of a set is $0$ exactly when the point is not in it.
 \end{proof}
 
 \begin{definition}[Claim type and named properties]\label{def:claim_type}
-\lean{OpenTheory.ClaimType, OpenTheory.ClaimType.Claim, OpenTheory.Wrong, OpenTheory.Event, OpenTheory.Checks.Tree.Ensemble.Decides, OpenTheory.Checks.Tree.MonotoneIn}
+\lean{OpenTheory.ClaimType, OpenTheory.ClaimType.Claim, OpenTheory.Wrong, OpenTheory.Event, OpenTheory.Decides, OpenTheory.HasDecision, OpenTheory.HasScore, OpenTheory.MonotoneIn}
 \leanok
 \uses{def:spec}
 A claim type bundles parameters $\Theta$, an evidence space with its law $\mathbb P$, an acceptance
 relation, a specification $\sigma(\theta)$ and a model $m(\theta)$ for each parameter, an error
 $\delta$, and the proof that the acceptance is sound with error $\delta$ for the targets
 $\sigma(\theta)(m(\theta))$. A claim is a claim type with its parameter. The observables of the
-claim types apply named properties (an error of a 0/1 loss, an event of a pool's items, a
-tree ensemble's decision, monotonicity in one feature), one per property card.
+claim types apply named properties (an error of a 0/1 loss, an event of a pool's items, the
+decision, monotonicity in one feature), one per property card. The decision and the score are
+classes that each model family instantiates (tree ensembles, ReLU networks), so a property is
+stated once for every family that provides it.
 \end{definition}
 
 \begin{theorem}[Claims combine]\label{thm:sound_and}
