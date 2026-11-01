@@ -34,8 +34,7 @@ reduction step, so the check
   of structural recursion;
 * passes layers as structures, read by projection, and recurses once per layer.
 
-The meaning of acceptance is proved once in the library (planned: a `Specs` bridge to
-`OpenTheory.Exact.reluMLP`).
+The meaning of acceptance is proved once in the library (`Specs/MLPExact.lean`).
 
 References: Kronecker substitution [@harvey2009kronecker].
 -/
@@ -93,7 +92,7 @@ def layerOk (s c wb ab D n E lg PW B U G V : Nat) : Bool :=
   let T := Nat.mul (Nat.mul c σ) (ones s n)
   let top := pow2 (Nat.mul s n)
   -- shape: rows fit their spacing, the gather has room and enough rounds
-  Nat.ble D E && Nat.blt n E && Nat.ble n (pow2 lg) &&
+  Nat.ble 1 D && Nat.ble D E && Nat.blt n E && Nat.ble n (pow2 lg) &&
     digitsBelow s (Nat.mul n E) wb PW && digitsBelow s D ab U &&
     Nat.blt B top && Nat.blt V top &&
     -- product slots are exact, `σ` is the digit sum of `U`, `c · σ` fits a slot

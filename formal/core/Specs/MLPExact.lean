@@ -324,4 +324,213 @@ theorem slot_gather {s D E n lg : ℕ} (P : ℕ) (hs : 0 < s) (hD : 1 ≤ D) (hD
   · simp [hi, List.getD_eq_getElem?_getD, g]
   · simp [hi, List.getD_eq_getElem?_getD]
 
+/-! ## Part 2: the operations of one layer -/
+
+theorem high_eq {s : ℕ} (hs : 0 < s) (n b : ℕ) : high s n b = Kronecker.highMask s b n := by
+  show ones s n * (pow2 s - pow2 b) = _
+  rw [ones_eq, ones_eq_pack hs, pow2_eq, pow2_eq, Kronecker.highMask, Kronecker.pack, Kronecker.pack,
+    Nat.mul_comm, ← Kronecker.ofDigits_map_mul, List.map_replicate, Nat.mul_one]
+
+/-- `digitsBelow` bounds the number and each of its slots. -/
+theorem digitsBelow_spec {s n b x : ℕ} (hs : 0 < s) (h : digitsBelow s n b x = true) :
+    x < 2 ^ (s * n) ∧ ∀ j, slot s j x < 2 ^ b := by
+  simp only [digitsBelow, Bool.and_eq_true, Nat.blt_eq, Nat.beq_eq, pow2_eq, Nat.mul_eq] at h
+  obtain ⟨hlt, hland⟩ := h
+  refine ⟨hlt, fun j => ?_⟩
+  by_cases hj : j < n
+  · by_cases hb : b ≤ s
+    · rw [high_eq hs] at hland
+      exact Kronecker.slot_lt_of_land_eq_zero hb hland hj
+    · exact lt_of_lt_of_le (slot_lt _ _ _) (Nat.pow_le_pow_right (by norm_num) (by omega))
+  · rw [slot_of_lt (lt_of_lt_of_le hlt (Nat.pow_le_pow_right (by norm_num)
+      (Nat.mul_le_mul_left s (by omega))))]
+    exact Nat.two_pow_pos b
+
+/-- `noCarry` makes an addition slot by slot. -/
+theorem noCarry_spec {s n a b : ℕ} (hs : 0 < s) (h : noCarry s n a b (a + b) = true) {j : ℕ}
+    (hj : j < n) : slot s j (a + b) = slot s j a + slot s j b ∧ slot s j a + slot s j b < 2 ^ s := by
+  have h' : (a ^^^ b ^^^ (a + b)) &&& ((2 ^ (s * (n + 1)) - 1) / (2 ^ s - 1)) = 0 := by
+    have := h; simp only [noCarry, Nat.beq_eq] at this
+    rw [← ones_eq]; exact this
+  exact slot_add_of_carry_free hs h' hj
+
+theorem getD_slots (s n t j : ℕ) : (Kronecker.slots s n t).getD j 0 = if j < n then slot s j t else 0 := by
+  by_cases h : j < n <;> simp [Kronecker.slots, List.getD_eq_getElem?_getD, h, slot]
+
+/-- A number below `2^(s·n)` times a small `K` multiplies each slot, if no slot overflows. -/
+theorem slot_mul_small {s n t K : ℕ} (ht : t < 2 ^ (s * n)) (hK : ∀ j, slot s j t * K < 2 ^ s) (j : ℕ) :
+    slot s j (t * K) = slot s j t * K := by
+  have ht' := Kronecker.pack_slots (B := s) ht
+  have hdig : ∀ y ∈ (Kronecker.slots s n t).map (K * ·), y < 2 ^ s := by
+    intro y hy
+    obtain ⟨d, hd, rfl⟩ := List.mem_map.mp hy
+    obtain ⟨k, _, rfl⟩ := List.mem_map.mp hd
+    rw [Nat.mul_comm]; exact hK k
+  conv_lhs => rw [← ht', Nat.mul_comm, Kronecker.pack, ← Kronecker.ofDigits_map_mul, ← Kronecker.pack,
+    slot_pack hdig, Kronecker.getD_map_mul, getD_slots]
+  split
+  · ring
+  · rename_i hj
+    rw [slot_of_lt (lt_of_lt_of_le ht (Nat.pow_le_pow_right (by norm_num)
+      (Nat.mul_le_mul_left s (by omega))))]; ring
+
+/-- A value below `2^s` times the vector of ones is that value in each slot. -/
+theorem slot_mul_ones {s n v : ℕ} (hs : 0 < s) (hv : v < 2 ^ s) (j : ℕ) :
+    slot s j (v * ones s n) = if j < n then v else 0 := by
+  rw [ones_eq, ones_eq_pack hs, Kronecker.pack, ← Kronecker.ofDigits_map_mul, List.map_replicate,
+    Nat.mul_one, ← Kronecker.pack, slot_pack (fun y hy => by rw [List.eq_of_mem_replicate hy]; exact hv)]
+  by_cases h : j < n <;> simp [h, List.getD_eq_getElem?_getD, List.getElem?_replicate]
+
+theorem ones_lt {s : ℕ} (hs : 0 < s) (n : ℕ) : ones s n < 2 ^ (s * n) := by
+  rw [ones_eq, ones_eq_pack hs, Kronecker.pack, pow_mul]
+  have := Nat.ofDigits_lt_base_pow_length (b := 2 ^ s) (l := List.replicate n 1)
+    (Nat.one_lt_two_pow hs.ne') (fun y hy => by rw [List.eq_of_mem_replicate hy]; exact Nat.one_lt_two_pow hs.ne')
+  simpa using this
+
+/-- The sign bit of a slot. -/
+theorem testBit_sign {s d : ℕ} (hs : 0 < s) (hd : d < 2 ^ s) :
+    d.testBit (s - 1) = decide (2 ^ (s - 1) ≤ d) := by
+  rw [Nat.testBit_eq_decide_div_mod_eq]
+  have h2 : (2 : ℕ) ^ s = 2 ^ (s - 1) * 2 := by rw [← pow_succ, Nat.sub_add_cancel hs]
+  have : d / 2 ^ (s - 1) < 2 := Nat.div_lt_of_lt_mul (by rw [← h2]; exact hd)
+  by_cases h : 2 ^ (s - 1) ≤ d
+  · have : 1 ≤ d / 2 ^ (s - 1) := (Nat.le_div_iff_mul_le (Nat.two_pow_pos _)).mpr (by simpa using h)
+    simp only [h, decide_true, decide_eq_true_eq]; omega
+  · have : d / 2 ^ (s - 1) = 0 := Nat.div_eq_of_lt (lt_of_not_ge h)
+    simp [h, this]
+
+/-- **What `relu` computes.** Slot `j < n` keeps `v_j − 2^(s−1)` when its sign bit is set, and is
+zero otherwise. -/
+theorem slot_relu {s n v : ℕ} (hs : 1 < s) (j : ℕ) :
+    slot s j (relu s n v) =
+      if j < n ∧ 2 ^ (s - 1) ≤ slot s j v then slot s j v - 2 ^ (s - 1) else 0 := by
+  have hs0 : 0 < s := by omega
+  set t := Nat.land (Nat.shiftRight v (Nat.sub s 1)) (ones s n) with ht
+  have st : ∀ j, slot s j t = if j < n ∧ 2 ^ (s - 1) ≤ slot s j v then 1 else 0 := by
+    intro j
+    have e : Nat.land (Nat.shiftRight v (Nat.sub s 1)) (ones s n) = (v >>> (s - 1)) &&& ones s n := rfl
+    rw [ht, e, slot_land, ones_eq, slot_ones hs0]
+    have hbit : slot s j (v >>> (s - 1)) % 2 = if 2 ^ (s - 1) ≤ slot s j v then 1 else 0 := by
+      have h0 := testBit_slot s j (v >>> (s - 1)) 0
+      rw [Nat.testBit_zero, Nat.testBit_shiftRight] at h0
+      have h1 := testBit_slot s j v (s - 1)
+      rw [testBit_sign hs0 (slot_lt _ _ _)] at h1
+      simp only [hs0, decide_true, Bool.true_and, Nat.add_zero] at h0
+      simp only [show s - 1 < s by omega, decide_true, Bool.true_and] at h1
+      rw [show s - 1 + s * j = s * j + (s - 1) by ring, ← h1] at h0
+      rcases Nat.mod_two_eq_zero_or_one (slot s j (v >>> (s - 1))) with h | h <;>
+        simp only [h] at h0 ⊢ <;> split <;> simp_all
+    by_cases hj : j < n
+    · rw [if_pos hj, Nat.and_one_is_mod, hbit]; simp [hj]
+    · rw [if_neg hj, Nat.and_zero]; simp [hj]
+  have tlt : t < 2 ^ (s * n) := lt_of_le_of_lt Nat.and_le_right (ones_lt hs0 n)
+  have hK : 2 ^ (s - 1) - 1 < 2 ^ s :=
+    lt_of_le_of_lt (Nat.sub_le _ _) (Nat.pow_lt_pow_right (by norm_num) (by omega))
+  have stK : ∀ j, slot s j (t * (2 ^ (s - 1) - 1)) = slot s j t * (2 ^ (s - 1) - 1) :=
+    slot_mul_small tlt fun j => by rw [st]; split <;> simp [hK]
+  have e : relu s n v = v &&& (t * (2 ^ (s - 1) - 1)) := by
+    simp only [relu, ht, pow2_eq, Nat.mul_eq, Nat.sub_eq]; rfl
+  rw [e, slot_land, stK, st]
+  split
+  · rename_i h
+    rw [Nat.one_mul, land_low]
+    have hlt := slot_lt s j v
+    have h2 : (2 : ℕ) ^ s = 2 ^ (s - 1) + 2 ^ (s - 1) := by
+      rw [← Nat.two_mul, ← pow_succ', Nat.sub_add_cancel hs0]
+    obtain ⟨d, hd⟩ : ∃ d, slot s j v = 2 ^ (s - 1) + d := ⟨_, (Nat.add_sub_cancel' h.2).symm⟩
+    rw [hd, Nat.add_mod_left, Nat.mod_eq_of_lt (by omega), Nat.add_sub_cancel_left]
+  · rw [Nat.zero_mul, Nat.and_zero]
+
+theorem sum_range_list (f : ℕ → ℕ) : ∀ D, ((List.range D).map f).sum = ∑ i ∈ range D, f i
+  | 0 => by simp
+  | D + 1 => by rw [List.range_succ, List.map_append, List.sum_append, sum_range_list f D,
+      Finset.sum_range_succ]; simp
+
+/-- **The product's slots** (Kronecker substitution on whole vectors): slot `p` of `PW · U` is the
+convolution coefficient `Σ_i U_i · PW_(p − i)`, when every coefficient fits a slot. -/
+theorem slot_product {s D m U PW au aw : ℕ} (hU : U < 2 ^ (s * D))
+    (hUd : ∀ j, slot s j U ≤ au) (hPW : PW < 2 ^ (s * m)) (hPWd : ∀ j, slot s j PW ≤ aw)
+    (hX : D * au * aw < 2 ^ s) (p : ℕ) :
+    slot s p (PW * U) = ∑ i ∈ range (p + 1),
+      (if i < D then slot s i U else 0) * (if p - i < m then slot s (p - i) PW else 0) := by
+  set LU := Kronecker.slots s D U
+  set LW := Kronecker.slots s m PW
+  have eU : Kronecker.pack s LU = U := Kronecker.pack_slots hU
+  have eW : Kronecker.pack s LW = PW := Kronecker.pack_slots hPW
+  have hLW : ∀ y ∈ LW, y ≤ aw := by
+    intro y hy; obtain ⟨k, _, rfl⟩ := List.mem_map.mp hy; exact hPWd k
+  have hsum : LU.sum ≤ D * au := by
+    have := List.sum_le_length_nsmul LU au (by intro y hy; obtain ⟨k, _, rfl⟩ := List.mem_map.mp hy; exact hUd k)
+    simpa [LU, Kronecker.length_slots] using this
+  have hco : ∀ k, (Kronecker.conv LU LW).getD k 0 ≤ D * au * aw := fun k =>
+    le_trans (Kronecker.getD_conv_le LU LW hLW k) (Nat.mul_le_mul_right aw hsum)
+  have hdig : ∀ y ∈ Kronecker.conv LU LW, y < 2 ^ s := fun y hy =>
+    lt_of_le_of_lt (Kronecker.forall_of_getD_le hco y hy) hX
+  have eP : PW * U = Kronecker.pack s (Kronecker.conv LU LW) := by
+    rw [Kronecker.pack, Kronecker.ofDigits_conv, ← Kronecker.pack, ← Kronecker.pack, eU, eW, Nat.mul_comm]
+  rw [eP, slot_pack hdig, Kronecker.getD_conv]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [getD_slots, getD_slots]
+
+/-- **One layer.** An accepted `layerOk` means: every pre-activation slot `j < n` of `V` is
+`Σ_k (w_jk − c) · u_k + B_j`, where `u_k` is slot `k` of the input `U`, `w_jk + c` is slot
+`j·E + D − 1 − k` of the packed weights `PW` (the weights stored with offset `c`) and `B_j` is slot `j`
+of the packed biases (the bias stored with offset `2^(s−1)`, as is `V`). -/
+theorem layerOk_spec {s c wb ab D n E lg PW B U G V : ℕ} (hs : 1 < s)
+    (h : layerOk s c wb ab D n E lg PW B U G V = true) :
+    V < 2 ^ (s * n) ∧ ∀ j < n, (slot s j V : ℤ) =
+      (∑ k ∈ range D, ((slot s (j * E + (D - 1) - k) PW : ℤ) - c) * slot s k U) + slot s j B := by
+  have hs0 : 0 < s := by omega
+  simp only [layerOk, Bool.and_eq_true, Nat.ble_eq, Nat.blt_eq, Nat.beq_eq, pow2_eq, Nat.mul_eq,
+    Nat.sub_eq, Nat.add_eq] at h
+  obtain ⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨h1, hDE⟩, hnE⟩, hnlg⟩, hPW⟩, hU⟩, _⟩, hV⟩, hX⟩, hσX⟩, hcσ⟩, hG⟩, nc1⟩, nc2⟩, heq⟩ := h
+  refine ⟨hV, fun j hj => ?_⟩
+  obtain ⟨PWlt, PWd⟩ := digitsBelow_spec hs0 hPW
+  obtain ⟨Ult, Ud⟩ := digitsBelow_spec hs0 hU
+  -- the digit sum of the input
+  set σ := Nat.mod U (2 ^ s - 1) with hσdef
+  have hσ : σ = ∑ k ∈ range D, slot s k U := by
+    have hsum : (Kronecker.slots s D U).sum ≤ D * (2 ^ ab - 1) := by
+      have := List.sum_le_length_nsmul (Kronecker.slots s D U) (2 ^ ab - 1) (by
+        intro y hy; obtain ⟨k, _, rfl⟩ := List.mem_map.mp hy
+        exact Nat.le_sub_one_of_lt (Ud k))
+      simpa [Kronecker.length_slots] using this
+    have e : σ = (Kronecker.slots s D U).sum := by
+      rw [hσdef, show Nat.mod U (2 ^ s - 1) = U % (2 ^ s - 1) from rfl]
+      nth_rewrite 1 [← Kronecker.pack_slots (B := s) Ult]
+      rw [pack_mod_pred, Nat.mod_eq_of_lt (by omega)]
+    rw [e, Kronecker.slots, sum_range_list]; rfl
+  -- the gathered dot product
+  have hGj : slot s j G = ∑ k ∈ range D, slot s k U * slot s (j * E + (D - 1) - k) PW := by
+    rw [← hG, slot_gather _ hs0 h1 hDE hnE hnlg, if_pos hj,
+      slot_product Ult (au := 2 ^ ab - 1) (fun k => Nat.le_sub_one_of_lt (Ud k)) PWlt
+        (aw := 2 ^ wb - 1) (fun k => Nat.le_sub_one_of_lt (PWd k)) (by
+          calc D * (2 ^ ab - 1) * (2 ^ wb - 1) = D * (2 ^ wb - 1) * (2 ^ ab - 1) := by ring
+            _ < 2 ^ s := hX)]
+    have hp : j * E + (D - 1) < n * E := by
+      have : (j + 1) * E ≤ n * E := Nat.mul_le_mul_right E hj
+      rw [Nat.add_mul, Nat.one_mul] at this; omega
+    rw [← Finset.sum_range_add_sum_Ico _ (show D ≤ j * E + (D - 1) + 1 by omega),
+      Finset.sum_eq_zero (s := Finset.Ico D _) (fun i hi => by
+        simp only [Finset.mem_Ico] at hi; rw [if_neg (by omega), Nat.zero_mul]), Nat.add_zero]
+    refine Finset.sum_congr rfl fun i hi => ?_
+    have hi' := Finset.mem_range.mp hi
+    rw [if_pos hi', if_pos (by omega)]
+  -- the two carry-free additions and their equality
+  have a1 := (noCarry_spec hs0 nc1 hj).1
+  have a2 := (noCarry_spec hs0 nc2 hj).1
+  have hT : slot s j (c * σ * ones s n) = c * σ := by rw [slot_mul_ones hs0 hcσ, if_pos hj]
+  have hslot : slot s j V + c * σ = slot s j G + slot s j B := by
+    rw [← hT, ← a2, ← a1, heq]
+  rw [hGj, hσ] at hslot
+  have hz : (slot s j V : ℤ) + c * ∑ k ∈ range D, (slot s k U : ℤ) =
+      (∑ k ∈ range D, (slot s k U : ℤ) * slot s (j * E + (D - 1) - k) PW) + slot s j B := by
+    exact_mod_cast hslot
+  rw [Finset.mul_sum] at hz
+  have : (∑ k ∈ range D, ((slot s (j * E + (D - 1) - k) PW : ℤ) - c) * slot s k U) =
+      (∑ k ∈ range D, (slot s k U : ℤ) * slot s (j * E + (D - 1) - k) PW) -
+        ∑ k ∈ range D, (c : ℤ) * slot s k U := by
+    rw [← Finset.sum_sub_distrib]; refine Finset.sum_congr rfl fun k _ => by ring
+  rw [this]; linarith
+
 end OpenTheory.Checks.MLP
