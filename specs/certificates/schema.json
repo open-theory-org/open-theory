@@ -66,6 +66,13 @@
           ],
           "description": "robust-decision: the decision on every input of the box"
         },
+        "probability": {
+          "type": [
+            "string",
+            "number"
+          ],
+          "description": "robust-decision (logistic regression): approve when sigma(score) is at least this probability"
+        },
         "tau": {
           "type": [
             "string",

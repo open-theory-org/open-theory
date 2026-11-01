@@ -6,6 +6,7 @@ CI rejects any file here that has no manifest.
 | Folder | Today |
 | --- | --- |
 | [statistical/](statistical/) | **verified**: binomial held-out bound search, quantized-MLP certificate exporters (Occam, PAC-Bayes) |
+| [linear/](linear/) | **verified**: robustness and monotonicity certificates for linear and logistic-regression models |
 | [trees/](trees/) | **verified**: robustness and monotonicity certificates for tree ensembles (LightGBM) |
 | [neural/](neural/) | empty. Planned: integer interval bound propagation (IBP) on `QuantizedMLP` (verified-checker) |
 | [whitebox/](whitebox/) | empty. Planned: probes, activation patching, circuit faithfulness (experimental → rate claims) |

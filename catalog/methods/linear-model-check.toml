@@ -1,0 +1,27 @@
+id = "linear-model-check"
+name = "Robustness and monotonicity of a linear or logistic-regression model, checked by the kernel"
+level = "verified"
+mode = "verified-checker"
+kind = "linear"
+summary = "The verifier scales the model exactly (A11) and the kernel computes the least or greatest score on the box at the corner the weights' signs pick (robustness), or reads the sign of one weight (monotonicity). Exact, in a fraction of a millisecond."
+establishes = ["robust-decision", "monotone-feature"]
+checks = ["linear-robust", "linear-monotone"]
+implementation = ["methods/linear/linear_certificate.py", "verifier/core/linear.py"]
+assumptions = ["A3-model-binding", "A11-model-translation"]
+trusted = ["Lean kernel (ot_kernel; ot_check runs are labelled not verified)", "statements of OpenTheory.linearRobust_sound and OpenTheory.linearMonotone_sound", "the request decoder OpenTheory.Checks.Linear.decRobust / decMonotone (shared by both lanes) and ot_kernel's term builder, cross-checked by `ot_kernel --show`", "the translation from the deployed model (A11)"]
+conformance = ["tests/conformance/linear_verify.py"]
+references = [{ key = "hosmer2013applied", relation = "background" }]
+
+[lean]
+spec = ["OpenTheory.Checks.Linear.LinearModel", "OpenTheory.Checks.Linear.LinearModel.score", "OpenTheory.Checks.Linear.robust", "OpenTheory.Checks.Linear.monotone"]
+check = ["OpenTheory.Checks.Linear.robustK", "OpenTheory.Checks.Linear.monotone"]
+correctness = [
+  "OpenTheory.Checks.Linear.robustK_eq",
+  "OpenTheory.Checks.Linear.runRobust_eq",
+  "OpenTheory.Checks.Linear.robust_sound",
+  "OpenTheory.Checks.Linear.monotone_sound",
+  "OpenTheory.Checks.Linear.minScore_le",
+  "OpenTheory.Checks.Linear.le_maxScore",
+  "OpenTheory.Checks.Linear.termMin_le",
+  "OpenTheory.Checks.Linear.le_termMax",
+]

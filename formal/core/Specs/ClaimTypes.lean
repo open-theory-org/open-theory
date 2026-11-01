@@ -3,6 +3,7 @@ import Specs.Instances
 import Specs.RateGap
 import Specs.Tree
 import Properties.Network
+import Specs.Linear
 
 /-!
 # The claim types
@@ -24,6 +25,7 @@ claim type's check.
 | `judgedRate`, `judgedRateAlarms` | `judged-rate` | beacon seed | sums of the parts |
 | `rateGap`, `rateRatio` | `rate-gap`, `rate-ratio` | one beacon round, two pools | `RateGap.δTotal` |
 | `treeMonotone` | `monotone-feature` | none | `0` |
+| `linearRobust`, `linearMonotone` | `robust-decision`, `monotone-feature` | none | `0` |
 -/
 
 open MeasureTheory
@@ -188,5 +190,28 @@ noncomputable def treeMonotone (e : Checks.Tree.Ensemble) :
   model := fun _ => e
   δ := 0
   sound := treeMonotone_sound e
+
+/-- **`robust-decision`**, for linear and logistic-regression models. -/
+noncomputable def linearRobust (m : Checks.Linear.LinearModel) : ClaimType Checks.Linear.LinearModel (ℕ → ℝ) where
+  Param := Checks.Tree.Box × Bool
+  Evidence := Unit
+  law := Measure.dirac ()
+  accepts := fun _ θ => Checks.Linear.robustK m.bias m.τ m.weights θ.1 θ.2 = true
+  spec := fun θ => ⟨.property (Decides θ.2), .region {x | θ.1.Mem x}, .all⟩
+  model := fun _ => m
+  δ := 0
+  sound := linearRobust_sound m
+
+/-- **`monotone-feature`**, for linear and logistic-regression models. -/
+noncomputable def linearMonotone (m : Checks.Linear.LinearModel) :
+    ClaimType Checks.Linear.LinearModel ((ℕ → ℝ) × (ℕ → ℝ)) where
+  Param := Checks.Tree.Box × ℕ × Bool
+  Evidence := Unit
+  law := Measure.dirac ()
+  accepts := fun _ θ => Checks.Linear.monotone m.weights θ.2.1 θ.2.2 = true
+  spec := fun θ => ⟨.property (MonotoneIn θ.2.1 θ.2.2), .region {xx | θ.1.Mem xx.1 ∧ θ.1.Mem xx.2}, .all⟩
+  model := fun _ => m
+  δ := 0
+  sound := linearMonotone_sound m
 
 end OpenTheory.ClaimTypes

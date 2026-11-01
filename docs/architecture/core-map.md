@@ -9,23 +9,24 @@ level ([../trust.md](../trust.md)).
 
 | Layer | Modules | Lines | claim | library |
 | --- | --- | --- | --- | --- |
-| Checks | 6 | 827 | 6 (827 lines) | 0 |
+| Checks | 7 | 1,012 | 7 (1,012 lines) | 0 |
 | Foundations | 18 | 2,432 | 12 (1,870 lines) | 6 |
-| Models | 14 | 1,152 | 5 (573 lines) | 9 |
-| Properties | 5 | 154 | 5 (154 lines) | 0 |
+| Models | 15 | 1,184 | 6 (605 lines) | 9 |
+| Properties | 6 | 171 | 6 (171 lines) | 0 |
 | Theory | 72 | 19,509 | 11 (2,598 lines) | 61 |
-| Scopes | 3 | 317 | 3 (317 lines) | 0 |
-| Specs | 12 | 1,739 | 12 (1,739 lines) | 0 |
+| Scopes | 4 | 513 | 4 (513 lines) | 0 |
+| Specs | 13 | 1,805 | 13 (1,805 lines) | 0 |
 
 ## Modules
 
 | Module | Lines | Status | Behind |
 | --- | --- | --- | --- |
 | `Checks.Bits` | 20 | claim | claim types, fast checks, kernel-checked sample, catalog methods |
+| `Checks.Linear` | 180 | claim | claim types, fast checks, catalog methods |
 | `Checks.MLP` | 176 | claim | fast checks, catalog methods |
 | `Checks.PoolRate` | 40 | claim | claim types, fast checks, kernel-checked sample, catalog methods |
 | `Checks.PoolSample` | 145 | claim | fast checks, kernel-checked sample, catalog methods |
-| `Checks.Registry` | 58 | claim | fast checks |
+| `Checks.Registry` | 63 | claim | fast checks |
 | `Checks.Tree` | 388 | claim | claim types, fast checks, catalog methods |
 | `Foundations.Arithmetic.Kronecker` | 225 | claim | catalog methods |
 | `Foundations.Data.Foundation` | 75 | claim | claim types, kernel-checked sample, catalog methods |
@@ -52,6 +53,7 @@ level ([../trust.md](../trust.md)).
 | `Models.Exact.Linear` | 140 | library | — |
 | `Models.Exact.MLP` | 38 | library | — |
 | `Models.Exact.ReLU` | 69 | library | — |
+| `Models.Linear.Basic` | 32 | claim | claim types, catalog methods |
 | `Models.QuantizedMLP.Basic` | 108 | claim | claim types, kernel-checked sample, catalog methods |
 | `Models.QuantizedMLP.Net` | 40 | library | — |
 | `Models.QuantizedMLP.Packed` | 218 | claim | catalog methods |
@@ -61,6 +63,7 @@ level ([../trust.md](../trust.md)).
 | `Models.Tree.Basic` | 38 | claim | claim types, catalog methods |
 | `Properties.Basic` | 55 | claim | claim types, kernel-checked sample, catalog methods |
 | `Properties.Interface` | 44 | claim | claim types, catalog methods |
+| `Properties.Linear` | 17 | claim | claim types, catalog methods |
 | `Properties.Network` | 19 | claim | claim types |
 | `Properties.Prediction` | 19 | claim | claim types, kernel-checked sample, catalog methods |
 | `Properties.Tree` | 17 | claim | claim types, catalog methods |
@@ -137,14 +140,16 @@ level ([../trust.md](../trust.md)).
 | `Theory.Training.Singular.TruncationRisk` | 360 | claim | catalog methods |
 | `Theory.Training.Singular.WindowLimits` | 178 | library | — |
 | `Scopes.Basic` | 67 | claim | claim types, kernel-checked sample, catalog methods |
+| `Scopes.LinearRegion` | 196 | claim | claim types, catalog methods |
 | `Scopes.OnRegion` | 77 | claim | claim types, kernel-checked sample, catalog methods |
 | `Scopes.TreeRegion` | 173 | claim | claim types, catalog methods |
 | `Specs.Basic` | 86 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.ClaimType` | 92 | claim | claim types |
-| `Specs.ClaimTypes` | 192 | claim | claim types |
+| `Specs.ClaimTypes` | 217 | claim | claim types |
 | `Specs.HeldOut` | 110 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.Instances` | 215 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.JudgedRate` | 111 | claim | claim types, kernel-checked sample, catalog methods |
+| `Specs.Linear` | 41 | claim | claim types |
 | `Specs.PoolRate` | 180 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.PoolSample` | 156 | claim | kernel-checked sample, catalog methods |
 | `Specs.QuantizedMLP.Occam` | 155 | claim | claim types, kernel-checked sample, catalog methods |

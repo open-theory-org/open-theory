@@ -116,5 +116,6 @@ import Specs.Instances
 import Specs.Tree
 import Specs.ClaimType
 import Specs.ClaimTypes
+import Specs.Linear
 import Specs.PoolSample
 import Properties.Tree

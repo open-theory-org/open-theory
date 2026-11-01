@@ -2,6 +2,7 @@ import Checks.MLP
 import Checks.PoolRate
 import Checks.Tree
 import Checks.PoolSample
+import Checks.Linear
 
 /-!
 # Registry of certificate checks
@@ -53,6 +54,10 @@ def entries : List Entry :=
     { cli := "tree-robust", const := "OpenTheory.Checks.Tree.robustCertK", shape := .decoded,
       run := Tree.runRobust, render := Tree.showRobust },
     { cli := "tree-monotone", const := "OpenTheory.Checks.Tree.monotoneCertK", shape := .decoded,
-      run := Tree.runMonotone, render := Tree.showMonotone } ]
+      run := Tree.runMonotone, render := Tree.showMonotone },
+    { cli := "linear-robust", const := "OpenTheory.Checks.Linear.robustK", shape := .decoded,
+      run := Linear.runRobust, render := Linear.showRobust },
+    { cli := "linear-monotone", const := "OpenTheory.Checks.Linear.monotone", shape := .decoded,
+      run := Linear.runMonotone, render := Linear.showMonotone } ]
 
 end OpenTheory.Checks

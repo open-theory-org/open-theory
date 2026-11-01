@@ -23,7 +23,7 @@ bundle/
 the same for all of them ([docs/trust.md](../../docs/trust.md)):
 
 ```
-robust-decision · verified · kernel lane · δ = 0 · assumes A3-model-binding, A11-tree-translation
+robust-decision · verified · kernel lane · δ = 0 · assumes A3-model-binding, A11-model-translation
 ```
 
 claim type · level (from `catalog/guarantees/`, never from the certificate) · lane (`kernel`, or
@@ -36,6 +36,8 @@ claim type · level (from `catalog/guarantees/`, never from the certificate) · 
 | `judged-rate` | judge, audit, alarms parts | `commitment`, `sample` | `Checks.poolCheck` per part | `ot certify pool-rate` |
 | `rate-gap`, `rate-ratio` | four parts, `epsilon` or `c` | two pools | `Checks.poolCheck` per part | `ot certify pool-rate` |
 | `robust-decision` (trees) | `decision`, `tau`, `box` | `subject.model` (LightGBM dump) | `Checks.Tree.robustCertK` (`ot_kernel`) | `methods/trees/tree_certificate.py robust … --out` |
+| `robust-decision` (linear) | `decision`, `tau` or `probability`, `box` | `subject.model` ({intercept, coef}) | `Checks.Linear.robustK` (`ot_kernel`) | `methods/linear/linear_certificate.py robust … --out` |
+| `monotone-feature` (linear) | `feature`, `direction` | `subject.model` | `Checks.Linear.monotone` (`ot_kernel`) | `methods/linear/linear_certificate.py monotone … --out` |
 | `monotone-feature` (trees) | `feature`, `direction`, `box` | `subject.model` | `Checks.Tree.monotoneCertK` (`ot_kernel`) | `methods/trees/tree_certificate.py monotone … --out` |
 
 Rules, for every claim type:

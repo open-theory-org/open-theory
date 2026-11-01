@@ -37,7 +37,7 @@ assumptions.
 | Part | What it is | Written in | Checked by |
 | --- | --- | --- | --- |
 | **Language** | `Spec` (observable × domain × aggregate), `Sound`, `ClaimType`, the model interface (`HasDecision`, `HasScore`), the properties | `formal/core/{Properties,Scopes,Specs}` | the Lean kernel |
-| **Models** | families built from primitives: exact ReLU networks (linear, ReLU), quantized MLPs (proved members of that family), tree ensembles | `formal/core/Models` | the Lean kernel |
+| **Models** | families built from primitives: exact ReLU networks (linear, ReLU), quantized MLPs (proved members of that family), tree ensembles, linear and logistic-regression models | `formal/core/Models` | the Lean kernel |
 | **Rules** | for each family and check, the theorem that an accepted check implies the claim | `formal/core/{Scopes,Specs}`, `Specs/ClaimTypes.lean` | the Lean kernel |
 | **Checks** | the decision procedures the kernel runs per certificate, in core Lean only | `formal/core/Checks` | the Lean kernel (equal to their reference form, proved) |
 | **Registries** | cards: models, properties, domains, claims; assumptions | `specs/` | `check_specs.py`, `check_spec_shapes.py` |
@@ -87,8 +87,8 @@ Checks (core Lean only) → Foundations → Models → Properties → Theory →
 
 | Card | In words (running example) | Access | Model families | δ | Level |
 | --- | --- | --- | --- | --- | --- |
-| `robust-decision` | the decision is the same for every input in a box (Alice ± 5%) | white box | tree ensembles; ReLU networks (theorem, no method yet) | 0 | verified (trees) |
-| `monotone-feature` | raising one feature (income) never lowers the score | white box | tree ensembles | 0 | verified |
+| `robust-decision` | the decision is the same for every input in a box (Alice ± 5%) | white box | tree ensembles; linear and logistic-regression models; ReLU networks (theorem, no method yet) | 0 | verified (trees, linear) |
+| `monotone-feature` | raising one feature (income) never lowers the score | white box | tree ensembles; linear and logistic-regression models | 0 | verified |
 | `heldout-error` | the error rate on the population is at most `p` | white box + IID held-out data | quantized MLPs | `δ` | verified |
 | `occam-code-error`, `pacbayes-error` | the same, for a model trained on the sample | white box + training data | quantized MLPs | stated | verified |
 | `pool-rate` | at most `p` of the committed decisions fail | black box (logged outputs) | any system | stated | verified |
@@ -135,7 +135,7 @@ Kernel times are in [../benchmarks.md](../benchmarks.md): 2 ms for a 100k-parame
 
 | Area | Next |
 | --- | --- |
-| **Speed** | packed kernel checks (trees first, then beacon samples and large Chernoff tails), aiming at sub-millisecond ([../PLAN.md](../PLAN.md)) |
+| **Speed** | the recipe of [../fast-certificates.md](../fast-certificates.md): `mlp-exact` proved, then packed linear, beacon-sample, Chernoff and tree checks, each under a millisecond |
 | **Claim types for the bank** | calibration (the first quantity), AUC, quantiles, `robust-accuracy` (white box per item, then a rate) |
 | **Open chains** | `judged-rate` outcomes in the kernel; a method for `robust-decision` on networks; a soundness proof for `mlp-exact`; the quantized MLP's decision |
 | **Access levels** | internals (`methods/whitebox/`, an interface for activations), runtime (the agent gate) |

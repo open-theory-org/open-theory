@@ -12,6 +12,7 @@ Requires `lake build ot_kernel`.
 from __future__ import annotations
 
 import hashlib
+from fractions import Fraction
 import platform
 import random
 import re
@@ -23,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "methods" / "neural"))
 from mlp_exact_certificate import certificate, random_network, request  # noqa: E402
-from verifier.core import trees  # noqa: E402
+from verifier.core import linear, trees  # noqa: E402
 from verifier.core.pool_rate import check_args, sample_args  # noqa: E402
 
 KERNEL = ROOT / ".lake" / "build" / "bin" / "ot_kernel"
@@ -75,6 +76,14 @@ def cases():
         mm = {"base": 0, "trees": [mtree(rng, depth, -1, 1) for _ in range(n)]}
         req, _ = trees.monotone_request(mm, 0, True)
         out.append(("tree-monotone", f"{n} trees of depth {depth}, all inputs", "tree-monotone " + " ".join(map(str, req))))
+    for d in (10, 30, 200):
+        model = {"intercept": rng.gauss(0, 1), "coef": [rng.gauss(0, 1) for _ in range(d)]}
+        box = {str(f): [str(v - 0.5), str(v + 0.5)] for f, v in ((f, rng.uniform(-3, 3)) for f in range(d))}
+        lo = sum(min(w * (v - 0.5), w * (v + 0.5)) for w, v in zip(model["coef"], (float(box[str(f)][0]) + 0.5 for f in range(d))))
+        req, _ = linear.robust_request(model, box, True, Fraction(model["intercept"] + lo) - 1)
+        out.append(("linear-robust", f"linear model, {d} features, box", "linear-robust " + " ".join(map(str, req))))
+        req, _ = linear.monotone_request({"intercept": 0, "coef": [abs(w) for w in model["coef"]]}, 0, True)
+        out.append(("linear-monotone", f"linear model, {d} features", "linear-monotone " + " ".join(map(str, req))))
     return out
 
 

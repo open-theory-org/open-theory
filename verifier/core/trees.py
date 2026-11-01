@@ -225,9 +225,18 @@ NOT_COVERED = [
 ]
 
 
-def load_model(bundle: Path, cert: dict, load_file) -> tuple[dict, str]:
+def load_raw(bundle: Path, cert: dict, load_file) -> tuple[dict, str]:
     subject = require(cert, "subject", dict, "certificate")
-    model_obj, digest = load_file(bundle, require(subject, "model", dict, "subject"), "subject.model")
+    return load_file(bundle, require(subject, "model", dict, "subject"), "subject.model")
+
+
+def is_linear(model_obj) -> bool:
+    """A linear or logistic-regression model file (verifier/core/linear.py)."""
+    return isinstance(model_obj, dict) and "coef" in model_obj
+
+
+def load_model(bundle: Path, cert: dict, load_file) -> tuple[dict, str]:
+    model_obj, digest = load_raw(bundle, cert, load_file)
     try:
         return plain(model_obj), digest
     except NotSupported as e:
@@ -251,9 +260,14 @@ def parse_box(claim: dict) -> dict:
 
 
 def handle_robust(bundle: Path, cert: dict, load_file) -> Task:
+    """`robust-decision`: one card, one claim type per family; the model file says which."""
     claim = cert["claim"]
     if require(claim, "version", str, "claim") != "0.1":
         raise Reject("claim.version must be '0.1'")
+    raw, digest = load_raw(bundle, cert, load_file)
+    if is_linear(raw):
+        from . import linear
+        return linear.robust_task(raw, digest, claim, parse_box(claim))
     decision = require(claim, "decision", str, "claim")
     if decision not in ("approve", "decline"):
         raise Reject("claim.decision must be 'approve' or 'decline'")
@@ -292,6 +306,10 @@ def handle_monotone(bundle: Path, cert: dict, load_file) -> Task:
         raise Reject("claim.version must be '0.1'")
     feature = require(claim, "feature", int, "claim")
     direction = require(claim, "direction", str, "claim")
+    raw, digest = load_raw(bundle, cert, load_file)
+    if is_linear(raw) and direction in ("increasing", "decreasing") and feature >= 0:
+        from . import linear
+        return linear.monotone_task(raw, digest, claim, feature, direction == "increasing")
     if direction not in ("increasing", "decreasing") or feature < 0:
         raise Reject("claim.direction must be 'increasing' or 'decreasing', claim.feature ≥ 0")
     box = parse_box(claim)
@@ -317,5 +335,6 @@ def handle_monotone(bundle: Path, cert: dict, load_file) -> Task:
         expect_show=show)
 
 
-# certificates name the claim card; a card serves several families, told apart by the subject
+# certificates name the claim card; a card serves several families (trees here, linear models in
+# linear.py), told apart by the model file
 HANDLERS = {"robust-decision": handle_robust, "monotone-feature": handle_monotone}

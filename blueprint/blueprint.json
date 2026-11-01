@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-01T18:41:47.776030+00:00",
+  "generatedAt": "2026-11-01T20:31:20.315560+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 115,
+  "nodesCount": 117,
   "nodes": [
     {
       "id": "def:sample",
@@ -2356,6 +2356,49 @@
       "informalSketch": "Induction on trees and lists for the equalities; then the two theorems above."
     },
     {
+      "id": "def:linear_model",
+      "kind": "definition",
+      "title": "Linear model",
+      "leanName": "OpenTheory.Checks.Linear.LinearModel",
+      "leanNames": [
+        "OpenTheory.Checks.Linear.LinearModel",
+        "OpenTheory.Checks.Linear.LinearModel.score",
+        "OpenTheory.Checks.Linear.LinearModel.Approves"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": false,
+      "isVerified": true,
+      "dependencies": [],
+      "bountyUsd": null,
+      "informalSketch": null
+    },
+    {
+      "id": "thm:linear_checks",
+      "kind": "theorem",
+      "title": "Robustness and monotonicity are decided exactly",
+      "leanName": "OpenTheory.Checks.Linear.robust",
+      "leanNames": [
+        "OpenTheory.Checks.Linear.robust",
+        "OpenTheory.Checks.Linear.robustK",
+        "OpenTheory.Checks.Linear.robustK_eq",
+        "OpenTheory.Checks.Linear.robust_sound",
+        "OpenTheory.Checks.Linear.monotone",
+        "OpenTheory.Checks.Linear.monotone_sound",
+        "OpenTheory.linearRobust_sound",
+        "OpenTheory.linearMonotone_sound"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:linear_model",
+        "def:spec",
+        "thm:sound_exact"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Each term $w_f x_f$ is at least its value at the corner, by the sign of $w_f$; sum over the features.\nFor monotonicity, the inputs agree off feature $j$, and $w_j (x'_j - x_j)$ has the sign of $w_j$."
+    },
+    {
       "id": "def:spec",
       "kind": "definition",
       "title": "Observable, domain, aggregate, specification and guarantee",
@@ -2452,7 +2495,9 @@
         "OpenTheory.ClaimTypes.rateGap",
         "OpenTheory.ClaimTypes.rateRatio",
         "OpenTheory.ClaimTypes.treeRobust",
-        "OpenTheory.ClaimTypes.treeMonotone"
+        "OpenTheory.ClaimTypes.treeMonotone",
+        "OpenTheory.ClaimTypes.linearRobust",
+        "OpenTheory.ClaimTypes.linearMonotone"
       ],
       "statementFormalized": true,
       "proofFormalized": true,

@@ -76,7 +76,7 @@ def main() -> int:
         p.add_argument("--out", type=Path, help="write a certificate bundle for `ot verify`")
     a = ap.parse_args()
     model = load_model(a.model)
-    assumptions = ["A3-model-binding", "A11-tree-translation"]
+    assumptions = ["A3-model-binding", "A11-model-translation"]
     if a.cmd == "robust":
         box = json.loads(a.box.read_text())
         claim = {"type": "robust-decision", "version": "0.1", "decision": "approve" if a.approve else "decline",

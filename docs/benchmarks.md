@@ -6,16 +6,22 @@ best of three, on arm64 Darwin. The kernel lane is the `verified` one
 
 | Check | Request | Kernel time |
 | --- | --- | --- |
-| `mlp-exact` | ReLU MLP 64-16-10 (1,210 parameters) | 0.44 ms |
-| `mlp-exact` | ReLU MLP 784-128-10 (101,770 parameters) | 2.10 ms |
-| `pool-witness` | pool rate, 1,000 sampled bits | 9.48 ms |
-| `pool-witness` | pool rate, 20,000 sampled bits | 478.60 ms |
-| `pool-sample-witness` | pool rate from the beacon, 1,000 items | 28.26 ms |
-| `pool-sample-witness` | pool rate from the beacon, 5,000 items | 223.58 ms |
+| `mlp-exact` | ReLU MLP 64-16-10 (1,210 parameters) | 0.47 ms |
+| `mlp-exact` | ReLU MLP 784-128-10 (101,770 parameters) | 2.14 ms |
+| `pool-witness` | pool rate, 1,000 sampled bits | 9.70 ms |
+| `pool-witness` | pool rate, 20,000 sampled bits | 499.90 ms |
+| `pool-sample-witness` | pool rate from the beacon, 1,000 items | 29.32 ms |
+| `pool-sample-witness` | pool rate from the beacon, 5,000 items | 229.44 ms |
 | `pool-sample-witness` | pool rate from the beacon, 20,000 items | 1.18 s |
-| `tree-robust` | 10 trees of depth 5, small box | 3.74 ms |
-| `tree-monotone` | 10 trees of depth 5, all inputs | 17.08 ms |
-| `tree-robust` | 100 trees of depth 5, small box | 26.96 ms |
-| `tree-monotone` | 100 trees of depth 5, all inputs | 216.17 ms |
-| `tree-robust` | 500 trees of depth 5, small box | 159.81 ms |
-| `tree-monotone` | 500 trees of depth 5, all inputs | 1.41 s |
+| `tree-robust` | 10 trees of depth 5, small box | 3.99 ms |
+| `tree-monotone` | 10 trees of depth 5, all inputs | 18.00 ms |
+| `tree-robust` | 100 trees of depth 5, small box | 28.66 ms |
+| `tree-monotone` | 100 trees of depth 5, all inputs | 227.29 ms |
+| `tree-robust` | 500 trees of depth 5, small box | 168.62 ms |
+| `tree-monotone` | 500 trees of depth 5, all inputs | 1.45 s |
+| `linear-robust` | linear model, 10 features, box | 0.80 ms |
+| `linear-monotone` | linear model, 10 features | 0.16 ms |
+| `linear-robust` | linear model, 30 features, box | 1.78 ms |
+| `linear-monotone` | linear model, 30 features | 0.14 ms |
+| `linear-robust` | linear model, 200 features, box | 11.28 ms |
+| `linear-monotone` | linear model, 200 features | 0.27 ms |

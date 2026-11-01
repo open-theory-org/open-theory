@@ -57,6 +57,7 @@ def listOf (ty : Expr) (xs : List Expr) : Expr :=
 
 section
 open OpenTheory.Checks.Tree
+open OpenTheory.Checks (Linear.decRobust Linear.decMonotone)
 
 def intE : Int → Expr
   | .ofNat n => mkApp (mkConst ``Int.ofNat) (lit n)
@@ -91,6 +92,12 @@ def decodedArgs (cli : String) (args : List Nat) : Except String (Array Expr) :=
     | some (j, up, B, ts, cs) => pure #[lit j, boolE up, listOf (mkConst ``Tree) (ts.map treeE), boxE B,
         listOf (mkConst ``Cuts) (cs.map cutsE)]
     | none => throw "tree-monotone: malformed request"
+  | "linear-robust" => match Linear.decRobust args with
+    | some (bias, τ, c, B, ws) => pure #[intE bias, intE τ, listOf (mkConst ``Int) (ws.map intE), boxE B, boolE c]
+    | none => throw "linear-robust: malformed request"
+  | "linear-monotone" => match Linear.decMonotone args with
+    | some (j, up, ws) => pure #[listOf (mkConst ``Int) (ws.map intE), lit j, boolE up]
+    | none => throw "linear-monotone: malformed request"
   | _ => throw s!"{cli}: no decoder"
 end
 

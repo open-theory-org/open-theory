@@ -87,7 +87,7 @@ def main() -> int:
             if r.accepted != want:
                 failures.append(f"{name}: expected {'accept' if want else 'reject'}, got "
                                 f"{'accept' if r.accepted else 'reject'} ({r.reason})")
-            elif want and not r.summary().endswith("verified · kernel lane · δ = 0 · assumes A3-model-binding, A11-tree-translation"):
+            elif want and not r.summary().endswith("verified · kernel lane · δ = 0 · assumes A3-model-binding, A11-model-translation"):
                 failures.append(f"{name}: result line is {r.summary()!r}")
         cases += 1
         r = verify(tmp / "approve", timeout=120, compiled=True)

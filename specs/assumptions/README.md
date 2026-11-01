@@ -90,18 +90,26 @@ missing in credit data and inferred (for example by a proxy model), and the clai
 inferred groups. Used by `rate-gap`, `rate-ratio`.
 
 
-## A11-tree-translation: the integer ensemble computes the deployed model's decisions
+## A11-model-translation: the integer model computes the deployed model's decisions
 
-**Bridges:** model. the integer ensemble is the deployed LightGBM model, scaled.
+**Bridges:** model. the integer model a white-box check reads is the deployed model, scaled.
 
-The tree claim types of `robust-decision` and `monotone-feature` are about the integer ensemble in the request. The producer
-(`methods/trees/tree_certificate.py`) reads the deployed model (a LightGBM dump) and scales each
-feature and the leaves by powers of two, exactly, since doubles are dyadic. The two models then take
-the same decision on every input without missing values, provided the deployed runtime compares
-`x ≤ threshold` in the same precision as its dump. Not covered: missing values (`NaN` routing by
-`default_left`), categorical splits and `missing_type: Zero` (both refused), and preprocessing
-before the model. Anyone can re-run the deterministic translation from the model file to check
-it. Used by `robust-decision` and `monotone-feature`, for trees.
+The claim types for tree ensembles and linear models are about the integer model in the request.
+The verifier reads the deployed model's file and translates it exactly: doubles are dyadic, so
+features, leaves and weights are scaled by powers of two with no rounding.
+- **Trees** (`verifier/core/trees.py`, a LightGBM dump): a tree's score is a sum of leaves, an
+  integer once scaled, so the scaled threshold `⌈τ·2^k⌉` gives exactly the same decisions.
+- **Linear and logistic-regression models** (`verifier/core/linear.py`, intercept and
+  coefficients): the score on a real input is not an integer, so the threshold is rounded towards
+  the claim (up for an approval, down for a decline) and the integer model's decision implies the
+  deployed model's; a probability threshold `p` becomes `log (p / (1 − p))`, bounded with a margin of
+  `10⁻⁵⁰` in the same direction. Box bounds are rounded outwards.
+
+The decisions then agree on every input without missing values, provided the deployed runtime
+computes in at least the precision of its file. Not covered: missing values (`NaN` routing by
+`default_left`), categorical splits and `missing_type: Zero` (all refused), and preprocessing
+before the model. Anyone can re-run the deterministic translation from the model file. Used by
+`robust-decision` and `monotone-feature`, for trees and linear models.
 
 ## A12-commitment-binding: the checked items are the committed ones
 

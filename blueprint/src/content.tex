@@ -1827,6 +1827,36 @@ pairs, all).
 Induction on trees and lists for the equalities; then the two theorems above.
 \end{proof}
 
+\chapter{Linear and logistic-regression models}
+
+A linear model scores $b + \sum_f w_f x_f$ and approves when the score is at least $\tau$; a
+logistic regression \cite{hosmer2013applied} is one, with $\tau = \log(p / (1 - p))$ for a
+probability threshold $p$. It provides the same decision and score as the other families, so the
+specifications of robustness and monotonicity apply to it as they are.
+
+\begin{definition}[Linear model]\label{def:linear_model}
+\lean{OpenTheory.Checks.Linear.LinearModel, OpenTheory.Checks.Linear.LinearModel.score, OpenTheory.Checks.Linear.LinearModel.Approves}
+\leanok
+A linear model has an integer bias $b$, threshold $\tau$ and weights $w_0, \dots, w_{d-1}$; its
+score on $x : \mathbb N \to \mathbb R$ is $b + \sum_{f < d} w_f x_f$ and it approves when
+$\tau \le$ score.
+\end{definition}
+
+\begin{theorem}[Robustness and monotonicity are decided exactly]\label{thm:linear_checks}
+\lean{OpenTheory.Checks.Linear.robust, OpenTheory.Checks.Linear.robustK, OpenTheory.Checks.Linear.robustK_eq, OpenTheory.Checks.Linear.robust_sound, OpenTheory.Checks.Linear.monotone, OpenTheory.Checks.Linear.monotone_sound, OpenTheory.linearRobust_sound, OpenTheory.linearMonotone_sound}
+\leanok
+\uses{def:linear_model, def:spec, thm:sound_exact}
+On a box, the least score is $b + \sum_f \min(w_f \ell_f, w_f h_f)$, attained at the corner the signs
+of the weights pick; the check approves on the whole box when it is at least $\tau$ (and declines
+when the greatest score is below $\tau$). Raising feature $j$ never lowers the score exactly when
+$w_j \ge 0$. Both are instances of $\mathrm{Sound}$ with $\delta = 0$.
+\end{theorem}
+\begin{proof}
+\leanok
+Each term $w_f x_f$ is at least its value at the corner, by the sign of $w_f$; sum over the features.
+For monotonicity, the inputs agree off feature $j$, and $w_j (x'_j - x_j)$ has the sign of $w_j$.
+\end{proof}
+
 \chapter{Specifications}
 
 A specification is an observable (a property or a bounded quantity), a domain (a region, a
@@ -1891,7 +1921,7 @@ A union bound; for the pushforward, the preimage of a measurable superset of the
 \end{proof}
 
 \begin{theorem}[The claim types]\label{thm:claim_types}
-\lean{OpenTheory.ClaimTypes.robustRegion, OpenTheory.ClaimTypes.heldOut, OpenTheory.ClaimTypes.occam, OpenTheory.ClaimTypes.pacBayes, OpenTheory.ClaimTypes.poolRate, OpenTheory.ClaimTypes.judgedRate, OpenTheory.ClaimTypes.judgedRateAlarms, OpenTheory.ClaimTypes.rateGap, OpenTheory.ClaimTypes.rateRatio, OpenTheory.ClaimTypes.treeRobust, OpenTheory.ClaimTypes.treeMonotone}
+\lean{OpenTheory.ClaimTypes.robustRegion, OpenTheory.ClaimTypes.heldOut, OpenTheory.ClaimTypes.occam, OpenTheory.ClaimTypes.pacBayes, OpenTheory.ClaimTypes.poolRate, OpenTheory.ClaimTypes.judgedRate, OpenTheory.ClaimTypes.judgedRateAlarms, OpenTheory.ClaimTypes.rateGap, OpenTheory.ClaimTypes.rateRatio, OpenTheory.ClaimTypes.treeRobust, OpenTheory.ClaimTypes.treeMonotone, OpenTheory.ClaimTypes.linearRobust, OpenTheory.ClaimTypes.linearMonotone}
 \leanok
 \uses{def:claim_type, thm:spec_instances, thm:tree_sound}
 Every claim type of the repository is a term of this structure, stated with the named properties,
