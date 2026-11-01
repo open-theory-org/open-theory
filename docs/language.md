@@ -29,7 +29,7 @@ card in `specs/` (or a manifest in `catalog/`) that names it, and CI checks that
 | **Assumption** | why one Lean object of a claim type is the real one | not a Lean term: it bridges `law`, `observable`, `domain` or `model` to the world | `specs/assumptions/` (`**Bridges:**`) | A3: `model` is the deployed one; A11: the integer ensemble is the LightGBM model |
 | **Method** | how certificates are produced and checked: producer, kernel check, correctness theorems | `lean.check` (what the kernel evaluates), `lean.correctness` | `catalog/methods/` (`establishes`, `feeds`) | `tree-ensemble-check` |
 | **Guarantee** | what a certificate names: one claim type, the methods it uses, a level, every assumption | none: a name for the combination | `catalog/guarantees/` | — |
-| **Level** | how much of the chain the kernel checks: `verified`, `specified`, `experimental` | derived from the links (section 4) | `specs/protocols/assurance-levels.md` | `verified` |
+| **Level** | how much of the chain the kernel checks: `verified`, `specified`, `experimental`; with the lane of each run and the assumptions, what a result asks you to trust ([trust.md](trust.md)) | derived from the links (section 4) | `specs/protocols/assurance-levels.md` | `verified` |
 
 Changing one field gives another claim type:
 

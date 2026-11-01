@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from registry import LEVELS, ROOT, SPECS, cards, catalog, establishing  # noqa: E402
+from registry import LEVELS, ROOT, SPECS, cards, catalog, establishing, feeders  # noqa: E402
 
 COVERAGE = SPECS / "coverage.md"
 RELATIONS = {"implements", "adapts", "formalizes", "background", "contrasts"}
@@ -122,7 +122,10 @@ def main() -> int:
         for k in ("methods", "checks"):
             if k in c:
                 errors.append(f"{where}: '{k}' is derived from catalog/methods (`establishes`, `checks`); remove it")
-        for mid in establishing(cid, {k: (None, v) for k, v in methods.items()}):
+        wrapped = {k: (None, v) for k, v in methods.items()}
+        used = establishing(cid, wrapped)
+        used += [f for mid in used for f in feeders(mid, wrapped)]   # methods computing their inputs
+        for mid in used:
             for a in sorted(set(methods[mid].get("assumptions", [])) - set(c.get("assumptions", []))):
                 errors.append(f"{where}: omits assumption {a} of its method {mid}")
 

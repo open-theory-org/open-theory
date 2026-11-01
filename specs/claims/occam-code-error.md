@@ -6,7 +6,7 @@ aggregate = "meanLe"
 models = ["quantized-mlp"]
 lean = ["OpenTheory.QuantizedMLP.selected_code_certificate"]
 claim_types = ["OpenTheory.ClaimTypes.occam"]
-assumptions = ["A1-iid", "A4-labels"]
+assumptions = ["A1-iid", "A3-model-binding", "A4-labels"]
 references = [{ key = "blumer1987occam", relation = "implements" }]
 +++
 # Claim: Occam error bound (`occam-code-error`)

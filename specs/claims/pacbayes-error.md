@@ -6,7 +6,7 @@ aggregate = "meanLe"
 models = ["quantized-mlp"]
 lean = ["OpenTheory.PACBayes.catoni_pacBayes"]
 claim_types = ["OpenTheory.ClaimTypes.pacBayes"]
-assumptions = ["A1-iid", "A2-heldout-independent", "A4-labels"]
+assumptions = ["A1-iid", "A2-heldout-independent", "A3-model-binding", "A4-labels"]
 references = [{ key = "catoni2007pac", relation = "implements" }]
 +++
 # Claim: PAC-Bayes error bound (`pacbayes-error`)

@@ -21,8 +21,8 @@ its `Sound` theorem exists but no method uses it yet; `statement`: the card exis
 | [`heldout-error`](claims/heldout-error.md) | wrong | distribution | meanLe | `heldOut` | — | heldout-binomial-bound | A1-iid, A2-heldout-independent, A3-model-binding, A4-labels |
 | [`judged-rate`](claims/judged-rate.md) | event | pool | meanLe | `judgedRate`, `judgedRateAlarms` | `pool`, `pool-witness` | judged-rate-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A9-gold-labels |
 | [`mlp-exact`](claims/mlp-exact.md) | exact-output | region | all | open | `mlp-exact` | mlp-exact-kernel-check | A3-model-binding |
-| [`occam-code-error`](claims/occam-code-error.md) | wrong | distribution | meanLe | `occam` | — | occam-code-certificate | A1-iid, A4-labels |
-| [`pacbayes-error`](claims/pacbayes-error.md) | wrong | distribution | meanLe | `pacBayes` | — | pacbayes-catoni-certificate | A1-iid, A2-heldout-independent, A4-labels |
+| [`occam-code-error`](claims/occam-code-error.md) | wrong | distribution | meanLe | `occam` | — | occam-code-certificate | A1-iid, A3-model-binding, A4-labels |
+| [`pacbayes-error`](claims/pacbayes-error.md) | wrong | distribution | meanLe | `pacBayes` | — | pacbayes-catoni-certificate | A1-iid, A2-heldout-independent, A3-model-binding, A4-labels |
 | [`pool-rate`](claims/pool-rate.md) | event | pool | meanLe | `poolRate` | `pool`, `pool-witness` | pool-rate-certificate | A5-beacon, A6-timestamp, A7-issuer-identity |
 | [`rate-gap`](claims/rate-gap.md) | event | pool × pool | gapLe | `rateGap` | `pool`, `pool-witness` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A10-group-membership |
 | [`rate-ratio`](claims/rate-ratio.md) | event | pool × pool | ratioGe | `rateRatio` | `pool`, `pool-witness` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A10-group-membership |
