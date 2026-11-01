@@ -36,7 +36,7 @@ _spec.loader.exec_module(merkle)
 DOMAIN = b"opentheory/pool-rate/v0.1"
 DRAND = "https://api.drand.sh"
 DEFAULT_CHAIN = "8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce"
-ASSUMPTIONS = ["A5-beacon", "A6-timestamp", "A7-issuer-identity"]
+ASSUMPTIONS = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A12-commitment-binding"]
 EXACT_TAIL_MAX_K = 2000  # above this, use a Chernoff witness (one kernel comparison)
 
 

@@ -6,7 +6,7 @@ aggregate = "gapLe"
 models = ["any-system"]
 lean = ["OpenTheory.RateGap.Claim", "OpenTheory.RateGap.target_gap", "OpenTheory.PoolRate.Claim.of_poolCheck"]
 claim_types = ["OpenTheory.ClaimTypes.rateGap"]
-assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A10-group-membership"]
+assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A12-commitment-binding", "A10-group-membership"]
 references = [{ key = "clopper1934use", relation = "implements" }, { key = "luck2026certified", relation = "background" }]
 +++
 # Claim: Rate gap between two committed pools (`rate-gap`, v0.1)

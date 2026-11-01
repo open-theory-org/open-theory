@@ -2,7 +2,7 @@
 id = "pool"
 kind = "pool"
 randomness = "pool-seed"
-assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity"]
+assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A12-commitment-binding"]
 lean = ["OpenTheory.Domain", "OpenTheory.seedLaw", "OpenTheory.DesignSampling.rate_sound"]
 references = [{ key = "luck2026certified", relation = "background" }]
 +++

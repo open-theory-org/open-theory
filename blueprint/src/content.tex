@@ -1281,6 +1281,25 @@ Each pool's blocks are uniform, so each of the four rate claims is sound by
 Theorem~\ref{thm:pool_rate_sound}; take a union bound, and combine the intervals outside the bad set.
 \end{proof}
 
+\section{The sample, checked by the kernel}
+
+\begin{theorem}[The kernel derives the sample]\label{thm:pool_sample}
+\lean{OpenTheory.Checks.poolSample, OpenTheory.Checks.poolSampleK, OpenTheory.Checks.poolSampleK_eq, OpenTheory.Checks.Drawn, OpenTheory.PoolSample.Faithful, OpenTheory.PoolSample.Counted, OpenTheory.PoolSample.claim_of_poolSample, OpenTheory.PoolSample.claim_of_poolSampleWitness, OpenTheory.PoolSample.poolRate_accepts, OpenTheory.PoolSample.rateGap_accepts}
+\leanok
+\uses{thm:spec_instances}
+A request lists, for each sampled position, a seed block $b_i$, a pool index $j_i$ and the two
+values $(a_i, c_i)$ of the item. The check accepts when every $j_i = b_i \bmod N$, the bits
+$[a_i = c_i]$ (or $[a_i \ne c_i]$) pass the count and tail check, and the number of positions is
+$n$. If the blocks are the seed and each $(a_i, c_i)$ is the committed item $j_i$, an accepted check
+is the acceptance of the pool-rate claim for the event on the derived sample; four such checks on
+the two pools' blocks are the acceptance of the rate-gap claim.
+\end{theorem}
+\begin{proof}
+\leanok
+The bit vector the kernel builds has bit $i$ equal to the event on item $b_i \bmod N$, which is the
+derived index; the count and tail check then gives the claim, as for a given vector.
+\end{proof}
+
 \chapter{Gradient-descent plateau and singular learning}
 
 \begin{theorem}[The gradient-descent plateau: exact mode dynamics]\label{thm:plateau_modes}

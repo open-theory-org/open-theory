@@ -78,6 +78,10 @@ re-checked by the kernel on demand.
 
 ## 5. The assumptions: why the Lean objects are the real ones
 
+For the statistical claim types, what is proved, what the kernel computes from the beacon and
+what stays an assumption is detailed in [statistics.md](statistics.md).
+
+
 The proof is about the objects in Lean. Each assumption bridges one of them to the world
 (`specs/assumptions/`):
 
@@ -85,7 +89,7 @@ The proof is about the objects in Lean. Each assumption bridges one of them to t
 | --- | --- | --- | --- |
 | `law` | the law of the evidence | A1 IID, A2 model fixed before the sample, A5 uniform beacon, A6 seed after commitment, A7 all attempts counted | the sampling protocol: commit, then a public beacon; timestamps; a transparency log |
 | `observable` | what the property tests | A4 labels, A9 gold labels | who labels, and when (after sampling, independently of the issuer) |
-| `domain` | the population | A8 the pool is the traffic, A10 each pool is its group | signed receipts with inclusion proofs; how groups were recorded |
+| `domain` | the population | A8 the pool is the traffic, A10 each pool is its group, A12 the checked items are the committed ones | signed receipts with inclusion proofs; how groups were recorded; Merkle inclusion under a collision-resistant hash |
 | `model` | the model the claim is about | A3 the deployed model, A11 the LightGBM translation | a hash of the model, attestation; re-running the deterministic translation |
 
 An assumption is never a hidden hypothesis: a certificate lists every one it uses, and CI checks
@@ -109,9 +113,9 @@ about something other than the world.
 | --- | --- | --- | --- | --- |
 | `tree-robust`, `tree-monotone` | verified | kernel, compiled | 0 | A3, A11 (model) |
 | `heldout-error` | verified | kernel (`ot verify`) | δ | A1, A2 (law), A4 (observable), A3 (model) |
-| `pool-rate` | verified | kernel, compiled | `(1 + N/2²⁵⁶)ⁿ δ` | A5, A6, A7 (law) |
-| `judged-rate` | verified | kernel, compiled | sum of parts | A5, A6, A7 (law), A9 (observable) |
-| `rate-gap`, `rate-ratio` | verified | kernel, compiled | sum of parts | A5, A6, A7 (law), A10 (domain) |
+| `pool-rate` | verified | kernel, compiled | `(1 + N/2²⁵⁶)ⁿ δ` | A5, A6, A7 (law), A12 (domain) |
+| `judged-rate` | verified | kernel, compiled | sum of parts | A5, A6, A7 (law), A9 (observable), A12 (domain) |
+| `rate-gap`, `rate-ratio` | verified | kernel, compiled | sum of parts | A5, A6, A7 (law), A10, A12 (domain) |
 | `occam-code-error`, `pacbayes-error` | verified | kernel | stated per claim type | A1 (law), A4 (observable), A3 (model); A2 (law) for PAC-Bayes |
 | `robust-region` | theorem, no method yet | — | 0 | A3 (model) |
 | `mlp-exact` | experimental | kernel, compiled | — | A3 (model) |

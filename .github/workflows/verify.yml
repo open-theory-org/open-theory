@@ -72,6 +72,7 @@ jobs:
           lake build ot_kernel
           python3 tests/conformance/fast_check.py
           python3 tests/conformance/pool_check_lanes.py
+          python3 tests/conformance/pool_sample_lanes.py
           python3 tests/conformance/tree_check.py
           lake build ot_check
           python3 tests/conformance/tree_verify.py

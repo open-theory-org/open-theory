@@ -6,7 +6,7 @@ aggregate = "meanLe"
 models = ["any-system"]
 lean = ["OpenTheory.JudgedRate.Claim"]
 claim_types = ["OpenTheory.ClaimTypes.judgedRate", "OpenTheory.ClaimTypes.judgedRateAlarms"]
-assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A9-gold-labels"]
+assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A12-commitment-binding", "A9-gold-labels"]
 references = [{ key = "clopper1934use", relation = "implements" }]
 +++
 # Claim: judged rate (`judged-rate`, v0.1)

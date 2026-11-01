@@ -3,5 +3,5 @@ name = "Certified rate gap (demographic parity difference) between two committed
 level = "verified"
 claim = "rate-gap"
 uses = ["rate-gap-certificate"]
-assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A10-group-membership"]
+assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A12-commitment-binding", "A10-group-membership"]
 example = "examples/rate_gap/"

@@ -1,6 +1,7 @@
 import Checks.MLP
 import Checks.PoolRate
 import Checks.Tree
+import Checks.PoolSample
 
 /-!
 # Registry of certificate checks
@@ -45,6 +46,10 @@ def entries : List Entry :=
       run := fun | [x, n, l, k, a, b, d] => poolCheck x n l k a b d | _ => false },
     { cli := "pool-witness", const := "OpenTheory.Checks.poolCheckWitness", shape := .nats 9,
       run := fun | [x, n, l, k, a, b, u, v, d] => poolCheckWitness x n l k a b u v d | _ => false },
+    { cli := "pool-sample", const := "OpenTheory.Checks.poolSampleK",
+      shape := .records 8 4 "OpenTheory.Checks.Drawn.mk", run := runPoolSample },
+    { cli := "pool-sample-witness", const := "OpenTheory.Checks.poolSampleWitnessK",
+      shape := .records 10 4 "OpenTheory.Checks.Drawn.mk", run := runPoolSampleWitness },
     { cli := "tree-robust", const := "OpenTheory.Checks.Tree.robustCertK", shape := .decoded,
       run := Tree.runRobust, render := Tree.showRobust },
     { cli := "tree-monotone", const := "OpenTheory.Checks.Tree.monotoneCertK", shape := .decoded,

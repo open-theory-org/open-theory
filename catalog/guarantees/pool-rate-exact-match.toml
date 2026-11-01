@@ -3,5 +3,5 @@ name = "Certified failure rate of logged outputs on a committed pool"
 level = "verified"
 claim = "pool-rate"
 uses = ["pool-rate-certificate"]
-assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity"]
+assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A12-commitment-binding"]
 example = "examples/pool_rate/"

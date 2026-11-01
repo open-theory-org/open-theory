@@ -19,13 +19,13 @@ its `Sound` theorem exists but no method uses it yet; `statement`: the card exis
 | Claim | Observable | Domain | Aggregate | Claim types (`formal/core/Specs/ClaimTypes.lean`) | Fast checks | Methods | Assumptions |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | [`heldout-error`](claims/heldout-error.md) | wrong | distribution | meanLe | `heldOut` | — | heldout-binomial-bound | A1-iid, A2-heldout-independent, A3-model-binding, A4-labels |
-| [`judged-rate`](claims/judged-rate.md) | event | pool | meanLe | `judgedRate`, `judgedRateAlarms` | `pool`, `pool-witness` | judged-rate-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A9-gold-labels |
+| [`judged-rate`](claims/judged-rate.md) | event | pool | meanLe | `judgedRate`, `judgedRateAlarms` | `pool`, `pool-witness` | judged-rate-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A12-commitment-binding, A9-gold-labels |
 | [`mlp-exact`](claims/mlp-exact.md) | exact-output | region | all | open | `mlp-exact` | mlp-exact-kernel-check | A3-model-binding |
 | [`occam-code-error`](claims/occam-code-error.md) | wrong | distribution | meanLe | `occam` | — | occam-code-certificate | A1-iid, A3-model-binding, A4-labels |
 | [`pacbayes-error`](claims/pacbayes-error.md) | wrong | distribution | meanLe | `pacBayes` | — | pacbayes-catoni-certificate | A1-iid, A2-heldout-independent, A3-model-binding, A4-labels |
-| [`pool-rate`](claims/pool-rate.md) | event | pool | meanLe | `poolRate` | `pool`, `pool-witness` | pool-rate-certificate | A5-beacon, A6-timestamp, A7-issuer-identity |
-| [`rate-gap`](claims/rate-gap.md) | event | pool × pool | gapLe | `rateGap` | `pool`, `pool-witness` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A10-group-membership |
-| [`rate-ratio`](claims/rate-ratio.md) | event | pool × pool | ratioGe | `rateRatio` | `pool`, `pool-witness` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A10-group-membership |
+| [`pool-rate`](claims/pool-rate.md) | event | pool | meanLe | `poolRate` | `pool`, `pool-sample`, `pool-sample-witness`, `pool-witness` | pool-rate-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A12-commitment-binding |
+| [`rate-gap`](claims/rate-gap.md) | event | pool × pool | gapLe | `rateGap` | `pool`, `pool-sample`, `pool-sample-witness`, `pool-witness` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A12-commitment-binding, A10-group-membership |
+| [`rate-ratio`](claims/rate-ratio.md) | event | pool × pool | ratioGe | `rateRatio` | `pool`, `pool-sample`, `pool-sample-witness`, `pool-witness` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A12-commitment-binding, A10-group-membership |
 | [`robust-region`](claims/robust-region.md) | predicts | region | all | `robustRegion` | — | — | A3-model-binding |
 | [`tree-monotone`](claims/tree-monotone.md) | monotone | region | all | `treeMonotone` | `tree-monotone`, `tree-robust` | tree-ensemble-check | A3-model-binding, A11-tree-translation |
 | [`tree-robust`](claims/tree-robust.md) | decision | region | all | `treeRobust` | `tree-monotone`, `tree-robust` | tree-ensemble-check | A3-model-binding, A11-tree-translation |

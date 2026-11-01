@@ -80,7 +80,7 @@ A proof is about the objects in Lean. An assumption says that one of them is the
 | --- | --- | --- |
 | `law` | the law of the evidence | A1 (IID), A2 (model fixed before the sample), A5 (uniform seed), A6 (seed after the commitment), A7 (all attempts counted) |
 | `observable` | what the property tests | A4 (labels), A9 (gold labels) |
-| `domain` | the population | A8 (the pool is the traffic), A10 (each pool is its group) |
+| `domain` | the population | A8 (the pool is the traffic), A10 (each pool is its group), A12 (the checked items are the committed ones) |
 | `model` | the model the claim is about | A3 (the deployed model), A11 (the LightGBM translation) |
 
 Nothing else is assumed: a claim type's certificate lists its assumptions, and each one is one of
@@ -132,7 +132,7 @@ aggregate, one guarantee) is fixed, and every new piece is checked against it by
 | an aggregate is used only on a domain where it has a meaning; a claim type lists its domain's assumptions and its methods' | `check_specs.py` |
 | every assumption says which Lean object it bridges | `check_specs.py` |
 | a method's level is the one its links support; a guarantee's level is that of its weakest method | `check_catalog.py` |
-| a certificate is accepted by the kernel lane and the compiled lane alike; accepted claims hold on the original model | `fast_check.py`, `pool_check_lanes.py`, `tree_check.py` |
+| a certificate is accepted by the kernel lane and the compiled lane alike; accepted claims hold on the original model | `fast_check.py`, `pool_check_lanes.py`, `pool_sample_lanes.py`, `tree_check.py`, `tree_verify.py` |
 | every citation resolves | `check_references.py` |
 
 **Not checkable by a machine, so read by a human:** whether a Lean statement means what its card

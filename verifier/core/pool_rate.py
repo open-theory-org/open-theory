@@ -35,12 +35,19 @@ MAX_N = 50_000  # v0.1: bundle size (one inclusion proof per item) and kernel-mo
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 
 
-def derive_indices(round_: int, signature: bytes, n: int, size: int, start: int = 0) -> list[int]:
-    """Block `i` is SHA-256(DOMAIN ‖ round ‖ signature ‖ i) read big-endian; the index is it mod size.
-    Blocks `start … start + n − 1` (a second pool uses the blocks after the first's)."""
+def derive_blocks(round_: int, signature: bytes, n: int, start: int = 0) -> list[int]:
+    """Block `i` is SHA-256(DOMAIN ‖ round ‖ signature ‖ i) read big-endian: the seed of
+    `DesignSampling`, uniform under A5. Blocks `start … start + n − 1` (a second pool uses the
+    blocks after the first's)."""
     head = DOMAIN + round_.to_bytes(8, "big") + signature
-    return [int.from_bytes(hashlib.sha256(head + i.to_bytes(8, "big")).digest(), "big") % size
+    return [int.from_bytes(hashlib.sha256(head + i.to_bytes(8, "big")).digest(), "big")
             for i in range(start, start + n)]
+
+
+def derive_indices(round_: int, signature: bytes, n: int, size: int, start: int = 0) -> list[int]:
+    """The index of block `i` is the block mod size (`DesignSampling.deriveIndex`); the kernel
+    recomputes it from the blocks (`Checks.poolSample`)."""
+    return [b % size for b in derive_blocks(round_, signature, n, start)]
 
 
 def attestation(name: str):
@@ -205,12 +212,14 @@ def check_protocol(bundle: Path, cert: dict, load_file, kind: str):
 
     # 3. The sample: recomputed indices and Merkle inclusion in the committed pool(s).
     sample, _ = load_file(bundle, require(evidence, "sample", dict, "evidence"), "evidence.sample")
+    c["blocks"] = derive_blocks(c["round"], sig, c["n"])
     leaves = sampled_leaves(require(sample, "items", list, "sample"), "sample.items",
-                            derive_indices(c["round"], sig, c["n"], c["size"]), c["size"], c["root"])
+                            [b % c["size"] for b in c["blocks"]], c["size"], c["root"])
     if "n_b" in c:
+        c["blocks_b"] = derive_blocks(c["round"], sig, c["n_b"], start=c["n"])
         c["leaves_b"] = sampled_leaves(
             require(sample, "items_b", list, "sample"), "sample.items_b",
-            derive_indices(c["round"], sig, c["n_b"], c["size_b"], start=c["n"]), c["size_b"], c["root_b"])
+            [b % c["size_b"] for b in c["blocks_b"]], c["size_b"], c["root_b"])
     n, size = c["n"], c["size"]
 
     # 6. Attempt accounting: every commitment the issuer declares for this round.
@@ -271,6 +280,26 @@ def check_args(bits: list[bool], part, d: int) -> list[str]:
         return ["pool", x, str(n), str(levels(n)), str(k), str(num), str(den), str(d)]
     return ["pool-witness", x, str(n), str(levels(n)), str(k), str(num), str(den),
             str(witness[0]), str(witness[1]), str(d)]
+
+
+def encode(value) -> int:
+    """An item's committed value as a number: its canonical JSON bytes behind a 0x01 byte, so that
+    different values give different numbers (`Checks.Drawn`)."""
+    return int.from_bytes(b"\x01" + merkle.canonical(value), "big")
+
+
+def sample_args(blocks: list[int], size: int, pairs: list[tuple], same_: bool, part, d: int) -> list[str]:
+    """A request for `Checks.poolSample` / `poolSampleWitness` (registry `pool-sample`,
+    `pool-sample-witness`): the kernel derives each index from its block, computes each bit from
+    the item's two values (equal if `same_`, different otherwise), then runs `poolCheck`."""
+    k, num, den, witness = part
+    n = len(blocks)
+    head = [str(size), str(int(same_)), str(n), str(levels(n)), str(k), str(num), str(den)]
+    head = ["pool-sample", *head, str(d)] if witness is None else \
+        ["pool-sample-witness", *head, str(witness[0]), str(witness[1]), str(d)]
+    for b, (x, y) in zip(blocks, pairs):
+        head += [hex(b), str(b % size), hex(encode(x)), hex(encode(y))]
+    return head
 
 
 def holds(bits: list[bool], part, d: int) -> bool:
@@ -335,15 +364,18 @@ def handle(bundle: Path, cert: dict, load_file) -> Task:
 
     k, num, den, witness = part
     ones = sum(bits)
-    args = check_args(bits, part, d)
-    fn = "poolCheck" if args[0] == "pool" else "poolCheckWitness"
-    checked += [f"{n} bits recomputed with 'exact-match' (verifier): {ones} set",
+    labels_used = [leaf["label"] if "label" in leaf else labels[i] for i, leaf in enumerate(leaves)]
+    args = sample_args(c["blocks"], size, [(leaf["output"], lab) for leaf, lab in zip(leaves, labels_used)],
+                       False, part, d)
+    fn = "poolSample" if args[0] == "pool-sample" else "poolSampleWitness"
+    checked += [f"{n} indices (block mod N) and bits (output ≠ label) computed by the Lean kernel from the "
+                f"beacon blocks and the items' committed bytes: {ones} set",
                 f"attempt accounting over {count} declared commitment(s): total δ = {total}"]
     trusted = [
-        "statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck, DesignSampling.rate_sound "
-        "and selective_sound",
-        "this verifier's index derivation, Merkle and exact-match code (verifier/core/pool_rate.py, merkle.py)",
-        "SHA-256 as a random oracle for the beacon expansion (A5-beacon)",
+        "statements of ClaimTypes.poolRate (poolRate_sound) and PoolSample.poolRate_accepts",
+        "this verifier's beacon expansion and Merkle inclusion code (verifier/core/pool_rate.py, merkle.py): "
+        "the two facts of PoolSample.Faithful, under A5 and A12",
+        "SHA-256 as a random oracle for the beacon expansion (A5-beacon) and as a binding commitment (A12)",
     ]
     if labels_after:
         trusted.append("labels of the sampled items, supplied after sampling: the bound holds if they are the "
@@ -366,10 +398,10 @@ def handle(bundle: Path, cert: dict, load_file) -> Task:
             "commitments the issuer made to the same round and did not declare (A7-issuer-identity)",
         ],
         fast=args,
-        fast_call=f"OpenTheory.Checks.{describe(part, d, n)}",
-        fast_meaning=(f"meaning, proved once: OpenTheory.PoolRate.Claim.of_{fn} turns it into "
-                      f"Claim (bitsOf x {n}) {k} ({num}/{den}) (1/{d}), and DesignSampling.rate_sound "
-                      "into the bound over seeds"),
+        fast_call=f"OpenTheory.Checks.{fn}K on the {n} sampled positions; {describe(part, d, n)}",
+        fast_meaning=(f"meaning, proved once: PoolSample.poolRate_accepts turns it into the acceptance of "
+                      f"ClaimTypes.poolRate (Claim (exact-match failures on the derived sample) {k} ({num}/{den}) "
+                      f"(1/{d})), and poolRate_sound into the bound over seeds"),
         fast_explain=reason,
     )
 
@@ -464,7 +496,12 @@ def handle_two_pools(bundle: Path, cert: dict, load_file) -> Task:
     pos_b = [same(leaf["output"], c["positive"]) for leaf in leaves_b]
     named = [("upper A", pos_a, parts[0], c["ds"][0]), ("lower A", [not x for x in pos_a], parts[1], c["ds"][1]),
              ("upper B", pos_b, parts[2], c["ds"][2]), ("lower B", [not x for x in pos_b], parts[3], c["ds"][3])]
-    groups = [check_args(bits, part, d) for _, bits, part, d in named]
+    pairs_a = [(leaf["output"], c["positive"]) for leaf in leaves_a]
+    pairs_b = [(leaf["output"], c["positive"]) for leaf in leaves_b]
+    groups = [sample_args(c["blocks"], c["size"], pairs_a, True, parts[0], c["ds"][0]),
+              sample_args(c["blocks"], c["size"], pairs_a, False, parts[1], c["ds"][1]),
+              sample_args(c["blocks_b"], c["size_b"], pairs_b, True, parts[2], c["ds"][2]),
+              sample_args(c["blocks_b"], c["size_b"], pairs_b, False, parts[3], c["ds"][3])]
     args = [a for g in groups for a in (*g, "+")][:-1]
     pA, qA, pB, qB = (Fraction(pt[1], pt[2]) for pt in parts)
     lowA, lowB = 1 - qA, 1 - qB
@@ -494,7 +531,8 @@ def handle_two_pools(bundle: Path, cert: dict, load_file) -> Task:
     checked += [
         f"{c['n_b']} indices for pool B recomputed from the round signature (blocks {c['n']}…{c['n'] + c['n_b'] - 1}); "
         f"each item's Merkle inclusion in pool root {c['root_b'].hex()[:16]}… (N = {c['size_b']})",
-        f"bits recomputed (output = committed positive value): {sum(pos_a)}/{c['n']} in A, {sum(pos_b)}/{c['n_b']} in B",
+        f"indices (block mod N) and bits (output = committed positive value) computed by the Lean kernel: "
+        f"{sum(pos_a)}/{c['n']} in A, {sum(pos_b)}/{c['n_b']} in B",
         f"attempt accounting over {count} declared commitment(s): total δ = {total}",
     ]
     reason = lambda: first_false(named)
@@ -506,10 +544,10 @@ def handle_two_pools(bundle: Path, cert: dict, load_file) -> Task:
         words=words,
         checked=checked,
         trusted=[
-            f"statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck, {theorem} and "
-            "DesignSampling.seedFrac_restrict",
-            "this verifier's index derivation, Merkle and output-match code (verifier/core/pool_rate.py, merkle.py)",
-            "SHA-256 as a random oracle for the beacon expansion (A5-beacon)",
+            f"statements of ClaimTypes.rateGap / rateRatio ({theorem}) and PoolSample.rateGap_accepts",
+            "this verifier's beacon expansion and Merkle inclusion code (verifier/core/pool_rate.py, merkle.py): "
+            "the two facts of PoolSample.Faithful, under A5 and A12",
+            "SHA-256 as a random oracle for the beacon expansion (A5-beacon) and as a binding commitment (A12)",
         ],
         does_not_cover=[
             "items outside the two committed pools (other periods, other applicants)",
@@ -520,8 +558,9 @@ def handle_two_pools(bundle: Path, cert: dict, load_file) -> Task:
         fast=args,
         fast_call="OpenTheory.Checks: " + "; ".join(
             f"{nm}: {describe(part, d, len(bits))}" for nm, bits, part, d in named),
-        fast_meaning=(f"meaning, proved once: PoolRate.Claim.of_poolCheck on each part, then OpenTheory.{theorem} "
-                      "over the seed (pool A on the first blocks, pool B on the next)"),
+        fast_meaning=(f"meaning, proved once: PoolSample.rateGap_accepts turns the four kernel checks into "
+                      f"RateGap.Claim, then OpenTheory.{theorem} over the seed (pool A on the first blocks, "
+                      "pool B on the next)"),
         fast_explain=reason,
     )
 

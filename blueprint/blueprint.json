@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-01T11:38:08.644922+00:00",
+  "generatedAt": "2026-11-01T17:44:19.214308+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 113,
+  "nodesCount": 114,
   "nodes": [
     {
       "id": "def:sample",
@@ -1642,6 +1642,32 @@
       ],
       "bountyUsd": null,
       "informalSketch": "Each pool's blocks are uniform, so each of the four rate claims is sound by\nTheorem~\\ref{thm:pool_rate_sound}; take a union bound, and combine the intervals outside the bad set."
+    },
+    {
+      "id": "thm:pool_sample",
+      "kind": "theorem",
+      "title": "The kernel derives the sample",
+      "leanName": "OpenTheory.Checks.poolSample",
+      "leanNames": [
+        "OpenTheory.Checks.poolSample",
+        "OpenTheory.Checks.poolSampleK",
+        "OpenTheory.Checks.poolSampleK_eq",
+        "OpenTheory.Checks.Drawn",
+        "OpenTheory.PoolSample.Faithful",
+        "OpenTheory.PoolSample.Counted",
+        "OpenTheory.PoolSample.claim_of_poolSample",
+        "OpenTheory.PoolSample.claim_of_poolSampleWitness",
+        "OpenTheory.PoolSample.poolRate_accepts",
+        "OpenTheory.PoolSample.rateGap_accepts"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "thm:spec_instances"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "The bit vector the kernel builds has bit $i$ equal to the event on item $b_i \\bmod N$, which is the\nderived index; the count and tail check then gives the claim, as for a given vector."
     },
     {
       "id": "thm:plateau_modes",

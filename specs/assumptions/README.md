@@ -11,7 +11,7 @@ Its `**Bridges:**` line names which, and `tests/regression/check_specs.py` requi
 | --- | --- | --- |
 | `law` | the law of the evidence (`law`, `δ`) | A1, A2, A5, A6, A7 |
 | `observable` | what the property tests (labels, events) | A4, A9 |
-| `domain` | the population the claim is about | A8, A10 |
+| `domain` | the population the claim is about | A8, A10, A12 |
 | `model` | the model the claim is about (`model`) | A3, A11 |
 
 ## A1-iid: held-out examples are IID draws from the target distribution
@@ -102,3 +102,15 @@ the same decision on every input without missing values, provided the deployed r
 `default_left`), categorical splits and `missing_type: Zero` (both refused), and preprocessing
 before the model. Anyone can re-run the deterministic translation from the model file to check
 it. Used by `tree-robust`, `tree-monotone`.
+
+## A12-commitment-binding: the checked items are the committed ones
+
+**Bridges:** domain. the items the kernel checks are the committed pool's items at their indices.
+
+The kernel derives each sampled index and computes each sampled item's bit from the bytes the
+verifier gives it (`Checks.poolSample`). That those bytes are the committed item at that index is
+the verifier's Merkle inclusion check against the committed root: it binds if SHA-256 is collision
+resistant, and if the verifier's SHA-256 and Merkle code are correct. This is the `item` field of
+`PoolSample.Faithful`, the one hypothesis of `PoolSample.poolRate_accepts` and `rateGap_accepts`
+besides the seed being the beacon's expansion (A5). Used by `pool-rate`, `judged-rate`,
+`rate-gap`, `rate-ratio`.
