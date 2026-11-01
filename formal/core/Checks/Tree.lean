@@ -344,4 +344,45 @@ def runMonotone (args : List Nat) : Bool :=
   | some (j, up, B, ts, cs) => monotoneCert j up ts cs B
   | none => false
 
+/-! ### The two lanes run the same check
+
+The compiled lane (`ot_check`) runs `runRobust`, `runMonotone`; the kernel lane (`ot_kernel`)
+decodes the request with the same `decRobust`, `decMonotone` and has the kernel evaluate
+`robustCertK`, `monotoneCertK` on the result. These theorems say the two are the same function. -/
+
+theorem runRobust_eq (args : List Nat) :
+    runRobust args = match decRobust args with
+      | some (base, τ, c, B, ts, ms) => robustCertK base τ ts ms B c
+      | none => false := by
+  unfold runRobust
+  split <;> simp_all [robustCertK_eq]
+
+theorem runMonotone_eq (args : List Nat) :
+    runMonotone args = match decMonotone args with
+      | some (j, up, B, ts, cs) => monotoneCertK j up ts B cs
+      | none => false := by
+  unfold runMonotone
+  split <;> simp_all [monotoneCertK_eq]
+
+/-! ### What a request decodes to, for the report
+
+`ot_kernel --show` prints these renderings of the decoded request; the verifier compares them
+with the claim it meant to check, so the Python encoder and this decoder check each other. -/
+
+def showInt (z : Int) : String := toString z
+
+def showBox (B : Box) : String :=
+  " ".intercalate (B.map fun b =>
+    s!"{(b.lo.map showInt).getD "-"}:{(b.hi.map showInt).getD "-"}")
+
+def showRobust (args : List Nat) : String :=
+  match decRobust args with
+  | some (base, τ, c, B, ts, _) => s!"base={base} tau={τ} approve={c} box=[{showBox B}] trees={ts.length}"
+  | none => "malformed"
+
+def showMonotone (args : List Nat) : String :=
+  match decMonotone args with
+  | some (j, up, B, ts, _) => s!"feature={j} up={up} box=[{showBox B}] trees={ts.length}"
+  | none => "malformed"
+
 end OpenTheory.Checks.Tree

@@ -15,6 +15,7 @@ Usage (same requests as `ot_check`):
     ot_kernel NAME ARGS... [+ NAME ARGS...]    prints true iff every check is accepted
     ot_kernel --stdin                          one request per line, one true/false per line
     ot_kernel --time ...                       also print kernel microseconds to stderr
+    ot_kernel --show ...                       also print what each request decodes to (stderr)
     ot_kernel --compare ...                    also run the compiled lane (`Entry.run`, what
                                                `ot_check` calls) and report any disagreement
 
@@ -141,7 +142,7 @@ def splitChecks (words : List String) : List (List String) :=
 
 /-- Run one request. `none` with a message on a usage error. With `compare`, a disagreement
 between the kernel and the compiled lane is counted in `disagreements`. -/
-def runRequest (env : Environment) (time compare : Bool) (words : List String) (tag : IO.Ref Nat)
+def runRequest (env : Environment) (time compare showIt : Bool) (words : List String) (tag : IO.Ref Nat)
     (disagreements : IO.Ref Nat) : IO (Except String Bool) := do
   let checks := splitChecks words
   if checks.isEmpty then return .error "empty request"
@@ -153,6 +154,8 @@ def runRequest (env : Environment) (time compare : Bool) (words : List String) (
     let prop ← match requestProp e (e.prepare args) with
       | .ok p => pure p
       | .error msg => return .error msg
+    if showIt && e.shape matches .decoded then
+      IO.eprintln s!"decoded {name}: {e.render args}"
     let n ← tag.modifyGet fun n => (n, n + 1)
     let t0 ← IO.monoNanosNow
     let res := kernelCheck env prop n
@@ -177,7 +180,8 @@ def usage : String :=
 def main (argv : List String) : IO UInt32 := do
   let time := argv.contains "--time"
   let compare := argv.contains "--compare"
-  let argv := argv.filter (fun a => a != "--time" && a != "--compare")
+  let showIt := argv.contains "--show"
+  let argv := argv.filter (fun a => a != "--time" && a != "--compare" && a != "--show")
   -- The `Checks` oleans sit next to the executable: `.lake/build/{bin,lib/lean}`.
   initSearchPath (← findSysroot) [(← IO.appDir) / ".." / "lib" / "lean"]
   let env ← importModules #[{ module := `Checks.Registry }] {}
@@ -192,12 +196,12 @@ def main (argv : List String) : IO UInt32 := do
       if line.isEmpty then break
       let words := (line.trimAscii.toString.splitOn " ").filter (· != "")
       if words.isEmpty then continue
-      match ← runRequest env time compare words tag disagreements with
+      match ← runRequest env time compare showIt words tag disagreements with
       | .ok b => IO.println (toString b)
       | .error msg => IO.println s!"error: {msg}"
       (← IO.getStdout).flush
     exitCode 0
   else
-  match ← runRequest env time compare argv tag disagreements with
+  match ← runRequest env time compare showIt argv tag disagreements with
   | .ok b => IO.println (toString b); exitCode 0
   | .error msg => IO.eprintln s!"{msg}\n{usage}"; return 2

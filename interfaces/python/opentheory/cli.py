@@ -11,6 +11,7 @@ from . import ROOT, verify
 def print_report(r) -> None:
     mark = "ACCEPTED" if r.accepted else "REJECTED"
     print(f"{mark}  {r.claim_type or '?'}  ({r.seconds:.0f}s)")
+    print(f"  {r.summary()}")
     if not r.accepted:
         print(f"  reason: {r.reason}")
         return

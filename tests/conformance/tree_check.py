@@ -27,8 +27,8 @@ from fractions import Fraction
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "methods" / "trees"))
-import tree_certificate as tc  # noqa: E402
+sys.path.insert(0, str(ROOT))
+from verifier.core import trees as tc  # noqa: E402
 
 KERNEL = ROOT / ".lake" / "build" / "bin" / "ot_kernel"
 EXAMPLE = ROOT / "examples" / "tree_ensemble"
@@ -118,12 +118,12 @@ def main() -> int:
         expect.append((want, what))
 
     # -- the LightGBM example
-    lgb = tc.load_model(EXAMPLE / "model_lightgbm.json")
+    lgb = tc.plain(json.loads((EXAMPLE / "model_lightgbm.json").read_text()))
     box = json.loads((EXAMPLE / "box_applicant.json").read_text())
-    add("tree-robust", tc.robust_request(lgb, box, True, 0), True, "example: approval robust on the applicant box")
-    add("tree-robust", tc.robust_request(lgb, box, False, 0), False, "example: decline on the same box")
+    add("tree-robust", tc.robust_request(lgb, box, True, 0)[0], True, "example: approval robust on the applicant box")
+    add("tree-robust", tc.robust_request(lgb, box, False, 0)[0], False, "example: decline on the same box")
     for f, up in [(0, True), (1, False), (2, True)]:
-        add("tree-monotone", tc.monotone_request(lgb, f, up), True, f"example: monotone in feature {f}")
+        add("tree-monotone", tc.monotone_request(lgb, f, up)[0], True, f"example: monotone in feature {f}")
     for bad, why in [({"decision_type": "=="}, "categorical"), ({"missing_type": "Zero"}, "missing_type Zero")]:
         dump = json.loads((EXAMPLE / "model_lightgbm.json").read_text())
         dump["tree_info"][0]["tree_structure"].update(bad)
@@ -147,11 +147,11 @@ def main() -> int:
         lo = Fraction(s["base"] + sum(tc.reach(t, B, min) for t in s["trees"]), 2 ** kl)
         hi = Fraction(s["base"] + sum(tc.reach(t, B, max) for t in s["trees"]), 2 ** kl)
         for approve, tau in [(True, lo), (True, lo - Fraction(1, 7)), (False, hi + Fraction(1, 2 ** (kl + 1)))]:
-            req = tc.robust_request(model, box, approve, tau)
+            req = tc.robust_request(model, box, approve, tau)[0]
             add("tree-robust", req, True, f"random {case}: honest {'approve' if approve else 'decline'}")
             semantic.append(("robust", model, box, approve, tau))
         # tampering an honest approval at τ = the lowest reachable score
-        req = tc.robust_request(model, box, True, lo)
+        req = tc.robust_request(model, box, True, lo)[0]
         pos = robust_parts(req)
         k = rng.randrange(len(pos))
         t1 = list(req); t1[pos[k]] = tc.zig(unzig(req[pos[k]]) + 1)
@@ -164,13 +164,13 @@ def main() -> int:
         add("tree-robust", req + [0], False, f"random {case}: trailing number")
         # monotone ensembles, and a broken one
         mm = {"base": 0, "trees": [mtree(rng, rng.randint(1, 4), -1, 1) for _ in range(rng.randint(1, 8))]}
-        mreq = tc.monotone_request(mm, 0, True)
+        mreq = tc.monotone_request(mm, 0, True)[0]
         add("tree-monotone", mreq, True, f"random {case}: honest monotone")
         semantic.append(("monotone", mm, {}, True, None))
         broken = {"base": 0, "trees": mm["trees"] + [{"feature": 0, "threshold": 0.5, "low": {"leaf": 0.3}, "high": {"leaf": 0.1}}]}
         if tc.monotone_request(broken, 0, True) is not None:
             failures.append(f"random {case}: producer certified a decreasing tree as increasing")
-        forced = tc.monotone_request({"base": 0, "trees": broken["trees"][-1:]}, 0, False)
+        forced = tc.monotone_request({"base": 0, "trees": broken["trees"][-1:]}, 0, False)[0]
         add("tree-monotone", [0, 1] + forced[2:], False, f"random {case}: decreasing tree claimed increasing")
 
     answers = run(requests)

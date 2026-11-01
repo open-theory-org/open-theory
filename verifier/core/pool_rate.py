@@ -353,6 +353,7 @@ def handle(bundle: Path, cert: dict, load_file) -> Task:
         lean="",
         theorem="",
         guarantee="pool-rate-exact-match",
+        delta=f"{float(total):.3g}",
         words=(f"At most {num / den:.4%} of the {size} committed pool items fail the procedure 'exact-match' "
                f"(logged output ≠ label, canonical JSON). Wrong with probability ≤ {float(total):.3g} "
                f"(+2^{SLACK(n, size)}) over the drand round, summed over the issuer's {count} declared "
@@ -418,6 +419,7 @@ def handle_judged(bundle: Path, cert: dict, load_file) -> Task:
         lean="",
         theorem="",
         guarantee="judged-rate-exact-match",
+        delta=f"{float(total):.3g}",
         words=(f"At most {float(bound):.4%} of the {size} committed pool items fail against gold labels "
                f"(logged output ≠ gold, canonical JSON), from judge verdicts on {n} sampled items and gold "
                f"labels on {m} of them. Wrong with probability ≤ {float(total):.3g} (+2^{SLACK(n, size)}) over "
@@ -500,6 +502,7 @@ def handle_two_pools(bundle: Path, cert: dict, load_file) -> Task:
         lean="",
         theorem="",
         guarantee=guarantee,
+        delta=f"{float(total):.3g}",
         words=words,
         checked=checked,
         trusted=[

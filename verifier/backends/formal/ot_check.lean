@@ -5,6 +5,7 @@ import Checks.Registry
 The compiled lane of the fast verifier. Same requests as `ot_kernel`:
 
     ot_check NAME ARGS... [+ NAME ARGS...]    prints true iff every check is accepted
+    ot_check --stdin                          one request per line, one true/false per line
 
 Numbers are decimal or `0x` hexadecimal; exit code 2 on a usage error. Each check is the
 registry entry's `run`, the compiled form of the constant `ot_kernel` hands to the kernel. A
@@ -53,6 +54,18 @@ def usage : String :=
   "usage: ot_check NAME ARGS... [+ NAME ARGS...]\nchecks: " ++ ", ".intercalate (entries.map (·.cli))
 
 def main (argv : List String) : IO UInt32 := do
+  if argv == ["--stdin"] then
+    let stdin ← IO.getStdin
+    repeat
+      let line ← stdin.getLine
+      if line.isEmpty then break
+      let words := (line.trimAscii.toString.splitOn " ").filter (· != "")
+      if words.isEmpty then continue
+      match (splitChecks words).mapM runCheck with
+      | .ok rs => IO.println (toString (rs.all id))
+      | .error msg => IO.println s!"error: {msg}"
+      (← IO.getStdout).flush
+    return 0
   let checks := splitChecks argv
   if checks.isEmpty then IO.eprintln usage; return 2
   match checks.mapM runCheck with

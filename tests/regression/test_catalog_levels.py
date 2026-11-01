@@ -26,9 +26,9 @@ class DerivedLevels(unittest.TestCase):
         for mid, m in self.methods.items():
             self.assertEqual(m["level"], derive(m, self.claims)[0], mid)
 
-    def test_claim_without_sound_is_not_verified(self):
+    def test_claim_without_claim_type_is_not_verified(self):
         self.assertEqual(self.level("heldout-binomial-bound",
-                                    claims=lambda c: c["heldout-error"][1].update(sound=[])), "experimental")
+                                    claims=lambda c: c["heldout-error"][1].update(claim_types=[])), "experimental")
 
     def test_missing_conformance_correctness_or_link(self):
         for mutate in (lambda m: m.update(conformance=[]), lambda m: m["lean"].update(correctness=[]),

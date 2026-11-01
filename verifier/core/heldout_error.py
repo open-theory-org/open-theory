@@ -33,6 +33,10 @@ class Task:
     fast_call: str = ""
     fast_meaning: str = ""
     fast_explain: callable = field(repr=False, default=lambda: "")
+    # The guarantee's δ, for the result line; and what `ot_kernel --show` must print for the
+    # request (the claim as the Lean decoder reads it), when the check decodes structured data.
+    delta: str = ""
+    expect_show: str = ""
 
 
 def parameter_count(m):
@@ -194,6 +198,7 @@ def handle(bundle: Path, cert: dict, load_file) -> Task:
         lean=lean,
         theorem=THEOREM,
         guarantee="heldout-accuracy-quantized-classifier",
+        delta=f"1/{d}",
         words=(f"With probability ≥ {1 - 1 / d:.0%} over the draw of the {n} held-out examples, the "
                f"population error of model sha256:{model_sha[:16]}… ({shape} quantized MLP, "
                f"{len(codes)} parameters) is ≤ {num / den:.2%}. Observed: ≤ {k} errors on held-out data "

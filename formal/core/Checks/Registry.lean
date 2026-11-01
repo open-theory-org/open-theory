@@ -35,6 +35,8 @@ structure Entry where
   prepare : List Nat → List Nat := id
   /-- The same check, as a function the compiled lane calls: `const ∘ prepare`. -/
   run : List Nat → Bool
+  /-- What the request decodes to, for the report (`ot_kernel --show`); empty for plain numbers. -/
+  render : List Nat → String := fun _ => ""
 
 def entries : List Entry :=
   [ { cli := "mlp-exact", const := "OpenTheory.Checks.MLP.check", shape := .records 7 9 "OpenTheory.Checks.MLP.Layer.mk",
@@ -44,8 +46,8 @@ def entries : List Entry :=
     { cli := "pool-witness", const := "OpenTheory.Checks.poolCheckWitness", shape := .nats 9,
       run := fun | [x, n, l, k, a, b, u, v, d] => poolCheckWitness x n l k a b u v d | _ => false },
     { cli := "tree-robust", const := "OpenTheory.Checks.Tree.robustCertK", shape := .decoded,
-      run := Tree.runRobust },
+      run := Tree.runRobust, render := Tree.showRobust },
     { cli := "tree-monotone", const := "OpenTheory.Checks.Tree.monotoneCertK", shape := .decoded,
-      run := Tree.runMonotone } ]
+      run := Tree.runMonotone, render := Tree.showMonotone } ]
 
 end OpenTheory.Checks

@@ -55,8 +55,8 @@ acceptance condition of a claim type, whose `Sound` theorem is proved once.
 | [`rate-gap`](../specs/claims/rate-gap.md) | event × pool × pool × gapLe | `rateGap` | [rate-gap-certificate](methods/rate-gap-certificate.toml) | `poolCheck`, `poolCheckWitness` | `interval_sound`, `bad_frac`, `seedFrac_restrict`, `of_poolCheck` | — | `pool`, `pool-witness` | **verified** |
 | [`rate-ratio`](../specs/claims/rate-ratio.md) | event × pool × pool × ratioGe | `rateRatio` | [rate-gap-certificate](methods/rate-gap-certificate.toml) | `poolCheck`, `poolCheckWitness` | `interval_sound`, `bad_frac`, `seedFrac_restrict`, `of_poolCheck` | — | `pool`, `pool-witness` | **verified** |
 | [`robust-region`](../specs/claims/robust-region.md) | predicts × region × all | `robustRegion` | — | — | — | — | — | theorem |
-| [`tree-monotone`](../specs/claims/tree-monotone.md) | monotone × region × all | `treeMonotone` | [tree-ensemble-check](methods/tree-ensemble-check.toml) | `robustCertK`, `monotoneCertK` | `robustCertK_eq`, `monotoneCertK_eq`, `robustCert_sound`, `monotoneCert_sound`, `allLe_sound`, `allGe_sound`, `monoCut_sound` | — | `tree-robust`, `tree-monotone` | **verified** |
-| [`tree-robust`](../specs/claims/tree-robust.md) | decision × region × all | `treeRobust` | [tree-ensemble-check](methods/tree-ensemble-check.toml) | `robustCertK`, `monotoneCertK` | `robustCertK_eq`, `monotoneCertK_eq`, `robustCert_sound`, `monotoneCert_sound`, `allLe_sound`, `allGe_sound`, `monoCut_sound` | — | `tree-robust`, `tree-monotone` | **verified** |
+| [`tree-monotone`](../specs/claims/tree-monotone.md) | monotone × region × all | `treeMonotone` | [tree-ensemble-check](methods/tree-ensemble-check.toml) | `robustCertK`, `monotoneCertK` | `robustCertK_eq`, `runRobust_eq`, `runMonotone_eq`, `monotoneCertK_eq`, `robustCert_sound`, `monotoneCert_sound`, `allLe_sound`, `allGe_sound`, `monoCut_sound` | — | `tree-robust`, `tree-monotone` | **verified** |
+| [`tree-robust`](../specs/claims/tree-robust.md) | decision × region × all | `treeRobust` | [tree-ensemble-check](methods/tree-ensemble-check.toml) | `robustCertK`, `monotoneCertK` | `robustCertK_eq`, `runRobust_eq`, `runMonotone_eq`, `monotoneCertK_eq`, `robustCert_sound`, `monotoneCert_sound`, `allLe_sound`, `allGe_sound`, `monoCut_sound` | — | `tree-robust`, `tree-monotone` | **verified** |
 
 ### Methods
 
@@ -84,4 +84,6 @@ acceptance condition of a claim type, whose `Sound` theorem is proved once.
 | **verified** | [Certified failure rate of logged outputs on a committed pool](guarantees/pool-rate-exact-match.toml) | `pool-rate` | pool-rate-certificate | A5-beacon, A6-timestamp, A7-issuer-identity |
 | **verified** | [Certified rate gap (demographic parity difference) between two committed pools](guarantees/rate-gap-two-pools.toml) | `rate-gap` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A10-group-membership |
 | **verified** | [Certified rate ratio (four-fifths rule) between two committed pools](guarantees/rate-ratio-two-pools.toml) | `rate-ratio` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A10-group-membership |
+| **verified** | [Certified monotonicity of a tree ensemble (LightGBM) in one feature](guarantees/tree-monotone-lightgbm.toml) | `tree-monotone` | tree-ensemble-check | A3-model-binding, A11-tree-translation |
+| **verified** | [Certified robust decision of a tree ensemble (LightGBM) on a box](guarantees/tree-robust-lightgbm.toml) | `tree-robust` | tree-ensemble-check | A3-model-binding, A11-tree-translation |
 <!-- catalog:end -->

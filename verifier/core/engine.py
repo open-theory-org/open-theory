@@ -52,10 +52,21 @@ class Report:
     warnings: list[str] = field(default_factory=list)
     reason: str = ""
     seconds: float = 0.0
+    lane: str = ""
+    delta: str = ""
+
+    def summary(self) -> str:
+        """The result in one line: claim type · level · lane · δ · assumptions (docs/trust.md)."""
+        if not self.accepted:
+            return f"{self.claim_type or '?'} · rejected: {self.reason}"
+        level = "verified" if self.level == "verified" else self.level.split(" (")[0]
+        ids = ", ".join(a for a, _ in self.assumptions) or "none"
+        return f"{self.claim_type} · {level} · {self.lane} lane · δ = {self.delta or 'see the claim'} · assumes {ids}"
 
     def to_dict(self):
         d = dict(self.__dict__)
         d["assumptions"] = [{"id": i, "statement": s} for i, s in self.assumptions]
+        d["summary"] = self.summary()
         return d
 
 
@@ -136,18 +147,29 @@ OT_CHECK = ROOT / ".lake/build/bin/ot_check"    # compiled lane
 OT_KERNEL = ROOT / ".lake/build/bin/ot_kernel"  # kernel lane
 
 
-def run_fast(args: list, timeout: int, compiled: bool = False) -> bool:
-    """Run registered checks (Checks/Registry.lean): in the kernel (`ot_kernel`) or compiled (`ot_check`)."""
+def run_fast(args: list, timeout: int, compiled: bool = False, expect_show: str = "") -> bool:
+    """Run registered checks (Checks/Registry.lean): in the kernel (`ot_kernel`) or compiled (`ot_check`).
+
+    The request goes on stdin (tree requests exceed the argument limit). In the kernel lane,
+    `expect_show` is compared with what `ot_kernel --show` says the request decodes to: the claim
+    as the Lean decoder reads it must be the claim this verifier meant to check."""
     exe = OT_CHECK if compiled else OT_KERNEL
     if not exe.exists():
         raise RuntimeError(f"{exe.name} is missing: run `lake build {exe.name}`")
+    flags = ["--stdin"] + (["--show"] if expect_show and not compiled else [])
     try:
-        res = subprocess.run([str(exe), *map(str, args)], capture_output=True, text=True, timeout=timeout)
+        res = subprocess.run([str(exe), *flags], input=" ".join(map(str, args)) + "\n",
+                             capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired:
         raise Reject(f"{exe.name} did not finish within {timeout}s")
-    if res.returncode != 0 or res.stdout.strip() not in ("true", "false"):
-        raise RuntimeError(f"{exe.name} failed: {res.stderr.strip()[:200]}")
-    return res.stdout.strip() == "true"
+    out = res.stdout.strip()
+    if res.returncode != 0 or out not in ("true", "false"):
+        raise RuntimeError(f"{exe.name} failed: {(out or res.stderr).strip()[:200]}")
+    if expect_show and not compiled:
+        shown = [l.split(": ", 1)[1] for l in res.stderr.splitlines() if l.startswith("decoded ")]
+        if shown != [expect_show]:
+            raise Reject(f"the Lean decoder reads the request as {shown}, not as {expect_show!r}")
+    return out == "true"
 
 
 def check_axioms(output: str, theorem: str) -> list[str]:
@@ -171,7 +193,8 @@ def verify(bundle: str | Path, timeout: int = 1800, compiled: bool = False) -> R
     report is labelled separately and is never `verified` (specs/protocols/assurance-levels.md)."""
     from .heldout_error import HANDLERS as HELDOUT  # claim-type handlers
     from .pool_rate import HANDLERS as POOL
-    HANDLERS = {**HELDOUT, **POOL}
+    from .trees import HANDLERS as TREES
+    HANDLERS = {**HELDOUT, **POOL, **TREES}
 
     t0 = time.time()
     bundle = Path(bundle)
@@ -219,13 +242,15 @@ def verify(bundle: str | Path, timeout: int = 1800, compiled: bool = False) -> R
         if missing:
             raise Reject(f"certificate omits assumptions required by '{task.guarantee}': {', '.join(missing)}")
         report.claim, report.guarantee, report.level = task.words, task.guarantee, g["level"]
+        report.delta = task.delta
+        report.lane = "compiled (not verified)" if compiled and task.fast is not None else "kernel"
         report.assumptions = [(a, texts.get(a, "(unknown assumption)")) for a in g["assumptions"]]
         report.does_not_cover = task.does_not_cover
         report.trusted = [f"Lean kernel ({toolchain})", *task.trusted]
 
         # 4–5. registered decision procedure (kernel lane, or compiled on request), or a Lean file
         if task.fast is not None:
-            if not run_fast(task.fast, timeout, compiled):
+            if not run_fast(task.fast, timeout, compiled, task.expect_show):
                 lane = "the compiled check" if compiled else "the Lean kernel"
                 raise Reject(f"{lane} returned false: " + task.fast_explain())
             if compiled:

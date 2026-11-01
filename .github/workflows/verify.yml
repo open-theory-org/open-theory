@@ -73,6 +73,8 @@ jobs:
           python3 tests/conformance/fast_check.py
           python3 tests/conformance/pool_check_lanes.py
           python3 tests/conformance/tree_check.py
+          lake build ot_check
+          python3 tests/conformance/tree_verify.py
 
       - name: "Conformance: pool-rate and judged-rate certificates (recorded drand rounds)"
         run: |

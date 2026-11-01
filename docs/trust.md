@@ -73,7 +73,7 @@ re-checked by the kernel on demand.
 | Step | What it does | Effect |
 | --- | --- | --- |
 | A. One fast check per claim type | the check is a handful of big-integer operations (the kernel runs GMP at compiled speed; every other step costs about 1.5 µs), proved equal to the reference check | the kernel lane becomes sub-millisecond: fast **and** verified. Done for the MLP; next, trees |
-| B. Close the gaps between the lanes | one decoder from the certificate's numbers to the check's arguments, shared by both lanes, proved to invert the producer's encoding; a theorem that the compiled entry equals the kernel's | the compiled lane is "verified source, unverified compilation": the compiler is its only extra trust |
+| B. Close the gaps between the lanes (done) | one Lean decoder from the certificate's numbers to the check's arguments, shared by both lanes; the claim the verifier means is compared with what that decoder reads (`ot_kernel --show`), so the Python encoder and the Lean decoder check each other on every run; a theorem that the compiled entry runs the kernel's check (`runRobust_eq`, `runMonotone_eq`; the pool entries call `poolCheck` itself) | the compiled lane is "verified source, unverified compilation": the compiler is its only extra trust |
 | C. Verified machine code | only if a user requires it | removes the compiler from the trust |
 
 ## 5. The assumptions: why the Lean objects are the real ones
