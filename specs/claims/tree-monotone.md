@@ -5,7 +5,7 @@ domain = "region"
 aggregate = "all"
 models = ["tree-ensemble"]
 lean = ["OpenTheory.Checks.Tree.monotoneCert", "OpenTheory.Checks.Tree.monotoneCertK", "OpenTheory.Checks.Tree.monotoneCert_sound"]
-sound = ["OpenTheory.treeMonotone_sound"]
+claim_types = ["OpenTheory.ClaimTypes.treeMonotone"]
 assumptions = ["A3-model-binding", "A11-tree-translation"]
 references = [{ key = "devos2021versatile", relation = "implements" }]
 +++

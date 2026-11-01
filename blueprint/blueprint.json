@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-01T10:02:45.138883+00:00",
+  "generatedAt": "2026-11-01T11:38:08.644922+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 110,
+  "nodesCount": 113,
   "nodes": [
     {
       "id": "def:sample",
@@ -2348,6 +2348,75 @@
       ],
       "bountyUsd": null,
       "informalSketch": "The Dirac measure of a set is $0$ exactly when the point is not in it."
+    },
+    {
+      "id": "def:claim_type",
+      "kind": "definition",
+      "title": "Claim type and named properties",
+      "leanName": "OpenTheory.ClaimType",
+      "leanNames": [
+        "OpenTheory.ClaimType",
+        "OpenTheory.ClaimType.Claim",
+        "OpenTheory.Wrong",
+        "OpenTheory.Event",
+        "OpenTheory.Checks.Tree.Ensemble.Decides",
+        "OpenTheory.Checks.Tree.MonotoneIn"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": false,
+      "isVerified": true,
+      "dependencies": [
+        "def:spec"
+      ],
+      "bountyUsd": null,
+      "informalSketch": null
+    },
+    {
+      "id": "thm:sound_and",
+      "kind": "theorem",
+      "title": "Claims combine",
+      "leanName": "OpenTheory.Sound.and",
+      "leanNames": [
+        "OpenTheory.Sound.and",
+        "OpenTheory.Sound.comap"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:spec"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "A union bound; for the pushforward, the preimage of a measurable superset of the bad set."
+    },
+    {
+      "id": "thm:claim_types",
+      "kind": "theorem",
+      "title": "The claim types",
+      "leanName": "OpenTheory.ClaimTypes.robustRegion",
+      "leanNames": [
+        "OpenTheory.ClaimTypes.robustRegion",
+        "OpenTheory.ClaimTypes.heldOut",
+        "OpenTheory.ClaimTypes.occam",
+        "OpenTheory.ClaimTypes.pacBayes",
+        "OpenTheory.ClaimTypes.poolRate",
+        "OpenTheory.ClaimTypes.judgedRate",
+        "OpenTheory.ClaimTypes.judgedRateAlarms",
+        "OpenTheory.ClaimTypes.rateGap",
+        "OpenTheory.ClaimTypes.rateRatio",
+        "OpenTheory.ClaimTypes.treeRobust",
+        "OpenTheory.ClaimTypes.treeMonotone"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:claim_type",
+        "thm:spec_instances",
+        "thm:tree_sound"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Each soundness theorem has the claim type's statement, up to unfolding the named properties."
     },
     {
       "id": "thm:spec_instances",

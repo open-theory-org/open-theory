@@ -1,4 +1,4 @@
-import Models.Tree.Basic
+import Properties.Tree
 import Mathlib.Tactic.Linarith
 
 /-!
@@ -102,12 +102,6 @@ theorem robustCert_sound (e : Ensemble) (ms : List Int) (B : Box) (c : Bool)
     have h' : (e.base : ℝ) + (sumInt ms : ℝ) < ((e.τ : Int) : ℝ) := by exact_mod_cast h.1
     simp only [Bool.false_eq_true, iff_false, not_le]
     linarith
-
-/-- The order a monotonicity claim asks for: `a ≤ b` if increasing, `b ≤ a` if decreasing. -/
-def Ordered (up : Bool) (a b : ℝ) : Prop := if up then a ≤ b else b ≤ a
-
-/-- Two inputs that differ only in feature `j`, the second at least the first there. -/
-def Raised (j : ℕ) (x x' : ℕ → ℝ) : Prop := (∀ i, i ≠ j → x i = x' i) ∧ x j ≤ x' j
 
 theorem monoCut_sound (j : ℕ) (up : Bool) (T : Tree) (cs : Cuts) (h : T.monoCut B j up cs = true)
     {x x' : ℕ → ℝ} (hx : B.Mem x) (hx' : B.Mem x') (hr : Raised j x x') :

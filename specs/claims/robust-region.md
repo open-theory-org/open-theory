@@ -5,7 +5,7 @@ domain = "region"
 aggregate = "all"
 models = ["relu-mlp"]
 lean = ["OpenTheory.OnRegion.certify", "OpenTheory.OnRegion.certify_sound", "OpenTheory.OnRegion.robust_of_certify"]
-sound = ["OpenTheory.onRegion_sound"]
+claim_types = ["OpenTheory.ClaimTypes.robustRegion"]
 assumptions = ["A3-model-binding"]
 references = [{ key = "gowal2018ibp", relation = "adapts", note = "integer interval propagation with a kernel-checked soundness proof for every ReLU MLP" }]
 +++

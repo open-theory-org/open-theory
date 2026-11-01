@@ -40,4 +40,16 @@ def Holds : Observable M X → M → X → Prop
 
 end Observable
 
+/-! ## Named properties
+
+Each property card of `specs/properties/` names one of these, and every claim type about it uses
+it, so the card and the statement cannot drift (`tests/regression/check_spec_shapes.py`). -/
+
+/-- **`wrong`.** The 0/1 loss `ℓ` marks an error of the model on `z`. -/
+def Wrong {H Z : Type*} (ℓ : H → Z → ℝ) : Property H Z := fun h z => ℓ h z = 1
+
+/-- **`event`.** An event of the items of a pool, for a system seen only through its logged
+outputs (the model is `Unit`). -/
+def Event {N : Type*} (e : N → Prop) : Property Unit N := fun _ j => e j
+
 end OpenTheory

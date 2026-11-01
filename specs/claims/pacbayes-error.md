@@ -5,7 +5,7 @@ domain = "distribution"
 aggregate = "meanLe"
 models = ["quantized-mlp"]
 lean = ["OpenTheory.PACBayes.catoni_pacBayes"]
-sound = ["OpenTheory.pacBayes_sound"]
+claim_types = ["OpenTheory.ClaimTypes.pacBayes"]
 assumptions = ["A1-iid", "A2-heldout-independent", "A4-labels"]
 references = [{ key = "catoni2007pac", relation = "implements" }]
 +++

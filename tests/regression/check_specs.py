@@ -2,9 +2,9 @@
 """The registries in specs/ are consistent, and specs/coverage.md is generated from them.
 
 Every card (specs/{models,properties,domains,claims}/*.md) starts with a TOML header between `+++`
-lines. A claim is an observable (a property or a quantity) × a domain × an aggregate
-(docs/specs.md); its card links them, the models, the Lean template and the bridge theorem that
-gives the generic guarantee `Sound` (`formal/core/Specs/Instances.lean`), the assumptions and the
+lines. A claim card is a claim type: an observable (a property or a quantity) × a domain × an
+aggregate (docs/language.md); it links them, the models, its claim types in Lean
+(`formal/core/Specs/ClaimTypes.lean`, each with its `Sound` theorem), the assumptions and the
 references. Which methods establish a claim, and its fast checks, are read from catalog/ (each
 method's `establishes` and `checks`), never written on the card. This script fails
 on any broken link, on an aggregate its domain cannot carry, on a claim that omits an assumption of
@@ -29,10 +29,12 @@ FIELDS = {
     "models": {"id", "family", "type", "lean", "references"},
     "properties": {"id", "kind", "object", "test", "lean", "references"},
     "domains": {"id", "kind", "randomness", "assumptions", "lean", "references"},
-    "claims": {"id", "observable", "domain", "aggregate", "models", "lean", "sound", "assumptions",
+    "claims": {"id", "observable", "domain", "aggregate", "models", "lean", "claim_types", "assumptions",
                "references"},
 }
 OBSERVABLE_KINDS = {"property", "quantity"}
+# the Lean object of a claim type an assumption ties to the world (specs/assumptions/README.md)
+BRIDGES = {"law", "observable", "domain", "model"}
 DOMAIN_KINDS = ["region", "pool", "distribution", "pair"]
 # `OpenTheory.Aggregate`, and the domain kinds each one has a meaning on (`Spec.Target`)
 AGGREGATES = {
@@ -56,7 +58,11 @@ def main() -> int:
     errors: list[str] = []
     declared = module(ROOT / "tests/regression/check_lean_decls.py").declared_names()
     bib = set(re.findall(r"^@\w+\{([^,\s]+),", (ROOT / "blueprint/src/references.bib").read_text(), re.M))
-    assumptions = set(re.findall(r"^## (A\d+-[\w-]+)", (SPECS / "assumptions/README.md").read_text(), re.M))
+    atext = (SPECS / "assumptions/README.md").read_text()
+    assumptions = set(re.findall(r"^## (A\d+-[\w-]+)", atext, re.M))
+    for aid, kind in re.findall(r"^## (A\d+-[\w-]+):.*\n\n(?:\*\*Bridges:\*\* (\w+))?", atext, re.M):
+        if kind not in BRIDGES:
+            errors.append(f"specs/assumptions/README.md: {aid} needs a `**Bridges:**` line, one of {sorted(BRIDGES)}")
     methods = {mid: m for mid, (_, m) in catalog("methods").items()}
 
     reg = {kind: cards(kind) for kind in FIELDS}
@@ -71,7 +77,7 @@ def main() -> int:
                 errors.append(f"{where}: missing fields {sorted(missing)}")
             if card.get("id") != cid:
                 errors.append(f"{where}: id {card.get('id')!r} must match the file name {cid!r}")
-            for name in card.get("lean", []) + card.get("sound", []):
+            for name in card.get("lean", []) + card.get("claim_types", []):
                 if name not in declared:
                     errors.append(f"{where}: unknown Lean declaration {name}")
             for ref in card.get("references", []):
@@ -144,8 +150,8 @@ def status(claim: dict, methods: dict) -> str:
     levels = [methods[m]["level"] for m in claim_methods(claim, methods)]
     if levels:
         best = max(levels, key=LEVELS.index)
-        return f"**{best}**" + ("" if claim.get("sound") else ", no `Sound` bridge yet")
-    return "theorem" if claim.get("sound") else "statement"
+        return f"**{best}**" + ("" if claim.get("claim_types") else ", no claim type yet")
+    return "theorem" if claim.get("claim_types") else "statement"
 
 
 def domain_kind(c: dict, reg: dict) -> str:
@@ -176,10 +182,10 @@ def coverage(reg: dict, methods: dict) -> str:
                      + " | ".join("<br>".join(cells.get(k, [])) or "—" for k in DOMAIN_KINDS) + " |")
     lines += [
         "",
-        "Status: the best level of the catalog methods establishing the claim; `theorem`: the bridge to the generic",
-        "guarantee `Sound` is proved but no method uses it yet; `statement`: the template exists only.",
+        "Status: the best level of the catalog methods establishing the claim; `theorem`: a claim type with",
+        "its `Sound` theorem exists but no method uses it yet; `statement`: the card exists only.",
         "",
-        "| Claim | Observable | Domain | Aggregate | Guarantee (`formal/core/Specs/Instances.lean`) | Fast checks | Methods | Assumptions |",
+        "| Claim | Observable | Domain | Aggregate | Claim types (`formal/core/Specs/ClaimTypes.lean`) | Fast checks | Methods | Assumptions |",
         "| --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for c in sorted(claims, key=lambda c: c["id"]):
@@ -188,7 +194,7 @@ def coverage(reg: dict, methods: dict) -> str:
         checks = sorted({x for m in ms for x in methods[m].get("checks", [])})
         lines.append(
             f"| [`{c['id']}`](claims/{c['id']}.md) | {c['observable']} | {dom} | {c['aggregate']} | "
-            f"{', '.join('`' + s.rsplit('.', 1)[-1] + '`' for s in c['sound']) or 'open'} | "
+            f"{', '.join('`' + s.rsplit('.', 1)[-1] + '`' for s in c['claim_types']) or 'open'} | "
             f"{', '.join('`' + x + '`' for x in checks) or '—'} | "
             f"{', '.join(ms) or '—'} | {', '.join(c['assumptions']) or '—'} |")
     return "\n".join(lines) + "\n"

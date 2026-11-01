@@ -113,3 +113,6 @@ import Scopes.Basic
 import Specs.Basic
 import Specs.Instances
 import Specs.Tree
+import Specs.ClaimType
+import Specs.ClaimTypes
+import Properties.Tree

@@ -5,7 +5,7 @@ domain = "distribution"
 aggregate = "meanLe"
 models = ["quantized-mlp"]
 lean = ["OpenTheory.QuantizedMLP.selected_code_certificate"]
-sound = ["OpenTheory.occam_sound"]
+claim_types = ["OpenTheory.ClaimTypes.occam"]
 assumptions = ["A1-iid", "A4-labels"]
 references = [{ key = "blumer1987occam", relation = "implements" }]
 +++

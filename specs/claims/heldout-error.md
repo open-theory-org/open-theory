@@ -5,7 +5,7 @@ domain = "distribution"
 aggregate = "meanLe"
 models = ["quantized-mlp"]
 lean = ["OpenTheory.HeldOut.Claim", "OpenTheory.HeldOut.Claim.of_tail"]
-sound = ["OpenTheory.heldOut_sound"]
+claim_types = ["OpenTheory.ClaimTypes.heldOut"]
 assumptions = ["A1-iid", "A2-heldout-independent", "A3-model-binding", "A4-labels"]
 references = [{ key = "clopper1934use", relation = "implements" }]
 +++

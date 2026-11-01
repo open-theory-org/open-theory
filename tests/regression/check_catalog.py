@@ -78,10 +78,6 @@ def check():
         for c in m.get("establishes", []):
             if c not in claims:
                 err(path, f"establishes unknown claim '{c}' (no card in specs/claims/)")
-            else:
-                # the `Sound` theorem belongs to the claim; the method proves its premise
-                for s in set(claims[c][1].get("sound", [])) & set(lean.get("correctness", [])):
-                    err(path, f"{s} is the Sound theorem of claim '{c}': list it on the claim card only")
         for f in m.get("feeds", []):
             if f not in methods:
                 err(path, f"feeds unknown method '{f}'")
@@ -131,9 +127,9 @@ def tables(methods, guarantees, claims):
         "",
         "One row per claim and certifying method. The chain is read right to left: the kernel evaluates",
         "the check on the certificate; the correctness theorems turn an accepting check into the",
-        "acceptance condition of the claim's `Sound` theorem, proved once for its specification.",
+        "acceptance condition of a claim type, whose `Sound` theorem is proved once.",
         "",
-        "| Claim | Spec (observable × domain × aggregate) | `Sound`, proved once | Method | Kernel evaluates | Correctness: check ⇒ acceptance | Inputs from | Fast checks | Level |",
+        "| Claim | Spec (observable × domain × aggregate) | Claim types (`Specs/ClaimTypes.lean`), each with its `Sound` | Method | Kernel evaluates | Correctness: check ⇒ acceptance | Inputs from | Fast checks | Level |",
         "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for cid, (_, c) in sorted(claims.items()):
@@ -143,9 +139,9 @@ def tables(methods, guarantees, claims):
             lean = m.get("lean", {})
             inputs = ", ".join(f"[{f}](methods/{f}.toml)" for f in feeders(mid, methods)) if mid else ""
             method = f"[{mid}](methods/{mid}.toml)" if mid else "—"
-            level = f"**{m['level']}**" if mid else ("theorem" if c.get("sound") else "statement")
+            level = f"**{m['level']}**" if mid else ("theorem" if c.get("claim_types") else "statement")
             rows.append(
-                f"| [`{cid}`](../specs/claims/{cid}.md) | {spec_of(c)} | {short(c.get('sound', []))} | {method} | "
+                f"| [`{cid}`](../specs/claims/{cid}.md) | {spec_of(c)} | {short(c.get('claim_types', []))} | {method} | "
                 f"{short(lean.get('check', []))} | {short(lean.get('correctness', []))} | {inputs or '—'} | "
                 f"{', '.join(f'`{x}`' for x in m.get('checks', [])) or '—'} | {level} |")
     rows += [

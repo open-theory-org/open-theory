@@ -5,7 +5,7 @@ domain = "region"
 aggregate = "all"
 models = ["tree-ensemble"]
 lean = ["OpenTheory.Checks.Tree.robustCert", "OpenTheory.Checks.Tree.robustCertK", "OpenTheory.Checks.Tree.robustCert_sound"]
-sound = ["OpenTheory.treeRobust_sound"]
+claim_types = ["OpenTheory.ClaimTypes.treeRobust"]
 assumptions = ["A3-model-binding", "A11-tree-translation"]
 references = [{ key = "chen2019robustness", relation = "adapts", note = "per-tree reachable-leaf bounds summed over the ensemble: a sound, incomplete check proved in Lean, instead of an exact search" }]
 +++

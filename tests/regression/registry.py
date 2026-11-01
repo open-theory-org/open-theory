@@ -2,7 +2,8 @@
 
 One link per fact, each written once:
 
-    claim card (specs/claims)        what is claimed: a Spec, and the `Sound` theorem(s) for it
+    claim card (specs/claims)        what is claimed: its claim types (Specs/ClaimTypes.lean),
+                                     each a Spec with parameters and its `Sound` theorem
       ↑ establishes                  a certifying method: its accepted check is the `accepts` of `Sound`
     method (catalog/methods)         how: the check the kernel runs and why it is correct
       ↑ feeds                        a method computing an input another method checks
@@ -47,7 +48,7 @@ def registry_checks() -> set[str]:
 def derive(m: dict, claims: dict) -> tuple[str, list[str]]:
     """The level the evidence supports, and what is missing for `verified`.
 
-    verified      a kernel-checked chain to a claim's `Sound` (or to a method it feeds),
+    verified      a kernel-checked chain to a claim type's `Sound` (or to a method it feeds),
                   with a Lean specification, correctness theorems and a conformance test
     specified     a Lean specification, and a stated reason it is not verified
     experimental  otherwise
@@ -67,8 +68,8 @@ def derive(m: dict, claims: dict) -> tuple[str, list[str]]:
         missing.append("a claim it establishes or a method it feeds")
     for c in m.get("establishes", []):
         card = claims.get(c, (None, None))[1]
-        if card is not None and not card.get("sound"):
-            missing.append(f"a Sound theorem for claim '{c}'")
+        if card is not None and not card.get("claim_types"):
+            missing.append(f"a claim type (with its Sound theorem) for claim '{c}'")
     return ("verified" if not missing else "experimental"), missing
 
 

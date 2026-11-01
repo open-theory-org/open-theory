@@ -5,7 +5,7 @@ domain = "region"
 aggregate = "all"
 models = ["relu-mlp"]
 lean = ["OpenTheory.Checks.MLP.check"]
-sound = []         # open: the theorem that acceptance implies the claim is not proved yet
+claim_types = []   # open: the theorem that acceptance implies the claim is not proved yet
 assumptions = ["A3-model-binding"]
 references = [{ key = "harvey2009kronecker", relation = "background" }]
 +++

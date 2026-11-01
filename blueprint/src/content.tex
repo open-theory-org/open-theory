@@ -1830,6 +1830,44 @@ With no randomness and $\delta = 0$, soundness is: every accepted claim is true.
 The Dirac measure of a set is $0$ exactly when the point is not in it.
 \end{proof}
 
+\begin{definition}[Claim type and named properties]\label{def:claim_type}
+\lean{OpenTheory.ClaimType, OpenTheory.ClaimType.Claim, OpenTheory.Wrong, OpenTheory.Event, OpenTheory.Checks.Tree.Ensemble.Decides, OpenTheory.Checks.Tree.MonotoneIn}
+\leanok
+\uses{def:spec}
+A claim type bundles parameters $\Theta$, an evidence space with its law $\mathbb P$, an acceptance
+relation, a specification $\sigma(\theta)$ and a model $m(\theta)$ for each parameter, an error
+$\delta$, and the proof that the acceptance is sound with error $\delta$ for the targets
+$\sigma(\theta)(m(\theta))$. A claim is a claim type with its parameter. The observables of the
+claim types apply named properties (an error of a 0/1 loss, an event of a pool's items, a
+tree ensemble's decision, monotonicity in one feature), one per property card.
+\end{definition}
+
+\begin{theorem}[Claims combine]\label{thm:sound_and}
+\lean{OpenTheory.Sound.and, OpenTheory.Sound.comap}
+\leanok
+\uses{def:spec}
+Two acceptances sound with errors $\delta_1, \delta_2 \ge 0$ on the same evidence give their
+conjunction, sound with error $\delta_1 + \delta_2$, without independence. If the evidence is
+$f(\omega')$ for a measurable $f$ pushing the law $\mathbb P'$ forward to $\mathbb P$, soundness holds
+over $\mathbb P'$.
+\end{theorem}
+\begin{proof}
+\leanok
+A union bound; for the pushforward, the preimage of a measurable superset of the bad set.
+\end{proof}
+
+\begin{theorem}[The claim types]\label{thm:claim_types}
+\lean{OpenTheory.ClaimTypes.robustRegion, OpenTheory.ClaimTypes.heldOut, OpenTheory.ClaimTypes.occam, OpenTheory.ClaimTypes.pacBayes, OpenTheory.ClaimTypes.poolRate, OpenTheory.ClaimTypes.judgedRate, OpenTheory.ClaimTypes.judgedRateAlarms, OpenTheory.ClaimTypes.rateGap, OpenTheory.ClaimTypes.rateRatio, OpenTheory.ClaimTypes.treeRobust, OpenTheory.ClaimTypes.treeMonotone}
+\leanok
+\uses{def:claim_type, thm:spec_instances, thm:tree_sound}
+Every claim type of the repository is a term of this structure, stated with the named properties,
+whose guarantee is its soundness theorem.
+\end{theorem}
+\begin{proof}
+\leanok
+Each soundness theorem has the claim type's statement, up to unfolding the named properties.
+\end{proof}
+
 \begin{theorem}[The claim templates are instances]\label{thm:spec_instances}
 \lean{OpenTheory.onRegion_sound, OpenTheory.heldOut_sound, OpenTheory.poolRate_sound, OpenTheory.judgedRate_sound, OpenTheory.judgedRate_alarms_sound, OpenTheory.occam_sound, OpenTheory.pacBayes_sound, OpenTheory.QuantizedMLP.classificationLoss_01, OpenTheory.QuantizedMLP.dirac_mem_badEvent, OpenTheory.seedLaw, OpenTheory.seedLaw_apply, OpenTheory.poolRate_eq_card}
 \leanok
