@@ -52,6 +52,47 @@ def listOf (ty : Expr) (xs : List Expr) : Expr :=
   xs.foldr (fun x acc => mkApp3 (mkConst ``List.cons [Level.zero]) ty x acc)
     (mkApp (mkConst ``List.nil [Level.zero]) ty)
 
+/-! ### Constructor terms for the tree checks (`Shape.decoded`) -/
+
+section
+open OpenTheory.Checks.Tree
+
+def intE : Int → Expr
+  | .ofNat n => mkApp (mkConst ``Int.ofNat) (lit n)
+  | .negSucc n => mkApp (mkConst ``Int.negSucc) (lit n)
+
+def boolE (b : Bool) : Expr := mkConst (if b then ``Bool.true else ``Bool.false)
+
+def boundE (b : Bound) : Expr :=
+  let opt : Option Int → Expr
+    | none => mkApp (mkConst ``Option.none [Level.zero]) (mkConst ``Int)
+    | some z => mkApp2 (mkConst ``Option.some [Level.zero]) (mkConst ``Int) (intE z)
+  mkApp2 (mkConst ``Bound.mk) (opt b.lo) (opt b.hi)
+
+def treeE : Tree → Expr
+  | .leaf v => mkApp (mkConst ``Tree.leaf) (intE v)
+  | .node f t l r => mkApp4 (mkConst ``Tree.node) (lit f) (intE t) (treeE l) (treeE r)
+
+def cutsE : Cuts → Expr
+  | .none => mkConst ``Cuts.none
+  | .cut c l r => mkApp3 (mkConst ``Cuts.cut) (intE c) (cutsE l) (cutsE r)
+
+def boxE (B : Box) : Expr := listOf (mkConst ``Bound) (B.map boundE)
+
+/-- The arguments of a decoded check, as constructor terms, in the order of its constant. -/
+def decodedArgs (cli : String) (args : List Nat) : Except String (Array Expr) :=
+  match cli with
+  | "tree-robust" => match decRobust args with
+    | some (base, τ, c, B, ts, ms) => pure #[intE base, intE τ, listOf (mkConst ``Tree) (ts.map treeE),
+        listOf (mkConst ``Int) (ms.map intE), boxE B, boolE c]
+    | none => throw "tree-robust: malformed request"
+  | "tree-monotone" => match decMonotone args with
+    | some (j, up, B, ts, cs) => pure #[lit j, boolE up, listOf (mkConst ``Tree) (ts.map treeE), boxE B,
+        listOf (mkConst ``Cuts) (cs.map cutsE)]
+    | none => throw "tree-monotone: malformed request"
+  | _ => throw s!"{cli}: no decoder"
+end
+
 /-- The proposition `check args = true`, or why the request is malformed. -/
 def requestProp (e : Entry) (args : List Nat) : Except String Expr := do
   let c := mkConst e.const.toName
@@ -67,6 +108,7 @@ def requestProp (e : Entry) (args : List Nat) : Except String Expr := do
       let records := (List.range (rest.length / g)).map fun i =>
         mkAppN (mkConst mkName) (((rest.drop (i * g)).take g).map lit).toArray
       pure (mkApp (mkAppN c ((args.take k).map lit).toArray) (listOf (mkConst mkName.getPrefix) records))
+    | .decoded => pure (mkAppN c (← decodedArgs e.cli args))
   return mkApp3 (mkConst ``Eq [Level.one]) (mkConst ``Bool) term (mkConst ``Bool.true)
 
 /-- The kernel accepts `Eq.refl true : prop`; otherwise the kernel's reason. -/

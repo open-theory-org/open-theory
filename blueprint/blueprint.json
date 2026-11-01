@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-01T09:02:29.607091+00:00",
+  "generatedAt": "2026-11-01T10:02:45.138883+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 106,
+  "nodesCount": 110,
   "nodes": [
     {
       "id": "def:sample",
@@ -2225,6 +2225,90 @@
       ],
       "bountyUsd": null,
       "informalSketch": "Interval soundness puts the output in the propagated box; there the score of $c$ is at least its\nlower bound, which exceeds every other upper bound. The lower corner of a well-formed box lies in\nit."
+    },
+    {
+      "id": "def:tree_ensemble",
+      "kind": "definition",
+      "title": "Tree ensemble",
+      "leanName": "OpenTheory.Checks.Tree.Tree",
+      "leanNames": [
+        "OpenTheory.Checks.Tree.Tree",
+        "OpenTheory.Checks.Tree.Tree.eval",
+        "OpenTheory.Checks.Tree.Ensemble",
+        "OpenTheory.Checks.Tree.Ensemble.score",
+        "OpenTheory.Checks.Tree.Ensemble.Approves",
+        "OpenTheory.Checks.Tree.Box.Mem"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": false,
+      "isVerified": true,
+      "dependencies": [],
+      "bountyUsd": null,
+      "informalSketch": null
+    },
+    {
+      "id": "thm:tree_robust",
+      "kind": "theorem",
+      "title": "Robustness certificate",
+      "leanName": "OpenTheory.Checks.Tree.robustCert",
+      "leanNames": [
+        "OpenTheory.Checks.Tree.robustCert",
+        "OpenTheory.Checks.Tree.robustCert_sound",
+        "OpenTheory.Checks.Tree.allLe_sound",
+        "OpenTheory.Checks.Tree.allGe_sound"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:tree_ensemble"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "By induction on each tree, an input of $B$ only takes branches that pass the test against $B$, so\nits leaf is within the bound; sum over the trees."
+    },
+    {
+      "id": "thm:tree_monotone",
+      "kind": "theorem",
+      "title": "Monotonicity certificate",
+      "leanName": "OpenTheory.Checks.Tree.monotoneCert",
+      "leanNames": [
+        "OpenTheory.Checks.Tree.monotoneCert",
+        "OpenTheory.Checks.Tree.monotoneCert_sound",
+        "OpenTheory.Checks.Tree.monoCut_sound",
+        "OpenTheory.Checks.Tree.Raised",
+        "OpenTheory.Checks.Tree.Ordered"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:tree_ensemble"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "By induction on the tree: off feature $j$ both inputs take the same branch; on $j$ either the same\nbranch, or $x$ goes low and $x'$ high and the cut separates their leaves. A sum of monotone trees\nis monotone."
+    },
+    {
+      "id": "thm:tree_sound",
+      "kind": "theorem",
+      "title": "Kernel forms and specifications",
+      "leanName": "OpenTheory.Checks.Tree.robustCertK_eq",
+      "leanNames": [
+        "OpenTheory.Checks.Tree.robustCertK_eq",
+        "OpenTheory.Checks.Tree.monotoneCertK_eq",
+        "OpenTheory.treeRobust_sound",
+        "OpenTheory.treeMonotone_sound"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "thm:tree_robust",
+        "thm:tree_monotone",
+        "def:spec",
+        "thm:sound_exact"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Induction on trees and lists for the equalities; then the two theorems above."
     },
     {
       "id": "def:spec",

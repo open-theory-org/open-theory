@@ -1,5 +1,6 @@
 import Checks.MLP
 import Checks.PoolRate
+import Checks.Tree
 
 /-!
 # Registry of certificate checks
@@ -19,6 +20,9 @@ inductive Shape where
   `fields`, each passed to the structure constructor `mk` (for example
   `"OpenTheory.Checks.MLP.Layer.mk"`). The kernel reads each field in one projection step. -/
   | records (k fields : Nat) (mk : String)
+  /-- Structured arguments (trees, boxes, integers) decoded from the naturals by the check's own
+  decoder, shared with the compiled lane; `ot_kernel` builds them as constructor terms. -/
+  | decoded
 
 /-- A registered check. -/
 structure Entry where
@@ -38,6 +42,10 @@ def entries : List Entry :=
     { cli := "pool", const := "OpenTheory.Checks.poolCheck", shape := .nats 7,
       run := fun | [x, n, l, k, a, b, d] => poolCheck x n l k a b d | _ => false },
     { cli := "pool-witness", const := "OpenTheory.Checks.poolCheckWitness", shape := .nats 9,
-      run := fun | [x, n, l, k, a, b, u, v, d] => poolCheckWitness x n l k a b u v d | _ => false } ]
+      run := fun | [x, n, l, k, a, b, u, v, d] => poolCheckWitness x n l k a b u v d | _ => false },
+    { cli := "tree-robust", const := "OpenTheory.Checks.Tree.robustCertK", shape := .decoded,
+      run := Tree.runRobust },
+    { cli := "tree-monotone", const := "OpenTheory.Checks.Tree.monotoneCertK", shape := .decoded,
+      run := Tree.runMonotone } ]
 
 end OpenTheory.Checks

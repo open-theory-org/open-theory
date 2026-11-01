@@ -141,7 +141,10 @@ certificate can establish them. Every known claim fits:
 
 A **claim** is a specification with its numbers filled in, for one model: "this model predicts
 class 0 on every input within 3 of `x₀`", "this model errs on at most 3% of the population, with
-confidence 99.9%". A **certificate** is the evidence that a verifier checks for one claim.
+confidence 99.9%". A **claim type** is a specification with its numbers left as parameters,
+together with the theorem that gives its guarantee; each card in `specs/claims/` is one claim type.
+A **certificate** is the evidence that a verifier checks for one claim. Every object is defined
+once in `docs/language.md`.
 
 Every certificate gives the same guarantee, whatever its specification:
 
@@ -157,9 +160,9 @@ count, the bound, the box) after seeing the evidence. For a region there is no r
 regulator or an auditor can rely on.
 
 A specification is checkable when a rule proves `Sound` for its combination of aggregate, domain,
-observable and model family. Each rule is proved once, for every observable of its class; the open
-ones, in the order the bank milestone needs them, are trees on regions, gaps and ratios between
-pools, means of quantities, then AUC (`specs/taxonomy.md`).
+observable and model family. Each rule is proved once, for every observable of its class; trees on
+regions and gaps and ratios between pools are proved; the open ones, in the order the bank
+milestone needs them, are means of quantities (calibration), then AUC (`specs/taxonomy.md`).
 
 
 # Assurance
@@ -196,7 +199,8 @@ specification "this property, on this scope"; its status is what the repository 
 | --- | --- | --- | --- |
 | Learned function | prediction constant around an input | theorem, kernel check (ReLU MLPs) | robust accuracy (planned) |
 | Learned function | exact output on an input | kernel check, `experimental` (ReLU MLPs) | — |
-| Learned function | monotonicity, fairness between inputs | planned (tree ensembles) | fairness rates (planned) |
+| Learned function | decision constant on a box, monotonicity | `verified` (tree ensembles) | — |
+| Learned function | fairness between inputs | planned | fairness rates `verified` (rate-gap, rate-ratio) |
 | Statistical predictor | error rate | — | `verified` (quantized MLPs) |
 | Statistical predictor | AUC, calibration | — | planned |
 | Any system, black box | rate of an event on a committed pool | — | `verified` (pool-rate, judged-rate) |

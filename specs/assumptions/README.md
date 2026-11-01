@@ -58,3 +58,14 @@ groups as recorded or inferred when the pools were committed: protected attribut
 missing in credit data and inferred (for example by a proxy model), and the claim is then about the
 inferred groups. Used by `rate-gap`, `rate-ratio`.
 
+
+## A11-tree-translation: the integer ensemble computes the deployed model's decisions
+
+`tree-robust` and `tree-monotone` are about the integer ensemble in the request. The producer
+(`methods/trees/tree_certificate.py`) reads the deployed model (a LightGBM dump) and scales each
+feature and the leaves by powers of two, exactly, since doubles are dyadic. The two models then take
+the same decision on every input without missing values, provided the deployed runtime compares
+`x ≤ threshold` in the same precision as its dump. Not covered: missing values (`NaN` routing by
+`default_left`), categorical splits and `missing_type: Zero` (both refused), and preprocessing
+before the model. Anyone can re-run the deterministic translation from the model file to check
+it. Used by `tree-robust`, `tree-monotone`.

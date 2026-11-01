@@ -48,6 +48,9 @@ jobs:
       - name: Check the specs registries and the coverage matrix
         run: python3 tests/regression/check_specs.py
 
+      - name: Check that each claim card states the Spec of its Sound theorems
+        run: python3 tests/regression/check_spec_shapes.py
+
       - name: Fail if committed graph is stale
         run: python3 blueprint/export_blueprint.py --check
 
@@ -64,11 +67,12 @@ jobs:
       - name: "Conformance: demo (1 accept, 4 rejects)"
         run: tests/conformance/certified_accuracy.sh
 
-      - name: "Conformance: fast checks, kernel and compiled lanes agree"
+      - name: "Conformance: fast checks (MLP, pool, trees), kernel and compiled lanes agree"
         run: |
           lake build ot_kernel
           python3 tests/conformance/fast_check.py
           python3 tests/conformance/pool_check_lanes.py
+          python3 tests/conformance/tree_check.py
 
       - name: "Conformance: pool-rate and judged-rate certificates (recorded drand rounds)"
         run: |

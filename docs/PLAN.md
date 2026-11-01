@@ -164,7 +164,12 @@ The report maps each line to what the regulator asks: independent validation (SS
 Order:
 
 1. Tree-ensemble primitive: exact semantics, then its Lean statements for review (section 7).
-2. Monotonicity and local robustness checks for tree ensembles, in both lanes.
+   Done 2026-11-01 (`Checks/Tree`, `Models/Tree`, `Scopes/TreeRegion`, `Specs/Tree`).
+2. Monotonicity and local robustness checks for tree ensembles, in both lanes. Done 2026-11-01
+   (`tree-ensemble-check`, verified; LightGBM producer). Kernel time: robustness on a small box
+   about 4 ms for 10 trees and 0.17 s for 500; global monotonicity 20 ms for 10 trees and 1.5 s
+   for 500, at about 10–15 µs per visited node. Sub-millisecond needs data parallelism in big
+   integers (as for the MLP check), not yet attempted.
 3. AUC, calibration and fairness templates on top of `RateClaim`.
 4. End-to-end example on a public credit dataset, and the report format.
 5. The zero-knowledge or TEE path for showing results without the model.

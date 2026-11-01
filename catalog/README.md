@@ -54,6 +54,8 @@ acceptance condition of the claim's `Sound` theorem, proved once for its specifi
 | [`rate-gap`](../specs/claims/rate-gap.md) | event × pool × pool × gapLe | `gap_sound` | [rate-gap-certificate](methods/rate-gap-certificate.toml) | `poolCheck`, `poolCheckWitness` | `interval_sound`, `bad_frac`, `seedFrac_restrict`, `of_poolCheck` | — | `pool`, `pool-witness` | **verified** |
 | [`rate-ratio`](../specs/claims/rate-ratio.md) | event × pool × pool × ratioGe | `ratio_sound` | [rate-gap-certificate](methods/rate-gap-certificate.toml) | `poolCheck`, `poolCheckWitness` | `interval_sound`, `bad_frac`, `seedFrac_restrict`, `of_poolCheck` | — | `pool`, `pool-witness` | **verified** |
 | [`robust-region`](../specs/claims/robust-region.md) | predicts × region × all | `onRegion_sound` | — | — | — | — | — | theorem |
+| [`tree-monotone`](../specs/claims/tree-monotone.md) | monotone × region × all | `treeMonotone_sound` | [tree-ensemble-check](methods/tree-ensemble-check.toml) | `robustCertK`, `monotoneCertK` | `robustCertK_eq`, `monotoneCertK_eq`, `robustCert_sound`, `monotoneCert_sound`, `allLe_sound`, `allGe_sound`, `monoCut_sound` | — | `tree-robust`, `tree-monotone` | **verified** |
+| [`tree-robust`](../specs/claims/tree-robust.md) | decision × region × all | `treeRobust_sound` | [tree-ensemble-check](methods/tree-ensemble-check.toml) | `robustCertK`, `monotoneCertK` | `robustCertK_eq`, `monotoneCertK_eq`, `robustCert_sound`, `monotoneCert_sound`, `allLe_sound`, `allGe_sound`, `monoCut_sound` | — | `tree-robust`, `tree-monotone` | **verified** |
 
 ### Methods
 
@@ -67,6 +69,7 @@ acceptance condition of the claim's `Sound` theorem, proved once for its specifi
 | **verified** | [Design-based pool-rate certificate from a public beacon](methods/pool-rate-certificate.toml) | verified-checker | establishes pool-rate | statistical |
 | **verified** | [Kernel re-execution of a quantized ReLU MLP](methods/quantized-mlp-kernel-inference.toml) | verified-implementation | feeds heldout-binomial-bound, occam-code-certificate, pacbayes-catoni-certificate | statistical |
 | **verified** | [Rate gap and ratio between two committed pools (fairness)](methods/rate-gap-certificate.toml) | verified-checker | establishes rate-gap, rate-ratio | statistical |
+| **verified** | [Robustness and monotonicity of a tree ensemble on a box, checked by the kernel](methods/tree-ensemble-check.toml) | verified-checker | establishes tree-robust, tree-monotone | trees |
 | **specified** | [Loss-threshold stopping rule for two-layer linear networks](methods/plateau-stopping-rule.toml) | - | research | statistical |
 | **experimental** | [Exact forward pass of a quantized ReLU MLP, checked on packed integers](methods/mlp-exact-kernel-check.toml) | - | establishes mlp-exact | neural |
 | **experimental** | [Monte Carlo generalization error of reduced-rank regression](methods/rrr-learning-coefficient-estimate.toml) | - | research | statistical |

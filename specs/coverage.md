@@ -10,6 +10,8 @@ levels in `catalog/`. Do not edit by hand. A claim is an observable × a domain 
 | [quantized-mlp](models/quantized-mlp.md) | [wrong](properties/wrong.md) | — | — | [`heldout-error`](claims/heldout-error.md) meanLe (**verified**)<br>[`occam-code-error`](claims/occam-code-error.md) meanLe (**verified**)<br>[`pacbayes-error`](claims/pacbayes-error.md) meanLe (**verified**) | — |
 | [relu-mlp](models/relu-mlp.md) | [exact-output](properties/exact-output.md) | [`mlp-exact`](claims/mlp-exact.md) all (**experimental**, no `Sound` bridge yet) | — | — | — |
 | [relu-mlp](models/relu-mlp.md) | [predicts](properties/predicts.md) | [`robust-region`](claims/robust-region.md) all (theorem) | — | — | — |
+| [tree-ensemble](models/tree-ensemble.md) | [decision](properties/decision.md) | [`tree-robust`](claims/tree-robust.md) all (**verified**) | — | — | — |
+| [tree-ensemble](models/tree-ensemble.md) | [monotone](properties/monotone.md) | [`tree-monotone`](claims/tree-monotone.md) all (**verified**) | — | — | — |
 
 Status: the best level of the catalog methods establishing the claim; `theorem`: the bridge to the generic
 guarantee `Sound` is proved but no method uses it yet; `statement`: the template exists only.
@@ -25,3 +27,5 @@ guarantee `Sound` is proved but no method uses it yet; `statement`: the template
 | [`rate-gap`](claims/rate-gap.md) | event | pool × pool | gapLe | `gap_sound` | `pool`, `pool-witness` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A10-group-membership |
 | [`rate-ratio`](claims/rate-ratio.md) | event | pool × pool | ratioGe | `ratio_sound` | `pool`, `pool-witness` | rate-gap-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A10-group-membership |
 | [`robust-region`](claims/robust-region.md) | predicts | region | all | `onRegion_sound` | — | — | A3-model-binding |
+| [`tree-monotone`](claims/tree-monotone.md) | monotone | region | all | `treeMonotone_sound` | `tree-monotone`, `tree-robust` | tree-ensemble-check | A3-model-binding, A11-tree-translation |
+| [`tree-robust`](claims/tree-robust.md) | decision | region | all | `treeRobust_sound` | `tree-monotone`, `tree-robust` | tree-ensemble-check | A3-model-binding, A11-tree-translation |

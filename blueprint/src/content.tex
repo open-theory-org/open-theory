@@ -1732,6 +1732,69 @@ lower bound, which exceeds every other upper bound. The lower corner of a well-f
 it.
 \end{proof}
 
+\chapter{Tree ensembles on a region}
+
+A tree ensemble (gradient boosting, random forests \cite{ke2017lightgbm,chen2016xgboost}) is one
+data structure read in two ways: by the checks, over integers in core Lean, and by the proofs, over
+real inputs. A certificate gives witnesses, as literals, that the kernel verifies in one pass over
+the branches a box can reach; the results are sound and incomplete, following the per-tree
+reasoning of exact robustness checking \cite{chen2019robustness} and of monotonicity for additive
+ensembles \cite{devos2021versatile}, where exact methods solve a hard search instead
+\cite{kantchelian2016evasion}.
+
+\begin{definition}[Tree ensemble]\label{def:tree_ensemble}
+\lean{OpenTheory.Checks.Tree.Tree, OpenTheory.Checks.Tree.Tree.eval, OpenTheory.Checks.Tree.Ensemble, OpenTheory.Checks.Tree.Ensemble.score, OpenTheory.Checks.Tree.Ensemble.Approves, OpenTheory.Checks.Tree.Box.Mem}
+\leanok
+A tree is a leaf $v \in \mathbb Z$ or a node $(f, t, \ell, h)$ with $t \in \mathbb Z$; on $x : \mathbb N
+\to \mathbb R$ a node continues to $\ell$ if $x_f \le t$ and to $h$ otherwise. An ensemble with base
+$b$, threshold $\tau$ and trees $T_i$ has score $s(x) = b + \sum_i T_i(x)$ and approves $x$ when
+$\tau \le s(x)$. A box gives each feature optional closed bounds.
+\end{definition}
+
+\begin{theorem}[Robustness certificate]\label{thm:tree_robust}
+\lean{OpenTheory.Checks.Tree.robustCert, OpenTheory.Checks.Tree.robustCert_sound, OpenTheory.Checks.Tree.allLe_sound, OpenTheory.Checks.Tree.allGe_sound}
+\leanok
+\uses{def:tree_ensemble}
+If every leaf of $T_i$ that a point of the box $B$ reaches (each split tested against $B$) is at
+least $m_i$, and $\tau \le b + \sum_i m_i$, then the ensemble approves every real input of $B$;
+symmetrically, upper bounds with $b + \sum_i m_i < \tau$ give a decline on all of $B$.
+\end{theorem}
+\begin{proof}
+\leanok
+By induction on each tree, an input of $B$ only takes branches that pass the test against $B$, so
+its leaf is within the bound; sum over the trees.
+\end{proof}
+
+\begin{theorem}[Monotonicity certificate]\label{thm:tree_monotone}
+\lean{OpenTheory.Checks.Tree.monotoneCert, OpenTheory.Checks.Tree.monotoneCert_sound, OpenTheory.Checks.Tree.monoCut_sound, OpenTheory.Checks.Tree.Raised, OpenTheory.Checks.Tree.Ordered}
+\leanok
+\uses{def:tree_ensemble}
+If, in every tree, at every split on feature $j$ that $B$ reaches on both sides, a cut $c$
+separates the reachable leaves (those below the threshold at most $c$, those above at least $c$),
+then for inputs $x, x'$ of $B$ that differ only in $j$ with $x_j \le x'_j$, $s(x) \le s(x')$
+(reversed if decreasing).
+\end{theorem}
+\begin{proof}
+\leanok
+By induction on the tree: off feature $j$ both inputs take the same branch; on $j$ either the same
+branch, or $x$ goes low and $x'$ high and the cut separates their leaves. A sum of monotone trees
+is monotone.
+\end{proof}
+
+\begin{theorem}[Kernel forms and specifications]\label{thm:tree_sound}
+\lean{OpenTheory.Checks.Tree.robustCertK_eq, OpenTheory.Checks.Tree.monotoneCertK_eq, OpenTheory.treeRobust_sound, OpenTheory.treeMonotone_sound}
+\leanok
+\uses{thm:tree_robust, thm:tree_monotone, def:spec, thm:sound_exact}
+The checks the kernel evaluates, written with recursors and integer comparisons by cases, equal
+the certificates above; hence robustness and monotonicity are instances of $\mathrm{Sound}$ with
+$\delta = 0$ for the specifications (decision, region, all) and (monotone on pairs, region of
+pairs, all).
+\end{theorem}
+\begin{proof}
+\leanok
+Induction on trees and lists for the equalities; then the two theorems above.
+\end{proof}
+
 \chapter{Specifications}
 
 A specification is an observable (a property or a bounded quantity), a domain (a region, a

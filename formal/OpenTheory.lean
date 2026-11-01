@@ -112,3 +112,4 @@ import Properties.Basic
 import Scopes.Basic
 import Specs.Basic
 import Specs.Instances
+import Specs.Tree

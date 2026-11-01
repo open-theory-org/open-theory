@@ -47,11 +47,11 @@ its class.
 | # | Aggregate | Domain | Property class | Family | Method | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | R1 | rate ≤ p | committed pool | any decidable | any (black box) | beacon sample, exact binomial tail | proved (`poolRate_sound`) |
-| R2 | rate ∈ [q, p], gap, ratio | one or two pools | any decidable | any | two rate claims per pool | statements drafted (`Specs/RateGap`) |
+| R2 | rate ∈ [q, p], gap, ratio | one or two pools | any decidable | any | two rate claims per pool | proved (`gap_sound`, `ratio_sound`) |
 | R3 | rate ≤ p, graded by a judge | committed pool | judged + gold labels | any | rectifier identity | proved (`judgedRate_sound`) |
 | R4 | rate ≤ p | distribution | any decidable | any | R1 + `A1-iid` | proved (`heldOut_sound`) |
 | R5 | ∀ | region | prediction | ReLU MLP | integer intervals | proved (`onRegion_sound`) |
-| R6 | ∀ | region | prediction, monotonicity | tree ensemble | exact per-tree check | open |
+| R6 | ∀ | region | decision, monotonicity | tree ensemble | per-tree witnesses checked by the kernel (sound, incomplete) | proved (`treeRobust_sound`, `treeMonotone_sound`) |
 | R7 | rate ≤ p | pool of regions | prediction | ReLU MLP | R5 per item, then R1 | derivable |
 | R8 | rate over pairs | two pools | ranking (AUC) | any | U-statistic tail | open |
 | R9 | mean ≤ m, per-bin difference | committed pool | bounded quantity | any | bounded-mean tail | open |
@@ -110,7 +110,7 @@ Every claim of the bank milestone fits. Open for it: R2 (proofs), R6, R8, R9, R1
 2. Two-domain specs use a **domain that is a pair** of populations, not a separate structure.
 3. The observable is a **quantity** `M → X → [0, 1]`; a property is the `{0, 1}` case.
 4. **Training-procedure claims are postponed** until a user needs them.
-5. Bank order of the open rules: **R6 (trees), R2 (gap, ratio), R9 (calibration), R8 (AUC)**.
+5. Bank order of the open rules: **R6 (trees), R2 (gap, ratio), R9 (calibration), R8 (AUC)**; R6 and R2 are proved.
 6. Ownership: the Lean skeleton (`Properties/`, `Scopes/`, `Specs/Basic`, `Specs/Instances`), the
    cards, `check_specs.py` and `specs/coverage.md` move to this language in the specs-system work;
    the rules (§3) are proved as new files stating `Sound` in this shape.

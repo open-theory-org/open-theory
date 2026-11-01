@@ -1,0 +1,33 @@
+id = "tree-ensemble-check"
+name = "Robustness and monotonicity of a tree ensemble on a box, checked by the kernel"
+level = "verified"
+mode = "verified-checker"
+kind = "trees"
+summary = "The producer scales a LightGBM ensemble exactly to integers and gives one bound per tree (robustness) or one cut per split (monotonicity); the kernel walks only the branches the box can reach and checks the witnesses. Sound, incomplete: a rejection is not a counterexample."
+establishes = ["tree-robust", "tree-monotone"]
+checks = ["tree-robust", "tree-monotone"]
+implementation = ["methods/trees/tree_certificate.py"]
+assumptions = ["A3-model-binding", "A11-tree-translation"]
+trusted = ["Lean kernel (ot_kernel; ot_check runs are labelled not verified)", "statements of OpenTheory.treeRobust_sound and OpenTheory.treeMonotone_sound", "the request decoder OpenTheory.Checks.Tree.decRobust / decMonotone and ot_kernel's term builder", "the translation from the deployed model (A11)"]
+conformance = ["tests/conformance/tree_check.py"]
+references = [
+  { key = "chen2019robustness", relation = "adapts", note = "per-tree bounds on the leaves a box reaches, summed over the ensemble: a sound, incomplete check verified by the Lean kernel from untrusted witnesses, instead of an exact search" },
+  { key = "devos2021versatile", relation = "implements" },
+  { key = "kantchelian2016evasion", relation = "contrasts" },
+  { key = "calzavara2025boosted", relation = "background" },
+  { key = "ke2017lightgbm", relation = "background" },
+  { key = "chen2016xgboost", relation = "background" },
+]
+
+[lean]
+spec = ["OpenTheory.Checks.Tree.Tree", "OpenTheory.Checks.Tree.Ensemble", "OpenTheory.Checks.Tree.Tree.eval", "OpenTheory.Checks.Tree.Box.Mem", "OpenTheory.Checks.Tree.robustCert", "OpenTheory.Checks.Tree.monotoneCert"]
+check = ["OpenTheory.Checks.Tree.robustCertK", "OpenTheory.Checks.Tree.monotoneCertK"]
+correctness = [
+  "OpenTheory.Checks.Tree.robustCertK_eq",
+  "OpenTheory.Checks.Tree.monotoneCertK_eq",
+  "OpenTheory.Checks.Tree.robustCert_sound",
+  "OpenTheory.Checks.Tree.monotoneCert_sound",
+  "OpenTheory.Checks.Tree.allLe_sound",
+  "OpenTheory.Checks.Tree.allGe_sound",
+  "OpenTheory.Checks.Tree.monoCut_sound",
+]
