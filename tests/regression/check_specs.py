@@ -26,7 +26,7 @@ from registry import LEVELS, ROOT, SPECS, cards, catalog, establishing  # noqa: 
 COVERAGE = SPECS / "coverage.md"
 RELATIONS = {"implements", "adapts", "formalizes", "background", "contrasts"}
 FIELDS = {
-    "models": {"id", "family", "lean", "references"},
+    "models": {"id", "family", "type", "lean", "references"},
     "properties": {"id", "kind", "object", "test", "lean", "references"},
     "domains": {"id", "kind", "randomness", "assumptions", "lean", "references"},
     "claims": {"id", "observable", "domain", "aggregate", "models", "lean", "sound", "assumptions",

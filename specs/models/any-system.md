@@ -1,6 +1,7 @@
 +++
 id = "any-system"
 family = "any deployed system whose behavior on a committed pool is logged (black box)"
+type = "Unit"     # the Lean type a spec quantifies over (Spec M X: M)
 lean = []
 references = []
 +++
