@@ -1751,6 +1751,19 @@ lower bound, which exceeds every other upper bound. The lower corner of a well-f
 it.
 \end{proof}
 
+\begin{theorem}[Quantized MLPs are exact ReLU networks]\label{thm:quantized_as_net}
+\lean{OpenTheory.QuantizedMLP.asNet, OpenTheory.QuantizedMLP.netParams, OpenTheory.QuantizedMLP.scoresOfWeights_eq_run}
+\leanok
+\uses{def:exact_net}
+The scores of a one-hidden-layer quantized MLP are the integer forward pass of the network
+$\mathrm{linear} \circ \mathrm{relu} \circ \mathrm{linear}$ whose parameters are its weights in
+storage order, with the biases scaled.
+\end{theorem}
+\begin{proof}
+\leanok
+Both are the same composition of dot products, biases and $\max(\cdot, 0)$.
+\end{proof}
+
 \chapter{Tree ensembles on a region}
 
 A tree ensemble (gradient boosting, random forests \cite{ke2017lightgbm,chen2016xgboost}) is one

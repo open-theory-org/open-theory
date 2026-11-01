@@ -131,6 +131,7 @@ aggregate, one guarantee) is fixed, and every new piece is checked against it by
 | every Lean name in a card, a manifest or the blueprint exists | `check_lean_decls.py`, `check_specs.py`, `check_catalog.py` |
 | each claim card's named property, observable kind, domain, aggregate and model are those of its `ClaimType` terms | `check_spec_shapes.py` |
 | every model of a claim card implements what its property needs | `check_specs.py` |
+| which modules of `formal/core` a certificate rests on, and which are library ([architecture/core-map.md](architecture/core-map.md)) | `check_core_map.py` |
 | an aggregate is used only on a domain where it has a meaning; a claim type lists its domain's assumptions and its methods' | `check_specs.py` |
 | every assumption says which Lean object it bridges | `check_specs.py` |
 | a method's level is the one its links support; a guarantee's level is that of its weakest method | `check_catalog.py` |

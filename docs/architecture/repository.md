@@ -28,3 +28,6 @@ Only the kernel and the Lean statements are trusted. Producers are not.
 - `formal/core/` is layered bottom-up: Checks → Foundations → Models → Properties → Theory → Scopes → Specs. `Checks` imports only Lean's core, so certificate checks run in a tiny kernel environment. A module imports only its own layer and earlier ones. See [formal/README.md](../../formal/README.md).
 - The vendored ports are in `formal/vendors/`.
 - The axiom-audit executable is `verifier/backends/formal/audit_axioms.lean`.
+
+Which modules of `formal/core` a certificate rests on, and which are library results tracked in the
+blueprint: [core-map.md](core-map.md) (generated).

@@ -101,6 +101,7 @@ import Theory.Training.Singular.BalancedPlateau
 import Theory.Training.Dynamics.MLPResidual
 import Foundations.Optimization.Ridge
 import Models.QuantizedMLP.Basic
+import Models.QuantizedMLP.Net
 import Models.Exact.Basic
 import Models.Exact.Interval
 import Models.Exact.Linear

@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-01T18:33:46.486377+00:00",
+  "generatedAt": "2026-11-01T18:41:47.776030+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 114,
+  "nodesCount": 115,
   "nodes": [
     {
       "id": "def:sample",
@@ -2251,6 +2251,25 @@
       ],
       "bountyUsd": null,
       "informalSketch": "Interval soundness puts the output in the propagated box; there the score of $c$ is at least its\nlower bound, which exceeds every other upper bound. The lower corner of a well-formed box lies in\nit."
+    },
+    {
+      "id": "thm:quantized_as_net",
+      "kind": "theorem",
+      "title": "Quantized MLPs are exact ReLU networks",
+      "leanName": "OpenTheory.QuantizedMLP.asNet",
+      "leanNames": [
+        "OpenTheory.QuantizedMLP.asNet",
+        "OpenTheory.QuantizedMLP.netParams",
+        "OpenTheory.QuantizedMLP.scoresOfWeights_eq_run"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:exact_net"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Both are the same composition of dot products, biases and $\\max(\\cdot, 0)$."
     },
     {
       "id": "def:tree_ensemble",

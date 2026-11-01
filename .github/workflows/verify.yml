@@ -51,6 +51,9 @@ jobs:
       - name: Check that each claim card states the Spec of its Sound theorems
         run: python3 tests/regression/check_spec_shapes.py
 
+      - name: Check the map of formal/core (claim vs library modules)
+        run: python3 tests/regression/check_core_map.py
+
       - name: Fail if committed graph is stale
         run: python3 blueprint/export_blueprint.py --check
 

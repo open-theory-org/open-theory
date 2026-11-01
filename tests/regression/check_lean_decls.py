@@ -25,8 +25,14 @@ DECL = re.compile(
 
 
 def declared_names() -> set[str]:
-    names: set[str] = set()
+    return set(declared_index())
+
+
+def declared_index() -> dict[str, Path]:
+    """Every declared name (and its qualified forms), with the file that declares it."""
+    where: dict[str, Path] = {}
     for path in (p for r in LEAN_ROOTS for p in r.rglob("*.lean")):
+        names: set[str] = set()
         text = path.read_text(encoding="utf-8")
         # This is only a source index; audit_axioms.lean resolves the references
         # against Lean itself. Track namespaces/sections for qualified local names.
@@ -56,7 +62,9 @@ def declared_names() -> set[str]:
                 names.add(raw)
             else:
                 names.add(f"OpenTheory.{raw}")
-    return names
+        for n in names:
+            where.setdefault(n, path)
+    return where
 
 
 def blueprint_names() -> list[str]:
