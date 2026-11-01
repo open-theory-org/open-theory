@@ -10,12 +10,12 @@ level ([../trust.md](../trust.md)).
 | Layer | Modules | Lines | claim | library |
 | --- | --- | --- | --- | --- |
 | Checks | 7 | 1,012 | 7 (1,012 lines) | 0 |
-| Foundations | 18 | 2,432 | 12 (1,870 lines) | 6 |
+| Foundations | 19 | 2,707 | 12 (1,870 lines) | 7 |
 | Models | 15 | 1,184 | 6 (605 lines) | 9 |
 | Properties | 6 | 171 | 6 (171 lines) | 0 |
 | Theory | 72 | 19,509 | 11 (2,598 lines) | 61 |
 | Scopes | 4 | 513 | 4 (513 lines) | 0 |
-| Specs | 13 | 1,805 | 13 (1,805 lines) | 0 |
+| Specs | 14 | 2,132 | 13 (1,805 lines) | 1 |
 
 ## Modules
 
@@ -29,6 +29,7 @@ level ([../trust.md](../trust.md)).
 | `Checks.Registry` | 63 | claim | fast checks |
 | `Checks.Tree` | 388 | claim | claim types, fast checks, catalog methods |
 | `Foundations.Arithmetic.Kronecker` | 225 | claim | catalog methods |
+| `Foundations.Arithmetic.Slots` | 275 | library | — |
 | `Foundations.Data.Foundation` | 75 | claim | claim types, kernel-checked sample, catalog methods |
 | `Foundations.Data.Model` | 19 | library | — |
 | `Foundations.Data.Sample` | 17 | claim | claim types, kernel-checked sample, catalog methods |
@@ -150,6 +151,7 @@ level ([../trust.md](../trust.md)).
 | `Specs.Instances` | 215 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.JudgedRate` | 111 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.Linear` | 41 | claim | claim types |
+| `Specs.MLPExact` | 327 | library | — |
 | `Specs.PoolRate` | 180 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.PoolSample` | 156 | claim | kernel-checked sample, catalog methods |
 | `Specs.QuantizedMLP.Occam` | 155 | claim | claim types, kernel-checked sample, catalog methods |
