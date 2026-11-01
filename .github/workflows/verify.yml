@@ -76,6 +76,7 @@ jobs:
           python3 tests/conformance/tree_check.py
           lake build ot_check
           python3 tests/conformance/tree_verify.py
+          python3 tests/benchmarks/kernel_times.py   # kernel time of every check (fails if an honest request is rejected)
 
       - name: "Conformance: pool-rate and judged-rate certificates (recorded drand rounds)"
         run: |

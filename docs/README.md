@@ -9,6 +9,7 @@ This section
 | [language.md](language.md) | Reference: every formal object, where it lives, what checks it |
 | [trust.md](trust.md) | What a certificate asks you to trust: levels, lanes, assumptions |
 | [statistics.md](statistics.md) | Statistical guarantees: what is proved, what the kernel computes, what is assumed |
+| [benchmarks.md](benchmarks.md) | Kernel time of every check (generated) |
 | [concepts/](concepts/) | [overview](concepts/overview.md), MLP risk and trajectory notes |
 | [tutorials/](tutorials/) | [Quantized MLP certificate](tutorials/quantized-mlp-certificate.md) |
 | [architecture/](architecture/) | [Repository layout](architecture/repository.md), [dependency status](architecture/dependency-status.md) |

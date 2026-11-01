@@ -170,6 +170,17 @@ Order:
    about 4 ms for 10 trees and 0.17 s for 500; global monotonicity 20 ms for 10 trees and 1.5 s
    for 500, at about 10–15 µs per visited node. Sub-millisecond needs data parallelism in big
    integers (as for the MLP check), not yet attempted.
+
+**Fast checks (step A).** Kernel times of every check: `docs/benchmarks.md`
+(`tests/benchmarks/kernel_times.py`, run in CI). Rule: every claim type ships a check whose kernel
+cost is a few big-integer operations, proved equal to its reference check. Planned, in order:
+
+| Check | Today (kernel) | Plan | Proof obligations |
+| --- | --- | --- | --- |
+| `tree-monotone` | 1.4 s for 500 trees | one pass carrying the cuts down the path (each leaf checked once against the cuts above it), instead of re-scanning each subtree at every split: about `depth`× fewer steps | `monoCut` replaced, `monoCut_sound` re-proved |
+| `tree-robust`, `tree-monotone` | 0.16 s / 1.4 s for 500 trees | packed form: trees padded to complete depth `D` in heap order; each split's feature bound gathered for all nodes at once by one product (Kronecker substitution [@harvey2009kronecker], as in `Checks/MLP`); reachability level by level with shifts and masks; leaves against bounds or cuts by one subtraction with guard bits | a packed semantics with `packed_eq : check (pack e) = robustCert e …`; padding preserves `Tree.eval` |
+| `pool-sample` | 1.2 s for 20,000 items | indices `bᵢ mod N` and bits in packed numbers | `drawnBits` packed, `poolSample_eq` |
+| `pool-witness` | 0.48 s for 20,000 bits | the Chernoff inequality at lower precision (rounded witness powers, checked upward) | a rounding lemma for the witness |
 3. AUC, calibration and fairness templates on top of `RateClaim`.
 4. End-to-end example on a public credit dataset, and the report format.
 5. The zero-knowledge or TEE path for showing results without the model.
