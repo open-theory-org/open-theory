@@ -76,12 +76,15 @@ def cases():
         mm = {"base": 0, "trees": [mtree(rng, depth, -1, 1) for _ in range(n)]}
         req, _ = trees.monotone_request(mm, 0, True)
         out.append(("tree-monotone", f"{n} trees of depth {depth}, all inputs", "tree-monotone " + " ".join(map(str, req))))
-    for d in (10, 30, 200):
+    for d in (10, 30, 200, 1000):
         model = {"intercept": rng.gauss(0, 1), "coef": [rng.gauss(0, 1) for _ in range(d)]}
         box = {str(f): [str(v - 0.5), str(v + 0.5)] for f, v in ((f, rng.uniform(-3, 3)) for f in range(d))}
         lo = sum(min(w * (v - 0.5), w * (v + 0.5)) for w, v in zip(model["coef"], (float(box[str(f)][0]) + 0.5 for f in range(d))))
         req, _ = linear.robust_request(model, box, True, Fraction(model["intercept"] + lo) - 1)
-        out.append(("linear-robust", f"linear model, {d} features, box", "linear-robust " + " ".join(map(str, req))))
+        if d <= 200:
+            out.append(("linear-robust", f"linear model, {d} features, box", "linear-robust " + " ".join(map(str, req))))
+        req, _ = linear.robust_packed_request(model, box, True, Fraction(model["intercept"] + lo) - 1)
+        out.append(("linear-robust-packed", f"linear model, {d} features, box", "linear-robust-packed " + " ".join(map(str, req))))
         req, _ = linear.monotone_request({"intercept": 0, "coef": [abs(w) for w in model["coef"]]}, 0, True)
         out.append(("linear-monotone", f"linear model, {d} features", "linear-monotone " + " ".join(map(str, req))))
     return out

@@ -23,11 +23,14 @@ import json
 import os
 import re
 import subprocess
+import sys
 import tempfile
 import time
 import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
+
+sys.set_int_max_str_digits(0)  # packed requests are numbers of many thousand digits
 
 ROOT = Path(__file__).resolve().parents[2]
 FORMAT = "opentheory-certificate/0.1"

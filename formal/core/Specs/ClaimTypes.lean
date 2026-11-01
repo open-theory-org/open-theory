@@ -5,6 +5,7 @@ import Specs.Tree
 import Properties.Network
 import Specs.Linear
 import Specs.MLPExact
+import Specs.LinearPacked
 
 /-!
 # The claim types
@@ -28,6 +29,7 @@ claim type's check.
 | `treeMonotone` | `monotone-feature` | none | `0` |
 | `linearRobust`, `linearMonotone` | `robust-decision`, `monotone-feature` | none | `0` |
 | `mlpExact` | `mlp-exact` | none | `0` |
+| `linearRobustPacked` | `robust-decision` | none | `0` |
 -/
 
 open MeasureTheory
@@ -230,5 +232,18 @@ noncomputable def mlpExact (D : ℕ) (hs : List ℕ) (o : ℕ) :
   model := fun θ => Checks.MLP.toParams D hs o (Checks.MLP.decode θ.s θ.c D θ.layers)
   δ := 0
   sound := Checks.MLP.mlpExact_sound D hs o
+
+/-- **`robust-decision`**, for linear models, packed: the model and the box the certificate stores,
+checked with a fixed number of big-integer operations whatever the number of features. -/
+noncomputable def linearRobustPacked : ClaimType Checks.Linear.LinearModel (ℕ → ℝ) where
+  Param := Checks.Linear.PackedCert
+  Evidence := Unit
+  law := Measure.dirac ()
+  accepts := fun _ θ => Checks.Linear.robustPackedN θ.B θ.d θ.mW θ.mL θ.O θ.zb θ.zt θ.Wp θ.Wm θ.LR θ.HR θ.c = true
+  spec := fun θ => ⟨.property (Decides (Nat.beq θ.c 1)),
+    .region {x | (Checks.Linear.packedBox θ.B θ.d θ.O θ.LR θ.HR).Mem x}, .all⟩
+  model := fun θ => Checks.Linear.packedModel θ.B θ.d (Checks.Tree.zig θ.zb) (Checks.Tree.zig θ.zt) θ.Wp θ.Wm
+  δ := 0
+  sound := Checks.Linear.linearRobustPacked_sound
 
 end OpenTheory.ClaimTypes

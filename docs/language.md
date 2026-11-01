@@ -105,6 +105,14 @@ and one bound per tree, which is `ClaimTypes.treeRobust`'s acceptance; its `soun
 proves what" in [catalog/README.md](../catalog/README.md) gives the chain for every claim type, and
 [specs/coverage.md](../specs/coverage.md) maps them by model, property and domain.
 
+One card may have several claim types, one per way of checking it, all giving the same sentence.
+`robust-decision` for linear models has two: `ClaimTypes.linearRobust`, whose request lists the
+weights and the box feature by feature, and `ClaimTypes.linearRobustPacked`, whose request packs them
+as base-2^B digits of four big integers (a **packed check**, [fast-certificates.md](fast-certificates.md)).
+The packed claim type's `model` is `packedModel` and its region `packedBox`: the model and box the
+request stores, decoded by `Slots.slot`. That the verifier packed the model it translated (A11) is
+part of the translation, and the conformance test unpacks every request it sends.
+
 A method's level is derived from these links, never only declared: `verified` exactly when it has
 a mode, `lean.spec`, `lean.correctness` and a conformance test, and establishes claim types (or
 feeds a method that does).
@@ -155,3 +163,4 @@ after a human reads it.
 | assumption | a bridge from one Lean object (law, observable, domain, model) to the world | a hypothesis hidden in a proof |
 | method | how a claim type is checked (`catalog/`) | what is claimed (`specs/`) |
 | guarantee | the name a certificate gives: claim type + methods + level | a theorem |
+| packed check | a check whose request stores whole vectors as base-2^B digits of a few big integers, so the kernel's work is a fixed number of GMP operations; its claim type speaks of the model the request stores | a different guarantee: it proves the same card's sentence |

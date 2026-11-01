@@ -1876,6 +1876,26 @@ Each term $w_f x_f$ is at least its value at the corner, by the sign of $w_f$; s
 For monotonicity, the inputs agree off feature $j$, and $w_j (x'_j - x_j)$ has the sign of $w_j$.
 \end{proof}
 
+\begin{theorem}[Packed linear robustness]\label{thm:linear_packed}
+\lean{OpenTheory.Checks.Linear.dotSlot, OpenTheory.Checks.Linear.robustPacked, OpenTheory.Checks.Linear.robustPackedN, OpenTheory.Checks.Linear.packedModel, OpenTheory.Checks.Linear.packedBox, OpenTheory.Checks.Linear.dotSlot_eq, OpenTheory.Checks.Linear.robustPacked_sound, OpenTheory.Checks.Linear.linearRobustPacked_sound, OpenTheory.ClaimTypes.linearRobustPacked}
+\leanok
+\uses{thm:linear_checks, thm:sound_exact}
+Write the weights as $w = w^+ - w^-$ with $w^\pm \ge 0$, and the bounds shifted by $O$ to be
+non-negative, $L_f = \ell_f + O$, $H_f = h_f + O$. Pack each vector as digits in base $2^B$, the
+bounds in reverse order. If every weight digit is below $2^{m_W}$, every bound digit below $2^{m_L}$,
+and $d\,2^{m_W + m_L} < 2^B - 1$, then digit $d-1$ of the product $W^+ \cdot L$ is
+$\sum_f w^+_f L_f$, and $W^\pm \bmod (2^B - 1) = \sum_f w^\pm_f$. The least score on the box is at
+least $b + \sum_f w^+_f L_f - \sum_f w^-_f H_f - O \sum_f w^+_f + O \sum_f w^-_f$, so two products and
+two remainders decide an approval (two other products a decline), whatever $d$; the claim holds for the model and box the packed
+certificate stores, with $\delta = 0$.
+\end{theorem}
+\begin{proof}
+\leanok
+No digit of a product overflows (Kronecker substitution), so the middle digit is the dot product;
+the remainder modulo $2^B - 1$ sums the digits. Each term $(w^+_f - w^-_f) x_f$ is at least
+$w^+_f \ell_f - w^-_f h_f$ on the box; sum and compare with $\tau$.
+\end{proof}
+
 \chapter{Specifications}
 
 A specification is an observable (a property or a bounded quantity), a domain (a region, a
@@ -1940,7 +1960,7 @@ A union bound; for the pushforward, the preimage of a measurable superset of the
 \end{proof}
 
 \begin{theorem}[The claim types]\label{thm:claim_types}
-\lean{OpenTheory.ClaimTypes.robustRegion, OpenTheory.ClaimTypes.heldOut, OpenTheory.ClaimTypes.occam, OpenTheory.ClaimTypes.pacBayes, OpenTheory.ClaimTypes.poolRate, OpenTheory.ClaimTypes.judgedRate, OpenTheory.ClaimTypes.judgedRateAlarms, OpenTheory.ClaimTypes.rateGap, OpenTheory.ClaimTypes.rateRatio, OpenTheory.ClaimTypes.treeRobust, OpenTheory.ClaimTypes.treeMonotone, OpenTheory.ClaimTypes.linearRobust, OpenTheory.ClaimTypes.linearMonotone}
+\lean{OpenTheory.ClaimTypes.robustRegion, OpenTheory.ClaimTypes.heldOut, OpenTheory.ClaimTypes.occam, OpenTheory.ClaimTypes.pacBayes, OpenTheory.ClaimTypes.poolRate, OpenTheory.ClaimTypes.judgedRate, OpenTheory.ClaimTypes.judgedRateAlarms, OpenTheory.ClaimTypes.rateGap, OpenTheory.ClaimTypes.rateRatio, OpenTheory.ClaimTypes.treeRobust, OpenTheory.ClaimTypes.treeMonotone, OpenTheory.ClaimTypes.linearRobust, OpenTheory.ClaimTypes.linearMonotone, OpenTheory.ClaimTypes.linearRobustPacked}
 \leanok
 \uses{def:claim_type, thm:spec_instances, thm:tree_sound}
 Every claim type of the repository is a term of this structure, stated with the named properties,

@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-01T21:54:18.873609+00:00",
+  "generatedAt": "2026-11-01T22:32:10.052094+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 118,
+  "nodesCount": 119,
   "nodes": [
     {
       "id": "def:sample",
@@ -2429,6 +2429,32 @@
       "informalSketch": "Each term $w_f x_f$ is at least its value at the corner, by the sign of $w_f$; sum over the features.\nFor monotonicity, the inputs agree off feature $j$, and $w_j (x'_j - x_j)$ has the sign of $w_j$."
     },
     {
+      "id": "thm:linear_packed",
+      "kind": "theorem",
+      "title": "Packed linear robustness",
+      "leanName": "OpenTheory.Checks.Linear.dotSlot",
+      "leanNames": [
+        "OpenTheory.Checks.Linear.dotSlot",
+        "OpenTheory.Checks.Linear.robustPacked",
+        "OpenTheory.Checks.Linear.robustPackedN",
+        "OpenTheory.Checks.Linear.packedModel",
+        "OpenTheory.Checks.Linear.packedBox",
+        "OpenTheory.Checks.Linear.dotSlot_eq",
+        "OpenTheory.Checks.Linear.robustPacked_sound",
+        "OpenTheory.Checks.Linear.linearRobustPacked_sound",
+        "OpenTheory.ClaimTypes.linearRobustPacked"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "thm:linear_checks",
+        "thm:sound_exact"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "No digit of a product overflows (Kronecker substitution), so the middle digit is the dot product;\nthe remainder modulo $2^B - 1$ sums the digits. Each term $(w^+_f - w^-_f) x_f$ is at least\n$w^+_f \\ell_f - w^-_f h_f$ on the box; sum and compare with $\\tau$."
+    },
+    {
       "id": "def:spec",
       "kind": "definition",
       "title": "Observable, domain, aggregate, specification and guarantee",
@@ -2527,7 +2553,8 @@
         "OpenTheory.ClaimTypes.treeRobust",
         "OpenTheory.ClaimTypes.treeMonotone",
         "OpenTheory.ClaimTypes.linearRobust",
-        "OpenTheory.ClaimTypes.linearMonotone"
+        "OpenTheory.ClaimTypes.linearMonotone",
+        "OpenTheory.ClaimTypes.linearRobustPacked"
       ],
       "statementFormalized": true,
       "proofFormalized": true,

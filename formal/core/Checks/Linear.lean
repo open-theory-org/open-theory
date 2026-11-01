@@ -1,4 +1,5 @@
 import Checks.Tree
+import Checks.MLP
 
 /-!
 # Linear and logistic-regression models: checks (core Lean only)
@@ -176,5 +177,50 @@ theorem runRobust_eq (args : List Nat) :
       | none => false := by
   unfold runRobust
   split <;> simp_all [robustK_eq]
+
+/-! ## Packed robustness: a fixed number of big-integer operations
+
+The model and the box as packed vectors in slots of `B` bits (`d` features): the positive and the
+negative parts of the weights, `Wp` and `Wm` (slot `f` is `max(w_f, 0)`, `max(−w_f, 0)`, digits below
+`2^mW`), and the box bounds shifted by `O` to be naturals, **reversed** (`LR`, `HR`: slot `d − 1 − f`
+is `lo_f + O`, `hi_f + O`, digits below `2^mL`). The least score on the box is
+`bias + Σ Wp_f lo_f − Σ Wm_f hi_f`, that is
+
+    bias + slot_{d−1}(Wp · LR) − slot_{d−1}(Wm · HR) − O · (Σ Wp − Σ Wm)
+
+where each slot `d − 1` is a dot product by Kronecker substitution and `Σ W = W mod (2^B − 1)` is a
+digit sum. `d · 2^(mW + mL) < 2^B − 1` makes every product slot and every digit sum exact. The
+kernel performs about twenty operations, whatever `d`. -/
+
+/-- Slot `d − 1` of a product: the dot product of the two packed vectors. -/
+def dotSlot (B d P : Nat) : Nat := Nat.mod (Nat.shiftRight P (Nat.mul B (Nat.sub d 1))) (MLP.pow2 B)
+
+/-- **Packed robustness check.** Approve (`c = true`) on the whole box, or decline on it. -/
+def robustPacked (B d mW mL O : Nat) (bias τ : Int) (Wp Wm LR HR : Nat) (c : Bool) : Bool :=
+  let σp := Nat.mod Wp (Nat.sub (MLP.pow2 B) 1)
+  let σm := Nat.mod Wm (Nat.sub (MLP.pow2 B) 1)
+  Nat.ble 1 d && MLP.digitsBelow B d mW Wp && MLP.digitsBelow B d mW Wm &&
+    MLP.digitsBelow B d mL LR && MLP.digitsBelow B d mL HR &&
+    Nat.blt (Nat.mul d (MLP.pow2 (Nat.add mW mL))) (Nat.sub (MLP.pow2 B) 1) &&
+    cond c
+      (intLe (Int.add (Int.add τ (Int.ofNat (dotSlot B d (Nat.mul Wm HR)))) (Int.ofNat (Nat.mul O σp)))
+        (Int.add (Int.add bias (Int.ofNat (dotSlot B d (Nat.mul Wp LR)))) (Int.ofNat (Nat.mul O σm))))
+      (intLt (Int.add (Int.add bias (Int.ofNat (dotSlot B d (Nat.mul Wp HR)))) (Int.ofNat (Nat.mul O σm)))
+        (Int.add (Int.add τ (Int.ofNat (dotSlot B d (Nat.mul Wm LR)))) (Int.ofNat (Nat.mul O σp))))
+
+/-- **`linear-robust-packed`** on naturals, as the kernel receives it: the bias and the threshold
+zigzag, the decision `c = 1` for approve. -/
+def robustPackedN (B d mW mL O zb zt Wp Wm LR HR c : Nat) : Bool :=
+  Nat.ble c 1 && robustPacked B d mW mL O (Tree.zig zb) (Tree.zig zt) Wp Wm LR HR (Nat.beq c 1)
+
+/-- The compiled lane of `linear-robust-packed`. -/
+def runRobustPacked : List Nat → Bool
+  | [B, d, mW, mL, O, zb, zt, Wp, Wm, LR, HR, c] => robustPackedN B d mW mL O zb zt Wp Wm LR HR c
+  | _ => false
+
+def showRobustPacked : List Nat → String
+  | [B, d, mW, mL, O, zb, zt, _, _, _, _, c] =>
+    s!"bias={Tree.zig zb} tau={Tree.zig zt} approve={c == 1} features={d} slot={B} offset={O} weightBits={mW} boundBits={mL}"
+  | _ => "malformed"
 
 end OpenTheory.Checks.Linear

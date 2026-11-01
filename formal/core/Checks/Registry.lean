@@ -58,6 +58,8 @@ def entries : List Entry :=
     { cli := "linear-robust", const := "OpenTheory.Checks.Linear.robustK", shape := .decoded,
       run := Linear.runRobust, render := Linear.showRobust },
     { cli := "linear-monotone", const := "OpenTheory.Checks.Linear.monotone", shape := .decoded,
-      run := Linear.runMonotone, render := Linear.showMonotone } ]
+      run := Linear.runMonotone, render := Linear.showMonotone },
+    { cli := "linear-robust-packed", const := "OpenTheory.Checks.Linear.robustPackedN", shape := .nats 12,
+      run := Linear.runRobustPacked, render := Linear.showRobustPacked } ]
 
 end OpenTheory.Checks

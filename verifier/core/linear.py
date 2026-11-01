@@ -14,7 +14,17 @@ on the score (`tau`) or, for a logistic regression, on the probability (`probabi
   3. encodes the request and has the Lean kernel evaluate `Checks.Linear.robust` / `monotone`,
      after checking that the Lean decoder reads it as the claim (`ot_kernel --show`).
 
-`ClaimTypes.linearRobust` / `linearMonotone` turn an accepted check into the claim, with `δ = 0`.
+When every feature is bounded, robustness goes through the packed check instead
+(`linear-robust-packed`, `Checks.Linear.robustPackedN`): the weights, split into their positive and
+negative parts, and the box bounds, shifted by `O` to be non-negative and reversed, are packed as
+base-2^B digits, and two big-integer products give the four dot products the corner bounds need
+(Kronecker substitution, docs/fast-certificates.md). Its cost does not grow with the number of
+features. `ClaimTypes.linearRobustPacked` states what it proves, about the model and the box the
+request stores; the verifier builds both from the claim, and `--show` checks the threshold, the
+decision and the sizes.
+
+`ClaimTypes.linearRobust` / `linearRobustPacked` / `linearMonotone` turn an accepted check into the
+claim, with `δ = 0`.
 """
 from __future__ import annotations
 
@@ -84,6 +94,34 @@ def robust_request(model: dict, box: dict, approve: bool, tau: Fraction) -> tupl
     return req, show
 
 
+def pack(digits: list[int], B: int) -> int:
+    """Σ digits[j] · 2^(B j): slot j of the result is digits[j] (`Slots.slot`)."""
+    out = 0
+    for v in reversed(digits):
+        out = (out << B) | v
+    return out
+
+
+def robust_packed_request(model: dict, box: dict, approve: bool, tau: Fraction):
+    """The `linear-robust-packed` request, or None when some feature is unbounded."""
+    bias, T, W, Bx = scaled(model, box, tau, approve)
+    d = len(Bx)
+    W = W + [0] * (d - len(W))
+    if d == 0 or any(lo is None or hi is None for lo, hi in Bx):
+        return None
+    O = max([0] + [-lo for lo, _ in Bx] + [-hi for _, hi in Bx])
+    Wp, Wm = [max(w, 0) for w in W], [max(-w, 0) for w in W]
+    L = [lo + O for lo, _ in reversed(Bx)]
+    H = [hi + O for _, hi in reversed(Bx)]
+    mW = max(v.bit_length() for v in Wp + Wm)
+    mL = max(v.bit_length() for v in L + H)
+    B = (d << (mW + mL)).bit_length() + 1           # d · 2^(mW + mL) < 2^B − 1
+    req = [B, d, mW, mL, O, zig(bias), zig(T), pack(Wp, B), pack(Wm, B), pack(L, B), pack(H, B), int(approve)]
+    show = (f"bias={bias} tau={T} approve={'true' if approve else 'false'} features={d} slot={B} "
+            f"offset={O} weightBits={mW} boundBits={mL}")
+    return req, show
+
+
 def monotone_request(model: dict, feature: int, up: bool) -> tuple[list[int], str]:
     _, ws = parse_model(model)
     kw = max([pow2_denominator(x) for x in ws] + [0])
@@ -93,8 +131,9 @@ def monotone_request(model: dict, feature: int, up: bool) -> tuple[list[int], st
 
 
 TRUSTED = [
-    "statements of OpenTheory.ClaimTypes.linearRobust / linearMonotone (Specs/ClaimTypes.lean)",
-    "this verifier's translation of the model file to the integer model (verifier/core/linear.py): A11",
+    "statements of OpenTheory.ClaimTypes.linearRobust / linearRobustPacked / linearMonotone (Specs/ClaimTypes.lean)",
+    "this verifier's translation of the model file to the integer model (verifier/core/linear.py): A11, "
+    "and for the packed check its packing of the weights and the box into slots",
     "ot_kernel's construction of the kernel's proposition from the request, cross-checked against the "
     "claim with `ot_kernel --show`",
 ]
@@ -111,9 +150,18 @@ def robust_task(model: dict, digest: str, claim: dict, box: dict) -> Task:
     approve = decision == "approve"
     try:
         tau, how = threshold(claim, approve)
-        req, show = robust_request(model, box, approve, tau)
+        packed = robust_packed_request(model, box, approve, tau)
+        req, show = packed or robust_request(model, box, approve, tau)
     except NotSupported as e:
         raise Reject(f"model not supported: {e}")
+    if packed:
+        cli, call, meaning = ("linear-robust-packed", "Checks.Linear.robustPackedN …",
+            "ClaimTypes.linearRobustPacked (linearRobustPacked_sound): the decision is the claimed one on every "
+            "input of the box the request stores, δ = 0; the verifier packed that box and model from the claim")
+    else:
+        cli, call, meaning = ("linear-robust", "Checks.Linear.robust …",
+            "ClaimTypes.linearRobust (linearRobust_sound): the decision is the claimed one on every "
+            "input of the box, δ = 0 (the check is exact: a linear score is extreme at a corner)")
     n = len(parse_model(model)[1])
     bounded = ", ".join(f"x{f} ∈ [{lo}, {hi}]" for f, (lo, hi) in sorted(box.items(), key=lambda kv: int(kv[0])))
     return Task(
@@ -125,9 +173,7 @@ def robust_task(model: dict, digest: str, claim: dict, box: dict) -> Task:
                  "exact integer translation of the model, threshold rounded towards the claim (A11)",
                  f"the Lean decoder reads the request as: {show}"],
         trusted=TRUSTED, does_not_cover=NOT_COVERED,
-        fast=["linear-robust", *req], fast_call="Checks.Linear.robust …",
-        fast_meaning="ClaimTypes.linearRobust (linearRobust_sound): the decision is the claimed one on every "
-                     "input of the box, δ = 0 (the check is exact: a linear score is extreme at a corner)",
+        fast=[cli, *req], fast_call=call, fast_meaning=meaning,
         fast_explain=lambda: "some corner of the box is decided otherwise, or a feature with a non-zero weight "
                              "is unbounded",
         expect_show=show)

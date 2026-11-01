@@ -6,22 +6,27 @@ best of three, on arm64 Darwin. The kernel lane is the `verified` one
 
 | Check | Request | Kernel time |
 | --- | --- | --- |
-| `mlp-exact` | ReLU MLP 64-16-10 (1,210 parameters) | 0.48 ms |
-| `mlp-exact` | ReLU MLP 784-128-10 (101,770 parameters) | 2.14 ms |
-| `pool-witness` | pool rate, 1,000 sampled bits | 9.79 ms |
-| `pool-witness` | pool rate, 20,000 sampled bits | 513.31 ms |
-| `pool-sample-witness` | pool rate from the beacon, 1,000 items | 29.67 ms |
-| `pool-sample-witness` | pool rate from the beacon, 5,000 items | 232.56 ms |
-| `pool-sample-witness` | pool rate from the beacon, 20,000 items | 1.22 s |
-| `tree-robust` | 10 trees of depth 5, small box | 4.02 ms |
-| `tree-monotone` | 10 trees of depth 5, all inputs | 18.02 ms |
-| `tree-robust` | 100 trees of depth 5, small box | 29.09 ms |
-| `tree-monotone` | 100 trees of depth 5, all inputs | 228.98 ms |
-| `tree-robust` | 500 trees of depth 5, small box | 168.31 ms |
-| `tree-monotone` | 500 trees of depth 5, all inputs | 1.49 s |
-| `linear-robust` | linear model, 10 features, box | 0.77 ms |
+| `mlp-exact` | ReLU MLP 64-16-10 (1,210 parameters) | 0.43 ms |
+| `mlp-exact` | ReLU MLP 784-128-10 (101,770 parameters) | 2.08 ms |
+| `pool-witness` | pool rate, 1,000 sampled bits | 9.84 ms |
+| `pool-witness` | pool rate, 20,000 sampled bits | 487.79 ms |
+| `pool-sample-witness` | pool rate from the beacon, 1,000 items | 28.90 ms |
+| `pool-sample-witness` | pool rate from the beacon, 5,000 items | 230.07 ms |
+| `pool-sample-witness` | pool rate from the beacon, 20,000 items | 1.21 s |
+| `tree-robust` | 10 trees of depth 5, small box | 3.89 ms |
+| `tree-monotone` | 10 trees of depth 5, all inputs | 17.33 ms |
+| `tree-robust` | 100 trees of depth 5, small box | 28.07 ms |
+| `tree-monotone` | 100 trees of depth 5, all inputs | 224.70 ms |
+| `tree-robust` | 500 trees of depth 5, small box | 169.75 ms |
+| `tree-monotone` | 500 trees of depth 5, all inputs | 1.44 s |
+| `linear-robust` | linear model, 10 features, box | 0.78 ms |
+| `linear-robust-packed` | linear model, 10 features, box | 0.27 ms |
 | `linear-monotone` | linear model, 10 features | 0.16 ms |
-| `linear-robust` | linear model, 30 features, box | 1.76 ms |
+| `linear-robust` | linear model, 30 features, box | 1.71 ms |
+| `linear-robust-packed` | linear model, 30 features, box | 0.19 ms |
 | `linear-monotone` | linear model, 30 features | 0.14 ms |
-| `linear-robust` | linear model, 200 features, box | 11.06 ms |
-| `linear-monotone` | linear model, 200 features | 0.27 ms |
+| `linear-robust` | linear model, 200 features, box | 11.07 ms |
+| `linear-robust-packed` | linear model, 200 features, box | 0.28 ms |
+| `linear-monotone` | linear model, 200 features | 0.26 ms |
+| `linear-robust-packed` | linear model, 1000 features, box | 0.76 ms |
+| `linear-monotone` | linear model, 1000 features | 0.92 ms |

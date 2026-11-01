@@ -161,7 +161,7 @@ def runRequest (env : Environment) (time compare showIt : Bool) (words : List St
     let prop ← match requestProp e (e.prepare args) with
       | .ok p => pure p
       | .error msg => return .error msg
-    if showIt && e.shape matches .decoded then
+    if showIt && e.render args != "" then
       IO.eprintln s!"decoded {name}: {e.render args}"
     let n ← tag.modifyGet fun n => (n, n + 1)
     let t0 ← IO.monoNanosNow

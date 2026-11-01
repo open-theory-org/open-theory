@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Conformance of the linear-model checks (`linear-robust`, `linear-monotone`).
+"""Conformance of the linear-model checks (`linear-robust`, `linear-robust-packed`, `linear-monotone`).
 
 For random models with double coefficients and random boxes, the true least and greatest scores on
 the box are computed exactly (at the corners), and:
@@ -9,6 +9,8 @@ the box are computed exactly (at the corners), and:
   re-tested on the original model at random points of the box, in exact arithmetic;
 * claims just outside them are **rejected**: the corner that breaks them lies in the box, so they are
   false;
+* the packed request gives the same answers, and unpacking its slots (as `packedModel` and
+  `packedBox` read them) gives back the integer model and box of the per-feature request;
 * monotonicity is accepted exactly for the sign of the weight;
 * every request runs in both lanes (`ot_kernel --compare`), and three bundles go through `ot verify`
   (accepted, a false claim, a model changed after its digest was taken).
@@ -63,9 +65,22 @@ def run(reqs):
     return [l == "true" for l in out.stdout.splitlines()]
 
 
+def unpacked_ok(req, scaled, failures):
+    """The packed request stores the integer model and box of `scaled` (mirror of `packedModel`, `packedBox`)."""
+    B, d, _, _, O, zb, zt, Wp, Wm, LR, HR, c = req
+    slot = lambda j, x: (x >> (B * j)) % (1 << B)
+    unzig = lambda z: z // 2 if z % 2 == 0 else -(z + 1) // 2
+    bias, T, W, Bx = scaled
+    W = W + [0] * (d - len(W))
+    if (unzig(zb), unzig(zt)) != (bias, T) or [slot(f, Wp) - slot(f, Wm) for f in range(d)] != W or \
+            [(slot(d - 1 - f, LR) - O, slot(d - 1 - f, HR) - O) for f in range(d)] != list(Bx):
+        failures.append(f"packed request does not store the model and box: {req[:7]}")
+
+
 def main() -> int:
     rng = random.Random(11)
     reqs, want, what, semantic = [], [], [], []
+    failures0: list[str] = []
 
     def add(req, w, s, sem=None):
         reqs.append(req); want.append(w); what.append(s); semantic.append(sem)
@@ -83,6 +98,10 @@ def main() -> int:
             req, _ = linear.robust_request(model, box, approve, tau)
             add(["linear-robust", *req], ok, f"{case}: {'approve' if approve else 'decline'} τ {'inside' if ok else 'outside'}",
                 ("tau", model, box, approve, tau) if ok else None)
+            preq, _ = linear.robust_packed_request(model, box, approve, tau)
+            unpacked_ok(preq, linear.scaled(model, box, tau, approve), failures0)
+            add(["linear-robust-packed", *preq], ok, f"{case}: packed {'approve' if approve else 'decline'} τ "
+                f"{'inside' if ok else 'outside'}")
         p = Fraction(1, 2) + Fraction(rng.randint(-40, 40), 100)
         approve = sigmoid_ge(lo - EPS, p)
         if approve:
@@ -95,7 +114,7 @@ def main() -> int:
             add(["linear-monotone", *req], (w >= 0) if up else (w <= 0), f"{case}: monotone {'up' if up else 'down'} (w = {float(w):.3g})")
 
     got = run(reqs)
-    failures = []
+    failures = failures0
     if len(got) != len(reqs):
         failures.append(f"expected {len(reqs)} answers, got {len(got)}")
     for s, w, g in zip(what, want, got):
