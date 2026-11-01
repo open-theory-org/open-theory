@@ -4,6 +4,7 @@ import Specs.RateGap
 import Specs.Tree
 import Properties.Network
 import Specs.Linear
+import Specs.MLPExact
 
 /-!
 # The claim types
@@ -26,6 +27,7 @@ claim type's check.
 | `rateGap`, `rateRatio` | `rate-gap`, `rate-ratio` | one beacon round, two pools | `RateGap.δTotal` |
 | `treeMonotone` | `monotone-feature` | none | `0` |
 | `linearRobust`, `linearMonotone` | `robust-decision`, `monotone-feature` | none | `0` |
+| `mlpExact` | `mlp-exact` | none | `0` |
 -/
 
 open MeasureTheory
@@ -213,5 +215,20 @@ noncomputable def linearMonotone (m : Checks.Linear.LinearModel) :
   model := fun _ => m
   δ := 0
   sound := linearMonotone_sound m
+
+/-- **`mlp-exact`**: a ReLU network `D → hs → o` stored in packed integers outputs exactly the claimed
+scores on the claimed input (the packed check of `Checks/MLP.lean`). -/
+noncomputable def mlpExact (D : ℕ) (hs : List ℕ) (o : ℕ) :
+    ClaimType (Exact.reluMLP D hs o).Params (List ℤ) where
+  Param := Checks.MLP.Cert
+  Evidence := Unit
+  law := Measure.dirac ()
+  accepts := fun _ θ => Checks.MLP.check θ.s θ.c θ.wb D θ.a₀ θ.U θ.Y θ.layers = true ∧
+    θ.layers.length = hs.length + 1 ∧ Checks.MLP.lastWidth D θ.layers = o
+  spec := fun θ => ⟨.property ((Exact.reluMLP D hs o).OutputIs (Checks.MLP.outVec θ.s o θ.Y)),
+    .region {Checks.MLP.vec θ.s D θ.U}, .all⟩
+  model := fun θ => Checks.MLP.toParams D hs o (Checks.MLP.decode θ.s θ.c D θ.layers)
+  δ := 0
+  sound := Checks.MLP.mlpExact_sound D hs o
 
 end OpenTheory.ClaimTypes

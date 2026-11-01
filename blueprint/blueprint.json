@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-01T20:31:20.315560+00:00",
+  "generatedAt": "2026-11-01T21:54:18.873609+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 117,
+  "nodesCount": 118,
   "nodes": [
     {
       "id": "def:sample",
@@ -2251,6 +2251,36 @@
       ],
       "bountyUsd": null,
       "informalSketch": "Interval soundness puts the output in the propagated box; there the score of $c$ is at least its\nlower bound, which exceeds every other upper bound. The lower corner of a well-formed box lies in\nit."
+    },
+    {
+      "id": "thm:mlp_exact",
+      "kind": "theorem",
+      "title": "The packed exact-output check is sound",
+      "leanName": "OpenTheory.Slots.slot",
+      "leanNames": [
+        "OpenTheory.Slots.slot",
+        "OpenTheory.Slots.slot_add_of_carry_free",
+        "OpenTheory.Checks.MLP.fold_eq_sum",
+        "OpenTheory.Checks.MLP.slot_replicate",
+        "OpenTheory.Checks.MLP.slot_gather",
+        "OpenTheory.Checks.MLP.slot_product",
+        "OpenTheory.Checks.MLP.slot_relu",
+        "OpenTheory.Checks.MLP.layerOk_spec",
+        "OpenTheory.Checks.MLP.run_spec",
+        "OpenTheory.Checks.MLP.check_spec",
+        "OpenTheory.Checks.MLP.run_toParams",
+        "OpenTheory.Checks.MLP.mlpExact_sound",
+        "OpenTheory.ClaimTypes.mlpExact"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "def:exact_net",
+        "def:claim_type"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "Bitwise operations and whole-slot shifts act slot by slot; a carry shows as a bit of\n$a \\oplus b \\oplus (a + b)$; folding a number's halves sums its chunks while they do not overflow;\ninduction over the layers."
     },
     {
       "id": "thm:quantized_as_net",

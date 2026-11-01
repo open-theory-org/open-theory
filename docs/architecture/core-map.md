@@ -9,13 +9,13 @@ level ([../trust.md](../trust.md)).
 
 | Layer | Modules | Lines | claim | library |
 | --- | --- | --- | --- | --- |
-| Checks | 7 | 1,012 | 7 (1,012 lines) | 0 |
-| Foundations | 19 | 2,707 | 12 (1,870 lines) | 7 |
-| Models | 15 | 1,184 | 6 (605 lines) | 9 |
-| Properties | 6 | 171 | 6 (171 lines) | 0 |
+| Checks | 7 | 1,011 | 7 (1,011 lines) | 0 |
+| Foundations | 19 | 2,707 | 13 (2,145 lines) | 6 |
+| Models | 15 | 1,184 | 9 (852 lines) | 6 |
+| Properties | 6 | 175 | 6 (175 lines) | 0 |
 | Theory | 72 | 19,509 | 11 (2,598 lines) | 61 |
 | Scopes | 4 | 513 | 4 (513 lines) | 0 |
-| Specs | 14 | 2,132 | 13 (1,805 lines) | 1 |
+| Specs | 14 | 2,520 | 14 (2,520 lines) | 0 |
 
 ## Modules
 
@@ -23,13 +23,13 @@ level ([../trust.md](../trust.md)).
 | --- | --- | --- | --- |
 | `Checks.Bits` | 20 | claim | claim types, fast checks, kernel-checked sample, catalog methods |
 | `Checks.Linear` | 180 | claim | claim types, fast checks, catalog methods |
-| `Checks.MLP` | 176 | claim | fast checks, catalog methods |
+| `Checks.MLP` | 175 | claim | claim types, fast checks, catalog methods |
 | `Checks.PoolRate` | 40 | claim | claim types, fast checks, kernel-checked sample, catalog methods |
 | `Checks.PoolSample` | 145 | claim | fast checks, kernel-checked sample, catalog methods |
 | `Checks.Registry` | 63 | claim | fast checks |
 | `Checks.Tree` | 388 | claim | claim types, fast checks, catalog methods |
-| `Foundations.Arithmetic.Kronecker` | 225 | claim | catalog methods |
-| `Foundations.Arithmetic.Slots` | 275 | library | — |
+| `Foundations.Arithmetic.Kronecker` | 225 | claim | claim types, catalog methods |
+| `Foundations.Arithmetic.Slots` | 275 | claim | claim types, catalog methods |
 | `Foundations.Data.Foundation` | 75 | claim | claim types, kernel-checked sample, catalog methods |
 | `Foundations.Data.Model` | 19 | library | — |
 | `Foundations.Data.Sample` | 17 | claim | claim types, kernel-checked sample, catalog methods |
@@ -51,9 +51,9 @@ level ([../trust.md](../trust.md)).
 | `Models.Basic` | 39 | library | — |
 | `Models.Exact.Basic` | 138 | claim | claim types, kernel-checked sample, catalog methods |
 | `Models.Exact.Interval` | 71 | claim | claim types, kernel-checked sample, catalog methods |
-| `Models.Exact.Linear` | 140 | library | — |
-| `Models.Exact.MLP` | 38 | library | — |
-| `Models.Exact.ReLU` | 69 | library | — |
+| `Models.Exact.Linear` | 140 | claim | claim types, catalog methods |
+| `Models.Exact.MLP` | 38 | claim | claim types, catalog methods |
+| `Models.Exact.ReLU` | 69 | claim | claim types, catalog methods |
 | `Models.Linear.Basic` | 32 | claim | claim types, catalog methods |
 | `Models.QuantizedMLP.Basic` | 108 | claim | claim types, kernel-checked sample, catalog methods |
 | `Models.QuantizedMLP.Net` | 40 | library | — |
@@ -65,7 +65,7 @@ level ([../trust.md](../trust.md)).
 | `Properties.Basic` | 55 | claim | claim types, kernel-checked sample, catalog methods |
 | `Properties.Interface` | 44 | claim | claim types, catalog methods |
 | `Properties.Linear` | 17 | claim | claim types, catalog methods |
-| `Properties.Network` | 19 | claim | claim types |
+| `Properties.Network` | 23 | claim | claim types, catalog methods |
 | `Properties.Prediction` | 19 | claim | claim types, kernel-checked sample, catalog methods |
 | `Properties.Tree` | 17 | claim | claim types, catalog methods |
 | `Theory.Function.AttentionAblation` | 497 | library | — |
@@ -146,12 +146,12 @@ level ([../trust.md](../trust.md)).
 | `Scopes.TreeRegion` | 173 | claim | claim types, catalog methods |
 | `Specs.Basic` | 86 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.ClaimType` | 92 | claim | claim types |
-| `Specs.ClaimTypes` | 217 | claim | claim types |
+| `Specs.ClaimTypes` | 234 | claim | claim types |
 | `Specs.HeldOut` | 110 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.Instances` | 215 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.JudgedRate` | 111 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.Linear` | 41 | claim | claim types |
-| `Specs.MLPExact` | 327 | library | — |
+| `Specs.MLPExact` | 698 | claim | claim types, catalog methods |
 | `Specs.PoolRate` | 180 | claim | claim types, kernel-checked sample, catalog methods |
 | `Specs.PoolSample` | 156 | claim | kernel-checked sample, catalog methods |
 | `Specs.QuantizedMLP.Occam` | 155 | claim | claim types, kernel-checked sample, catalog methods |

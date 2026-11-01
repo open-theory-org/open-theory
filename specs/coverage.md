@@ -11,7 +11,7 @@ levels in `catalog/`. Do not edit by hand. A claim is an observable × a domain 
 | [linear-model](models/linear-model.md) | [monotone](properties/monotone.md) | [`monotone-feature`](claims/monotone-feature.md) all (**verified**) | — | — | — |
 | [quantized-mlp](models/quantized-mlp.md) | [wrong](properties/wrong.md) | — | — | [`heldout-error`](claims/heldout-error.md) meanLe (**verified**)<br>[`occam-code-error`](claims/occam-code-error.md) meanLe (**verified**)<br>[`pacbayes-error`](claims/pacbayes-error.md) meanLe (**verified**) | — |
 | [relu-mlp](models/relu-mlp.md) | [decision](properties/decision.md) | [`robust-decision`](claims/robust-decision.md) all (**verified**) | — | — | — |
-| [relu-mlp](models/relu-mlp.md) | [exact-output](properties/exact-output.md) | [`mlp-exact`](claims/mlp-exact.md) all (**experimental**, no claim type yet) | — | — | — |
+| [relu-mlp](models/relu-mlp.md) | [exact-output](properties/exact-output.md) | [`mlp-exact`](claims/mlp-exact.md) all (**verified**) | — | — | — |
 | [tree-ensemble](models/tree-ensemble.md) | [decision](properties/decision.md) | [`robust-decision`](claims/robust-decision.md) all (**verified**) | — | — | — |
 | [tree-ensemble](models/tree-ensemble.md) | [monotone](properties/monotone.md) | [`monotone-feature`](claims/monotone-feature.md) all (**verified**) | — | — | — |
 
@@ -22,7 +22,7 @@ its `Sound` theorem exists but no method uses it yet; `statement`: the card exis
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | [`heldout-error`](claims/heldout-error.md) | wrong | distribution | meanLe | `heldOut` | — | heldout-binomial-bound | A1-iid, A2-heldout-independent, A3-model-binding, A4-labels |
 | [`judged-rate`](claims/judged-rate.md) | event | pool | meanLe | `judgedRate`, `judgedRateAlarms` | `pool`, `pool-witness` | judged-rate-certificate | A5-beacon, A6-timestamp, A7-issuer-identity, A12-commitment-binding, A9-gold-labels |
-| [`mlp-exact`](claims/mlp-exact.md) | exact-output | region | all | open | `mlp-exact` | mlp-exact-kernel-check | A3-model-binding |
+| [`mlp-exact`](claims/mlp-exact.md) | exact-output | region | all | `mlpExact` | `mlp-exact` | mlp-exact-kernel-check | A3-model-binding |
 | [`monotone-feature`](claims/monotone-feature.md) | monotone | region | all | `treeMonotone`, `linearMonotone` | `linear-monotone`, `linear-robust`, `tree-monotone`, `tree-robust` | linear-model-check, tree-ensemble-check | A3-model-binding, A11-model-translation |
 | [`occam-code-error`](claims/occam-code-error.md) | wrong | distribution | meanLe | `occam` | — | occam-code-certificate | A1-iid, A3-model-binding, A4-labels |
 | [`pacbayes-error`](claims/pacbayes-error.md) | wrong | distribution | meanLe | `pacBayes` | — | pacbayes-catoni-certificate | A1-iid, A2-heldout-independent, A3-model-binding, A4-labels |

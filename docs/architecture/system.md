@@ -94,7 +94,7 @@ Checks (core Lean only) → Foundations → Models → Properties → Theory →
 | `pool-rate` | at most `p` of the committed decisions fail | black box (logged outputs) | any system | stated | verified |
 | `judged-rate` | the same, failures graded by a judge and a small gold audit | black box + judge + gold labels | any system | stated | verified |
 | `rate-gap`, `rate-ratio` | approval rates of two groups differ by at most `ε`, or their ratio is at least 0.8 | black box | any system | stated | verified |
-| `mlp-exact` | the network outputs exactly `Y` on `x` | white box | ReLU networks | — | experimental (no soundness proof) |
+| `mlp-exact` | the network outputs exactly `Y` on `x` | white box | ReLU networks | 0 | verified (0.4–2 ms) |
 
 The live versions, with every claim type, method, fast check and assumption, are generated in
 [specs/coverage.md](../../specs/coverage.md) and [catalog/README.md](../../catalog/README.md).
@@ -137,7 +137,7 @@ Kernel times are in [../benchmarks.md](../benchmarks.md): 2 ms for a 100k-parame
 | --- | --- |
 | **Speed** | the recipe of [../fast-certificates.md](../fast-certificates.md): `mlp-exact` proved, then packed linear, beacon-sample, Chernoff and tree checks, each under a millisecond |
 | **Claim types for the bank** | calibration (the first quantity), AUC, quantiles, `robust-accuracy` (white box per item, then a rate) |
-| **Open chains** | `judged-rate` outcomes in the kernel; a method for `robust-decision` on networks; a soundness proof for `mlp-exact`; the quantized MLP's decision |
+| **Open chains** | `judged-rate` outcomes in the kernel; a method for `robust-decision` on networks; the quantized MLP's decision; an `ot verify` bundle for `mlp-exact` |
 | **Access levels** | internals (`methods/whitebox/`, an interface for activations), runtime (the agent gate) |
 | **Trust** | your reading of the pending statements; a second, independent checker |
 | **Product** | the end-to-end credit-model report on a public dataset; zero-knowledge or attestation to show results without the model |

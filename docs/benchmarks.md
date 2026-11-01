@@ -6,22 +6,22 @@ best of three, on arm64 Darwin. The kernel lane is the `verified` one
 
 | Check | Request | Kernel time |
 | --- | --- | --- |
-| `mlp-exact` | ReLU MLP 64-16-10 (1,210 parameters) | 0.47 ms |
+| `mlp-exact` | ReLU MLP 64-16-10 (1,210 parameters) | 0.48 ms |
 | `mlp-exact` | ReLU MLP 784-128-10 (101,770 parameters) | 2.14 ms |
-| `pool-witness` | pool rate, 1,000 sampled bits | 9.70 ms |
-| `pool-witness` | pool rate, 20,000 sampled bits | 499.90 ms |
-| `pool-sample-witness` | pool rate from the beacon, 1,000 items | 29.32 ms |
-| `pool-sample-witness` | pool rate from the beacon, 5,000 items | 229.44 ms |
-| `pool-sample-witness` | pool rate from the beacon, 20,000 items | 1.18 s |
-| `tree-robust` | 10 trees of depth 5, small box | 3.99 ms |
-| `tree-monotone` | 10 trees of depth 5, all inputs | 18.00 ms |
-| `tree-robust` | 100 trees of depth 5, small box | 28.66 ms |
-| `tree-monotone` | 100 trees of depth 5, all inputs | 227.29 ms |
-| `tree-robust` | 500 trees of depth 5, small box | 168.62 ms |
-| `tree-monotone` | 500 trees of depth 5, all inputs | 1.45 s |
-| `linear-robust` | linear model, 10 features, box | 0.80 ms |
+| `pool-witness` | pool rate, 1,000 sampled bits | 9.79 ms |
+| `pool-witness` | pool rate, 20,000 sampled bits | 513.31 ms |
+| `pool-sample-witness` | pool rate from the beacon, 1,000 items | 29.67 ms |
+| `pool-sample-witness` | pool rate from the beacon, 5,000 items | 232.56 ms |
+| `pool-sample-witness` | pool rate from the beacon, 20,000 items | 1.22 s |
+| `tree-robust` | 10 trees of depth 5, small box | 4.02 ms |
+| `tree-monotone` | 10 trees of depth 5, all inputs | 18.02 ms |
+| `tree-robust` | 100 trees of depth 5, small box | 29.09 ms |
+| `tree-monotone` | 100 trees of depth 5, all inputs | 228.98 ms |
+| `tree-robust` | 500 trees of depth 5, small box | 168.31 ms |
+| `tree-monotone` | 500 trees of depth 5, all inputs | 1.49 s |
+| `linear-robust` | linear model, 10 features, box | 0.77 ms |
 | `linear-monotone` | linear model, 10 features | 0.16 ms |
-| `linear-robust` | linear model, 30 features, box | 1.78 ms |
+| `linear-robust` | linear model, 30 features, box | 1.76 ms |
 | `linear-monotone` | linear model, 30 features | 0.14 ms |
-| `linear-robust` | linear model, 200 features, box | 11.28 ms |
+| `linear-robust` | linear model, 200 features, box | 11.06 ms |
 | `linear-monotone` | linear model, 200 features | 0.27 ms |

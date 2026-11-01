@@ -1751,6 +1751,25 @@ lower bound, which exceeds every other upper bound. The lower corner of a well-f
 it.
 \end{proof}
 
+\begin{theorem}[The packed exact-output check is sound]\label{thm:mlp_exact}
+\lean{OpenTheory.Slots.slot, OpenTheory.Slots.slot_add_of_carry_free, OpenTheory.Checks.MLP.fold_eq_sum, OpenTheory.Checks.MLP.slot_replicate, OpenTheory.Checks.MLP.slot_gather, OpenTheory.Checks.MLP.slot_product, OpenTheory.Checks.MLP.slot_relu, OpenTheory.Checks.MLP.layerOk_spec, OpenTheory.Checks.MLP.run_spec, OpenTheory.Checks.MLP.check_spec, OpenTheory.Checks.MLP.run_toParams, OpenTheory.Checks.MLP.mlpExact_sound, OpenTheory.ClaimTypes.mlpExact}
+\leanok
+\uses{def:exact_net, def:claim_type}
+Read every number in base $2^s$ as a vector of slots. If the packed check accepts a certificate, then
+for every layer the product of the packed weights and the packed input has the layer's dot
+products in the slots the check gathers (Kronecker substitution \cite{harvey2009kronecker}, every
+convolution coefficient below $2^s$); the carry-free additions make every pre-activation slot
+$\sum_k (w_{jk} - c) u_k + b_j$, offset by $2^{s-1}$; the sign-bit mask makes every activation slot its
+ReLU. Hence the integer forward pass of $\mathrm{reluMLP}\ D\ h_s\ o$ with the stored parameters sends
+the input to the claimed outputs: the claim type \texttt{mlp-exact} is sound with $\delta = 0$.
+\end{theorem}
+\begin{proof}
+\leanok
+Bitwise operations and whole-slot shifts act slot by slot; a carry shows as a bit of
+$a \oplus b \oplus (a + b)$; folding a number's halves sums its chunks while they do not overflow;
+induction over the layers.
+\end{proof}
+
 \begin{theorem}[Quantized MLPs are exact ReLU networks]\label{thm:quantized_as_net}
 \lean{OpenTheory.QuantizedMLP.asNet, OpenTheory.QuantizedMLP.netParams, OpenTheory.QuantizedMLP.scoresOfWeights_eq_run}
 \leanok

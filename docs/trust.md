@@ -118,7 +118,7 @@ about something other than the world.
 | `rate-gap`, `rate-ratio` | verified | kernel, compiled | sum of parts | A5, A6, A7 (law), A10, A12 (domain) |
 | `occam-code-error`, `pacbayes-error` | verified | kernel | stated per claim type | A1 (law), A4 (observable), A3 (model); A2 (law) for PAC-Bayes |
 | `robust-decision` (networks) | theorem, no method yet | — | 0 | A3 (model) |
-| `mlp-exact` | experimental | kernel, compiled | — | A3 (model) |
+| `mlp-exact` | verified | kernel, compiled | 0 | A3 (model) |
 
 The authoritative versions are generated: [catalog/README.md](../catalog/README.md) (levels and
 what proves what) and [specs/coverage.md](../specs/coverage.md) (claims by model, property and

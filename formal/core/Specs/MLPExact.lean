@@ -1,5 +1,8 @@
 import Checks.MLP
 import Foundations.Arithmetic.Slots
+import Models.Exact.MLP
+import Properties.Network
+import Specs.Basic
 
 /-!
 # The packed MLP check is sound
@@ -270,7 +273,7 @@ slots are zero. -/
 theorem slot_gather {s D E n lg : ℕ} (P : ℕ) (hs : 0 < s) (hD : 1 ≤ D) (hDE : D ≤ E) (hnE : n < E)
     (hn : n ≤ 2 ^ lg) (i : ℕ) :
     slot s i (gather s D E n lg P) = if i < n then slot s (i * E + (D - 1)) P else 0 := by
-  set Q := (P &&& (replicate (s * E) lg ((2 ^ s - 1) <<< (s * (D - 1))) &&& (2 ^ (s * (n * E)) - 1)))
+  set Q : ℕ := (P &&& (replicate (s * E) lg ((2 ^ s - 1) <<< (s * (D - 1))) &&& (2 ^ (s * (n * E)) - 1)))
     >>> (s * (D - 1)) with hQdef
   set g := fun c => slot s (c * E + (D - 1)) P
   have hg : ∀ c, g c < 2 ^ s := fun c => slot_lt _ _ _
@@ -532,5 +535,164 @@ theorem layerOk_spec {s c wb ab D n E lg PW B U G V : ℕ} (hs : 1 < s)
         ∑ k ∈ range D, (c : ℤ) * slot s k U := by
     rw [← Finset.sum_sub_distrib]; refine Finset.sum_congr rfl fun k _ => by ring
   rw [this]; linarith
+
+/-! ## Part 3: the network -/
+
+/-- The weights a layer stores, read for input width `D`: row `j`, column `k` is `w_jk`. -/
+def Layer.weights (s c D : ℕ) (l : Layer) : List (List ℤ) :=
+  (List.range l.n).map fun j => (List.range D).map fun k => (slot s (j * l.E + (D - 1) - k) l.PW : ℤ) - c
+
+/-- The biases a layer stores. -/
+def Layer.bias (s : ℕ) (l : Layer) : List ℤ :=
+  (List.range l.n).map fun j => (slot s j l.B : ℤ) - 2 ^ (s - 1)
+
+/-- The network a certificate stores, layer by layer, for input width `D`. -/
+def decode (s c : ℕ) : ℕ → List Layer → List Exact.LinearParams
+  | _, [] => []
+  | D, l :: rest => (l.weights s c D, l.bias s) :: decode s c l.n rest
+
+/-- The integer forward pass of linear layers with ReLU between them (`Exact.reluMLP`'s run). -/
+def forward : List Exact.LinearParams → List ℤ → List ℤ
+  | [], x => x
+  | [θ], x => Exact.linearRun θ x
+  | θ :: θ' :: rest, x => forward (θ' :: rest) ((Exact.linearRun θ x).map (max · 0))
+
+/-- The first `n` slots of `N`, as integers. -/
+def vec (s n N : ℕ) : List ℤ := (List.range n).map fun j => (slot s j N : ℤ)
+
+/-- The first `n` slots of `Y`, read with offset `2^(s−1)`: the claimed outputs. -/
+def outVec (s n Y : ℕ) : List ℤ := (List.range n).map fun j => (slot s j Y : ℤ) - 2 ^ (s - 1)
+
+/-- The width of the last layer. -/
+def lastWidth : ℕ → List Layer → ℕ
+  | D, [] => D
+  | _, l :: rest => lastWidth l.n rest
+
+theorem sum_range_list' {M : Type*} [AddCommMonoid M] (f : ℕ → M) :
+    ∀ D, ((List.range D).map f).sum = ∑ i ∈ range D, f i
+  | 0 => by simp
+  | D + 1 => by rw [List.range_succ, List.map_append, List.sum_append, sum_range_list' f D,
+      Finset.sum_range_succ]; simp
+
+theorem zipWith_range {α β γ : Type*} (f : α → β → γ) (g : ℕ → α) (h : ℕ → β) (n : ℕ) :
+    List.zipWith f ((List.range n).map g) ((List.range n).map h) = (List.range n).map fun j => f (g j) (h j) := by
+  apply List.ext_getElem (by simp)
+  intro i h1 h2
+  simp
+
+theorem dot_range (f g : ℕ → ℤ) (D : ℕ) :
+    Exact.dot ((List.range D).map f) ((List.range D).map g) = ∑ k ∈ range D, f k * g k := by
+  rw [Exact.dot, zipWith_range, sum_range_list']
+
+/-- One accepted layer: the linear map of the stored weights sends the input to the pre-activations. -/
+theorem linearRun_layer {s c wb ab D lg : ℕ} {l : Layer} {U : ℕ} (hs : 1 < s)
+    (h : layerOk s c wb ab D l.n l.E lg l.PW l.B U l.G l.V = true) :
+    Exact.linearRun (l.weights s c D, l.bias s) (vec s D U) = outVec s l.n l.V := by
+  have ⟨_, hV⟩ := layerOk_spec hs h
+  simp only [Exact.linearRun, Layer.weights, Layer.bias, vec, outVec, zipWith_range, dot_range]
+  apply List.ext_getElem (by simp)
+  intro j h1 _
+  simp only [List.getElem_map, List.getElem_range]
+  have hj : j < l.n := by simpa using h1
+  rw [hV j hj]
+  ring
+
+/-- ReLU on the pre-activations gives the next layer's input. -/
+theorem relu_layer {s n V : ℕ} (hs : 1 < s) :
+    (outVec s n V).map (max · 0) = vec s n (relu s n V) := by
+  apply List.ext_getElem (by simp [outVec, vec])
+  intro j h1 _
+  simp only [outVec, vec, List.getElem_map, List.getElem_range]
+  have hj : j < n := by simpa [outVec] using h1
+  rw [slot_relu hs, if_congr (and_iff_right hj) rfl rfl]
+  split
+  · rename_i hge
+    rw [Nat.cast_sub hge, max_eq_left (by push_cast; linarith [show ((2 : ℕ) ^ (s - 1) : ℤ) ≤ slot s j V from by exact_mod_cast hge])]
+    push_cast; ring
+  · rename_i hlt
+    rw [max_eq_right (by push_cast; linarith [show (slot s j V : ℤ) < 2 ^ (s - 1) from by exact_mod_cast lt_of_not_ge hlt])]
+    simp
+
+/-- **The network.** An accepted `run` means: the integer forward pass of the stored network sends
+the input slots to the claimed outputs. -/
+theorem run_spec {s c wb : ℕ} (hs : 1 < s) :
+    ∀ (layers : List Layer) (D ab U Y : ℕ), run s c wb layers D ab U Y = true →
+      forward (decode s c D layers) (vec s D U) = outVec s (lastWidth D layers) Y
+  | [], _, _, _, _, h => by simp [run] at h
+  | l :: rest, D, ab, U, Y, h => by
+    simp only [run, Bool.and_eq_true] at h
+    obtain ⟨hl, hrest⟩ := h
+    have hlin := linearRun_layer hs hl
+    cases rest with
+    | nil =>
+      simp only [Nat.beq_eq] at hrest
+      simp only [decode, forward, lastWidth, hlin, hrest]
+    | cons l' rest' =>
+      simp only [Bool.and_eq_true] at hrest
+      obtain ⟨hhid, hrun⟩ := hrest
+      simp only [hiddenOk, Bool.and_eq_true, Nat.beq_eq] at hhid
+      have ih := run_spec hs (l' :: rest') l.n l.a l.Z Y hrun
+      simp only [decode, forward, lastWidth] at ih ⊢
+      rw [hlin, relu_layer hs, hhid.1]
+      exact ih
+
+/-- **`mlp-exact`, soundness.** If `check` accepts, the integer forward pass of the ReLU network the
+certificate stores sends its input `U` (width `D`) to its claimed outputs `Y`. -/
+theorem check_spec {s c wb D a₀ U Y : ℕ} {layers : List Layer}
+    (h : check s c wb D a₀ U Y layers = true) :
+    forward (decode s c D layers) (vec s D U) = outVec s (lastWidth D layers) Y := by
+  simp only [check, Bool.and_eq_true, Nat.blt_eq] at h
+  exact run_spec h.1 layers D a₀ U Y h.2
+
+/-! ## Part 4: the network family and the claim -/
+
+/-- The stored layers as parameters of `Exact.reluMLP d hs o`. -/
+def toParams : (d : ℕ) → (hs : List ℕ) → (o : ℕ) → List Exact.LinearParams → (Exact.reluMLP d hs o).Params
+  | _, [], _, θs => θs.headD ([], [])
+  | _, h :: hs, o, θs => ((θs.headD ([], []), ()), toParams h hs o θs.tail)
+
+/-- `Exact.reluMLP`'s integer run is the forward pass of the stored layers. -/
+theorem run_toParams : ∀ (d : ℕ) (hs : List ℕ) (o : ℕ) (θs : List Exact.LinearParams) (x : List ℤ),
+    θs.length = hs.length + 1 → (Exact.reluMLP d hs o).run (toParams d hs o θs) x = forward θs x
+  | _, [], _, [θ], x, _ => by simp [toParams, forward, Exact.reluMLP, Exact.Net.run, Exact.linear]
+  | _, [], _, [], _, h => by simp at h
+  | _, [], _, _ :: _ :: _, _, h => by simp at h
+  | _, _ :: _, _, [], _, h => by simp at h
+  | _, _ :: _, _, [_], _, h => by simp at h
+  | _, h :: hs, o, θ :: θ' :: rest, x, hl => by
+    simp only [toParams, Exact.reluMLP, Exact.linearReLU, Exact.Net.run, List.headD, List.tail,
+      Exact.linear, Exact.relu]
+    rw [run_toParams h hs o (θ' :: rest) _ (by simpa using hl)]
+    rfl
+
+theorem length_decode (s c : ℕ) : ∀ (D : ℕ) (layers : List Layer), (decode s c D layers).length = layers.length
+  | _, [] => rfl
+  | _, l :: rest => by simp [decode, length_decode s c l.n rest]
+
+/-- A certificate for `mlp-exact`: the packed numbers `check` reads. -/
+structure Cert where
+  s : ℕ
+  c : ℕ
+  wb : ℕ
+  a₀ : ℕ
+  U : ℕ
+  Y : ℕ
+  layers : List Layer
+
+/-- **`mlp-exact`** for the ReLU network `D → hs → o`: if the kernel accepts the certificate, the
+network it stores sends its input to its claimed outputs, exactly (`δ = 0`). -/
+theorem mlpExact_sound (D : ℕ) (hs : List ℕ) (o : ℕ) :
+    Sound (MeasureTheory.Measure.dirac ())
+      (fun _ (θ : Cert) => check θ.s θ.c θ.wb D θ.a₀ θ.U θ.Y θ.layers = true ∧
+        θ.layers.length = hs.length + 1 ∧ lastWidth D θ.layers = o)
+      (fun θ => (⟨.property ((Exact.reluMLP D hs o).OutputIs (outVec θ.s o θ.Y)),
+          .region {vec θ.s D θ.U}, .all⟩ : Spec (Exact.reluMLP D hs o).Params (List ℤ)).Target
+        (toParams D hs o (decode θ.s θ.c D θ.layers))) 0 := by
+  rw [sound_exact_iff]
+  rintro θ ⟨h, hlen, hw⟩ x hx
+  rw [Set.mem_singleton_iff] at hx
+  subst hx
+  show (Exact.reluMLP D hs o).run _ _ = _
+  rw [run_toParams _ _ _ _ _ (by rw [length_decode]; exact hlen), check_spec h, hw]
 
 end OpenTheory.Checks.MLP

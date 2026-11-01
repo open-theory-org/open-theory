@@ -1,16 +1,29 @@
 id = "mlp-exact-kernel-check"
-name = "Exact forward pass of a quantized ReLU MLP, checked on packed integers"
-level = "experimental"
+name = "Exact forward pass of a ReLU MLP, checked on packed integers"
+level = "verified"
+mode = "verified-checker"
 kind = "neural"
-summary = "The kernel checks, in about a millisecond for 50k parameters, that a ReLU network with integer weights outputs exactly Y on x. The theorem that acceptance implies this claim is not proved yet, so the result is evidence, not a guarantee."
+summary = "The kernel checks, with one big-integer product per layer, that a ReLU network with integer weights outputs exactly Y on x: each layer's dot products, pre-activations and activations are intermediate quantities the kernel verifies. Proved sound against Exact.reluMLP; 0.4 ms for 1,210 parameters, 2 ms for 101,770."
 establishes = ["mlp-exact"]
 checks = ["mlp-exact"]
 implementation = ["methods/neural/mlp_exact_certificate.py"]
 assumptions = ["A3-model-binding"]
-trusted = ["Lean kernel", "definition OpenTheory.Checks.MLP.check, whose meaning is not yet proved"]
+trusted = ["Lean kernel (ot_kernel; ot_check runs are labelled not verified)", "statement of OpenTheory.ClaimTypes.mlpExact (Checks.MLP.mlpExact_sound)", "ot_kernel's construction of the kernel's proposition from the request (records of nine numbers per layer)"]
 conformance = ["tests/conformance/fast_check.py"]
-references = [{ key = "harvey2009kronecker", relation = "background" }]
+references = [{ key = "harvey2009kronecker", relation = "implements" }]
 
 [lean]
+spec = ["OpenTheory.Checks.MLP.Layer", "OpenTheory.Checks.MLP.run", "OpenTheory.Checks.MLP.decode", "OpenTheory.Checks.MLP.forward", "OpenTheory.Exact.Net.OutputIs"]
 check = ["OpenTheory.Checks.MLP.check"]
-spec = ["OpenTheory.Checks.MLP.Layer", "OpenTheory.Checks.MLP.run"]
+correctness = [
+  "OpenTheory.Checks.MLP.check_spec",
+  "OpenTheory.Checks.MLP.run_spec",
+  "OpenTheory.Checks.MLP.layerOk_spec",
+  "OpenTheory.Checks.MLP.slot_gather",
+  "OpenTheory.Checks.MLP.slot_product",
+  "OpenTheory.Checks.MLP.slot_relu",
+  "OpenTheory.Checks.MLP.fold_eq_sum",
+  "OpenTheory.Checks.MLP.slot_replicate",
+  "OpenTheory.Checks.MLP.run_toParams",
+  "OpenTheory.Slots.slot_add_of_carry_free",
+]

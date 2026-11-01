@@ -108,7 +108,7 @@ Steps 2 and 3 change only the speed: the guarantee, the claim type and the level
 | --- | --- | --- | --- | --- | --- |
 | `linear-monotone` | ✓ | ✓ | not needed | 0.13–0.26 ms | ✓ |
 | `linear-robust` | ✓ | ✓ | planned: weights as `W⁺ − W⁻`, the least score `W⁺·lo − W⁻·hi` by two products | 0.8 ms (10 features), 1.8 ms (30), 11 ms (200) | < 0.3 ms at any width |
-| `mlp-exact` (exact MLP output) | **soundness not proved** | ✓ | ✓ | 0.4 ms (1,210 params), 2 ms (101,770) | `verified`: prove `check` against `Exact.reluMLP` |
+| `mlp-exact` (exact MLP output) | ✓ (`Specs/MLPExact.lean`) | ✓ | ✓ | 0.4 ms (1,210 params), 2 ms (101,770) | ✓ under a millisecond for small networks, `verified` |
 | `pool-sample` (beacon sample) | ✓ | ✓ | planned: blocks, quotients and indices packed; `B = Q·N + J` in one product, `J < N` by guard bits; outcomes by one `xor` and a zero test per slot | 28 ms (1,000 items), 1.2 s (20,000) | < 1 ms |
 | `pool-witness` (Chernoff tail) | ✓ | ✓ | planned: witness powers rounded upwards to a fixed precision | 9 ms (1,000), 0.48 s (20,000) | < 1 ms |
 | `tree-robust` | ✓ | ✓ | planned: trees padded to complete depth `D` in heap order; every node's box bound gathered by one product; reachability level by level by shifts and masks; leaves against bounds by guard bits; and opened paths only | 4 ms (10 trees), 0.16 s (500) | < 1 ms |
@@ -132,9 +132,10 @@ with big integers instead of by cryptography: nothing is added to what a `verifi
 
 ## 6. Next, in order
 
-1. **`mlp-exact` proved.** The packed MLP check already runs in 0.4–2 ms; proving it against
-   `Exact.reluMLP` makes the first sub-millisecond white-box check `verified`, and the layer
-   relations are the template for every network check (robust accuracy, intervals per layer).
+1. **`mlp-exact` proved (done).** The packed MLP check, 0.4–2 ms, is proved against
+   `Exact.reluMLP` (`Specs/MLPExact.lean`): the first sub-millisecond white-box check that is
+   `verified`. Its slot lemmas (`Foundations/Arithmetic/Slots.lean`) and layer relations are the
+   template for the next packed checks and for every network check (robust accuracy, intervals per layer).
 2. **Packed `linear-robust`**, the smallest packed proof (two Kronecker products), to fix the
    pattern: offsets for signed values, slot widths, one lemma per relation.
 3. **Packed `pool-sample` and Chernoff tails**, so that every black-box rate checks in under a
