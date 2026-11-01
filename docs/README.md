@@ -7,6 +7,7 @@ This section
 | [PLAN.md](PLAN.md) | Strategy and roadmap |
 | [specs.md](specs.md) | How properties and specifications are organised |
 | [language.md](language.md) | Reference: every formal object, where it lives, what checks it |
+| [architecture/system.md](architecture/system.md) | How the parts fit: language, registries, catalog, producers, verifiers; what is certified; what remains |
 | [trust.md](trust.md) | What a certificate asks you to trust: levels, lanes, assumptions |
 | [statistics.md](statistics.md) | Statistical guarantees: what is proved, what the kernel computes, what is assumed |
 | [benchmarks.md](benchmarks.md) | Kernel time of every check (generated) |
