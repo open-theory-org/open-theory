@@ -5,7 +5,3 @@ claim = "rate-ratio"
 uses = ["rate-gap-certificate"]
 assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A10-group-membership"]
 example = "examples/rate_gap/"
-
-[lean]
-template = "OpenTheory.RateGap.Claim"
-instances = ["OpenTheory.RateGap.ratio_sound"]

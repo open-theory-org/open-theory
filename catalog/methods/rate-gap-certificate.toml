@@ -4,6 +4,8 @@ level = "verified"
 mode = "verified-checker"
 kind = "statistical"
 summary = "One beacon round samples two committed pools (one per group); upper bounds on the rate of a committed output and of its complement in each pool certify the gap (demographic parity difference) or the ratio (four-fifths rule)."
+establishes = ["rate-gap", "rate-ratio"]
+checks = ["pool", "pool-witness"]
 implementation = ["methods/statistical/pool_rate_certificate.py"]
 assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A10-group-membership"]
 trusted = ["Lean kernel (ot_kernel; ot_check runs are labelled not verified)", "statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck, RateGap.gap_sound and RateGap.ratio_sound", "verifier index derivation and Merkle checks", "drand threshold network", "RFC 3161 authority chosen by whoever runs the verifier"]
@@ -14,10 +16,9 @@ references = [
 ]
 
 [lean]
+check = ["OpenTheory.Checks.poolCheck", "OpenTheory.Checks.poolCheckWitness"]
 spec = ["OpenTheory.RateGap.Claim", "OpenTheory.RateGap.Params", "OpenTheory.Checks.poolCheck"]
 correctness = [
-  "OpenTheory.RateGap.gap_sound",
-  "OpenTheory.RateGap.ratio_sound",
   "OpenTheory.RateGap.interval_sound",
   "OpenTheory.RateGap.bad_frac",
   "OpenTheory.DesignSampling.seedFrac_restrict",

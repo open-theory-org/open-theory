@@ -3,6 +3,8 @@ name = "Exact forward pass of a quantized ReLU MLP, checked on packed integers"
 level = "experimental"
 kind = "neural"
 summary = "The kernel checks, in about a millisecond for 50k parameters, that a ReLU network with integer weights outputs exactly Y on x. The theorem that acceptance implies this claim is not proved yet, so the result is evidence, not a guarantee."
+establishes = ["mlp-exact"]
+checks = ["mlp-exact"]
 implementation = ["methods/neural/mlp_exact_certificate.py"]
 assumptions = ["A3-model-binding"]
 trusted = ["Lean kernel", "definition OpenTheory.Checks.MLP.check, whose meaning is not yet proved"]
@@ -10,4 +12,5 @@ conformance = ["tests/conformance/fast_check.py"]
 references = [{ key = "harvey2009kronecker", relation = "background" }]
 
 [lean]
-spec = ["OpenTheory.Checks.MLP.check"]
+check = ["OpenTheory.Checks.MLP.check"]
+spec = ["OpenTheory.Checks.MLP.Layer", "OpenTheory.Checks.MLP.run"]

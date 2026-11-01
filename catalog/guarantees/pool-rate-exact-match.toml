@@ -5,7 +5,3 @@ claim = "pool-rate"
 uses = ["pool-rate-certificate"]
 assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity"]
 example = "examples/pool_rate/"
-
-[lean]
-template = "OpenTheory.PoolRate.Claim"
-instances = ["OpenTheory.DesignSampling.rate_sound"]

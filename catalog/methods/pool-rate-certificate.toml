@@ -4,6 +4,8 @@ level = "verified"
 mode = "verified-checker"
 kind = "statistical"
 summary = "A drand round published after the pool and procedure are committed and timestamped selects the sample; the kernel counts failures and checks the tail; a proved theorem bounds the pool rate with no distributional assumption."
+establishes = ["pool-rate"]
+checks = ["pool", "pool-witness"]
 implementation = ["methods/statistical/pool_rate_certificate.py"]
 assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity"]
 trusted = ["Lean kernel (ot_kernel; ot_check runs are labelled not verified)", "statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck and DesignSampling.rate_sound", "verifier index derivation and Merkle checks", "drand threshold network", "RFC 3161 authority chosen by whoever runs the verifier"]
@@ -17,6 +19,7 @@ references = [
 ]
 
 [lean]
+check = ["OpenTheory.Checks.poolCheck", "OpenTheory.Checks.poolCheckWitness"]
 spec = ["OpenTheory.PoolRate.Claim", "OpenTheory.Checks.poolCheck", "OpenTheory.Checks.poolCheckWitness", "OpenTheory.DesignSampling.poolRate", "OpenTheory.DesignSampling.derive", "OpenTheory.DesignSampling.bad"]
 correctness = [
   "OpenTheory.DesignSampling.rate_sound",

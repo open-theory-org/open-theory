@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-31T23:23:43.867586+00:00",
+  "generatedAt": "2026-11-01T09:02:29.607091+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
   "nodesCount": 106,
@@ -2276,6 +2276,10 @@
         "OpenTheory.poolRate_sound",
         "OpenTheory.judgedRate_sound",
         "OpenTheory.judgedRate_alarms_sound",
+        "OpenTheory.occam_sound",
+        "OpenTheory.pacBayes_sound",
+        "OpenTheory.QuantizedMLP.classificationLoss_01",
+        "OpenTheory.QuantizedMLP.dirac_mem_badEvent",
         "OpenTheory.seedLaw",
         "OpenTheory.seedLaw_apply",
         "OpenTheory.poolRate_eq_card"

@@ -6,8 +6,6 @@ aggregate = "meanLe"
 models = ["any-system"]
 lean = ["OpenTheory.JudgedRate.Claim"]
 sound = ["OpenTheory.judgedRate_sound", "OpenTheory.judgedRate_alarms_sound"]
-checks = ["pool", "pool-witness"]
-methods = ["judged-rate-certificate"]
 assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A9-gold-labels"]
 references = [{ key = "clopper1934use", relation = "implements" }]
 +++

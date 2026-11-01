@@ -4,8 +4,9 @@
 Every card (specs/{models,properties,domains,claims}/*.md) starts with a TOML header between `+++`
 lines. A claim is an observable (a property or a quantity) × a domain × an aggregate
 (docs/specs.md); its card links them, the models, the Lean template and the bridge theorem that
-gives the generic guarantee `Sound` (`formal/core/Specs/Instances.lean`), the fast checks of
-`Checks/Registry.lean`, the catalog methods, the assumptions and the references. This script fails
+gives the generic guarantee `Sound` (`formal/core/Specs/Instances.lean`), the assumptions and the
+references. Which methods establish a claim, and its fast checks, are read from catalog/ (each
+method's `establishes` and `checks`), never written on the card. This script fails
 on any broken link, on an aggregate its domain cannot carry, on a claim that omits an assumption of
 its domain, and on a stale coverage matrix.
 
@@ -17,20 +18,19 @@ from __future__ import annotations
 import importlib.util
 import re
 import sys
-import tomllib
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-SPECS = ROOT / "specs"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from registry import LEVELS, ROOT, SPECS, cards, catalog, establishing  # noqa: E402
+
 COVERAGE = SPECS / "coverage.md"
-LEVELS = ["experimental", "specified", "verified"]
 RELATIONS = {"implements", "adapts", "formalizes", "background", "contrasts"}
 FIELDS = {
     "models": {"id", "family", "lean", "references"},
     "properties": {"id", "kind", "object", "test", "lean", "references"},
     "domains": {"id", "kind", "randomness", "assumptions", "lean", "references"},
-    "claims": {"id", "observable", "domain", "aggregate", "models", "lean", "sound", "checks",
-               "methods", "assumptions", "references"},
+    "claims": {"id", "observable", "domain", "aggregate", "models", "lean", "sound", "assumptions",
+               "references"},
 }
 OBSERVABLE_KINDS = {"property", "quantity"}
 DOMAIN_KINDS = ["region", "pool", "distribution", "pair"]
@@ -52,27 +52,12 @@ def module(path: Path):
     return mod
 
 
-def cards(kind: str) -> dict[str, tuple[Path, dict]]:
-    out = {}
-    for path in sorted((SPECS / kind).glob("*.md")):
-        if path.name == "README.md":
-            continue
-        text = path.read_text(encoding="utf-8")
-        m = re.match(r"\+\+\+\n(.*?)\n\+\+\+\n", text, re.S)
-        out[path.stem] = (path, tomllib.loads(m.group(1)) if m else None)
-    return out
-
-
 def main() -> int:
     errors: list[str] = []
     declared = module(ROOT / "tests/regression/check_lean_decls.py").declared_names()
     bib = set(re.findall(r"^@\w+\{([^,\s]+),", (ROOT / "blueprint/src/references.bib").read_text(), re.M))
     assumptions = set(re.findall(r"^## (A\d+-[\w-]+)", (SPECS / "assumptions/README.md").read_text(), re.M))
-    registry = set(re.findall(r'cli := "([^"]+)"', (ROOT / "formal/core/Checks/Registry.lean").read_text()))
-    methods = {}
-    for p in (ROOT / "catalog/methods").glob("*.toml"):
-        m = tomllib.loads(p.read_text())
-        methods[m["id"]] = m
+    methods = {mid: m for mid, (_, m) in catalog("methods").items()}
 
     reg = {kind: cards(kind) for kind in FIELDS}
     for kind, entries in reg.items():
@@ -128,16 +113,12 @@ def main() -> int:
         for m in c.get("models", []):
             if m not in reg["models"]:
                 errors.append(f"{where}: unknown model {m!r}")
-        for chk in c.get("checks", []):
-            if chk not in registry:
-                errors.append(f"{where}: check {chk!r} is not in formal/core/Checks/Registry.lean")
-        for m in c.get("methods", []):
-            if m not in methods:
-                errors.append(f"{where}: unknown catalog method {m!r}")
-    for p in (ROOT / "catalog/guarantees").glob("*.toml"):
-        g = tomllib.loads(p.read_text())
-        if g.get("claim") not in reg["claims"]:
-            errors.append(f"{p.relative_to(ROOT)}: claim {g.get('claim')!r} has no card in specs/claims/")
+        for k in ("methods", "checks"):
+            if k in c:
+                errors.append(f"{where}: '{k}' is derived from catalog/methods (`establishes`, `checks`); remove it")
+        for mid in establishing(cid, {k: (None, v) for k, v in methods.items()}):
+            for a in sorted(set(methods[mid].get("assumptions", [])) - set(c.get("assumptions", []))):
+                errors.append(f"{where}: omits assumption {a} of its method {mid}")
 
     fresh = coverage(reg, methods)
     if "--write" in sys.argv:
@@ -154,9 +135,13 @@ def main() -> int:
     return 0
 
 
+def claim_methods(claim: dict, methods: dict) -> list[str]:
+    return establishing(claim["id"], {k: (None, v) for k, v in methods.items()})
+
+
 def status(claim: dict, methods: dict) -> str:
-    """Best level among the claim's methods; otherwise how far its Lean side goes."""
-    levels = [methods[m]["level"] for m in claim.get("methods", []) if m in methods]
+    """Best level among the methods establishing the claim; otherwise how far its Lean side goes."""
+    levels = [methods[m]["level"] for m in claim_methods(claim, methods)]
     if levels:
         best = max(levels, key=LEVELS.index)
         return f"**{best}**" + ("" if claim.get("sound") else ", no `Sound` bridge yet")
@@ -191,7 +176,7 @@ def coverage(reg: dict, methods: dict) -> str:
                      + " | ".join("<br>".join(cells.get(k, [])) or "—" for k in DOMAIN_KINDS) + " |")
     lines += [
         "",
-        "Status: the best level of the claim's catalog methods; `theorem`: the bridge to the generic",
+        "Status: the best level of the catalog methods establishing the claim; `theorem`: the bridge to the generic",
         "guarantee `Sound` is proved but no method uses it yet; `statement`: the template exists only.",
         "",
         "| Claim | Observable | Domain | Aggregate | Guarantee (`formal/core/Specs/Instances.lean`) | Fast checks | Methods | Assumptions |",
@@ -199,11 +184,13 @@ def coverage(reg: dict, methods: dict) -> str:
     ]
     for c in sorted(claims, key=lambda c: c["id"]):
         dom = " × ".join(c["domain"]) if isinstance(c["domain"], list) else c["domain"]
+        ms = claim_methods(c, methods)
+        checks = sorted({x for m in ms for x in methods[m].get("checks", [])})
         lines.append(
             f"| [`{c['id']}`](claims/{c['id']}.md) | {c['observable']} | {dom} | {c['aggregate']} | "
             f"{', '.join('`' + s.rsplit('.', 1)[-1] + '`' for s in c['sound']) or 'open'} | "
-            f"{', '.join('`' + x + '`' for x in c['checks']) or '—'} | "
-            f"{', '.join(c['methods']) or '—'} | {', '.join(c['assumptions']) or '—'} |")
+            f"{', '.join('`' + x + '`' for x in checks) or '—'} | "
+            f"{', '.join(ms) or '—'} | {', '.join(c['assumptions']) or '—'} |")
     return "\n".join(lines) + "\n"
 
 

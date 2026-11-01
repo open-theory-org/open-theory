@@ -4,6 +4,7 @@ level = "verified"
 mode = "verified-checker"
 kind = "statistical"
 summary = "Training may pick any code; the union bound over 4^p codes is proved, and the numerical tail is checked by the kernel."
+establishes = ["occam-code-error"]
 implementation = ["methods/statistical/quantized_mlp_certificate.py"]
 assumptions = ["A1-iid", "A4-labels"]
 trusted = ["Lean kernel", "statement of OpenTheory.QuantizedMLP.selected_code_certificate"]

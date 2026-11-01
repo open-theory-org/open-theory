@@ -6,8 +6,6 @@ aggregate = "ratioGe"
 models = ["any-system"]
 lean = ["OpenTheory.RateGap.Claim", "OpenTheory.RateGap.target_ratio", "OpenTheory.PoolRate.Claim.of_poolCheck"]
 sound = ["OpenTheory.RateGap.ratio_sound"]
-checks = ["pool", "pool-witness"]
-methods = ["rate-gap-certificate"]
 assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A10-group-membership"]
 references = [{ key = "clopper1934use", relation = "implements" }, { key = "luck2026certified", relation = "background" }]
 +++

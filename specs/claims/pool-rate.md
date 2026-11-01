@@ -6,8 +6,6 @@ aggregate = "meanLe"
 models = ["any-system"]
 lean = ["OpenTheory.PoolRate.Claim", "OpenTheory.PoolRate.Claim.of_poolCheck"]
 sound = ["OpenTheory.poolRate_sound"]
-checks = ["pool", "pool-witness"]
-methods = ["pool-rate-certificate"]
 assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity"]
 references = [{ key = "clopper1934use", relation = "implements" }, { key = "luck2026certified", relation = "background" }]
 +++

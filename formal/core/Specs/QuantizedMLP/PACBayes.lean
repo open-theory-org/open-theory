@@ -122,21 +122,20 @@ theorem log_one_div_twenty_div_eight_le :
   push_cast
   linarith
 
-/-- **Certificate for the prior centre.** If the reference code `c` was fixed
-independently of the `n` IID bound observations, and the stated rational
-inequalities hold, then with probability at least `1 - δ` the population error
-of `c` is at most `B` whenever its empirical error is at most `q`. -/
-theorem dirac_certificate (P : Population Observation) (a : Arch)
+/-- The deterministic step of the certificate: a sample on which the stated rational
+inequalities hold, the empirical error of `c` is at most `q` and its population error exceeds `B`
+lies in the Catoni bad event of `mlp_pacBayes`. The event does not depend on `t, q, γ, c', E, L, B`,
+so the certificate holds uniformly over them. -/
+theorem dirac_mem_badEvent (P : Population Observation) (a : Arch)
     (c : Code a.parameterCount 4) {m n : ℕ} (hm : 2 ≤ m) (hn : 0 < n) (T : Finset ℝ)
-    (hT : T.Nonempty) {δ t q γ c' E L B : ℝ} (hδ : 0 < δ) (ht : t ∈ T) (ht0 : 0 < t)
+    {δ t q γ c' E L B : ℝ} (ht : t ∈ T) (ht0 : 0 < t)
     (hγ : Real.log (1 / (δ / T.card)) ≤ γ)
     (hc : t * q + (a.parameterCount * ((3 / 2 ^ m) / (1 - 3 / 2 ^ m)) + γ) / n ≤ c')
     (hc0 : 0 ≤ c') (hE : Real.exp c' ≤ E) (hL : L ≤ Real.exp t) (hL1 : 1 < L)
-    (hB : (1 - 1 / E) / (1 - 1 / L) ≤ B) :
-    sampleLaw P.law n {s | empRisk (classificationLoss a) s c ≤ q ∧
-      B < P.risk (classificationLoss a c)} ≤ ENNReal.ofReal δ := by
-  refine (measure_mono ?_).trans (mlp_pacBayes P a c hm n T hT hδ)
-  rintro s ⟨hemp, hrisk⟩
+    (hB : (1 - 1 / E) / (1 - 1 / L) ≤ B)
+    {s : Fin n → Observation} (hemp : empRisk (classificationLoss a) s c ≤ q)
+    (hrisk : B < P.risk (classificationLoss a c)) :
+    s ∈ ⋃ t ∈ T, badEvent (classificationLoss a) P.law (centredPrior m c) n t (δ / T.card) := by
   rw [Set.mem_iUnion₂]
   refine ⟨t, ht, ?_⟩
   by_contra hgood
@@ -161,5 +160,21 @@ theorem dirac_certificate (P : Population Observation) (a : Arch)
   have hfin := (risk_le_of_catoni ht0 hc0 hR hcat hE hL hL1).trans hB
   have hrisk' : B < risk P.law (classificationLoss a) c := hrisk
   linarith
+
+/-- **Certificate for the prior centre.** If the reference code `c` was fixed
+independently of the `n` IID bound observations, and the stated rational
+inequalities hold, then with probability at least `1 - δ` the population error
+of `c` is at most `B` whenever its empirical error is at most `q`. -/
+theorem dirac_certificate (P : Population Observation) (a : Arch)
+    (c : Code a.parameterCount 4) {m n : ℕ} (hm : 2 ≤ m) (hn : 0 < n) (T : Finset ℝ)
+    (hT : T.Nonempty) {δ t q γ c' E L B : ℝ} (hδ : 0 < δ) (ht : t ∈ T) (ht0 : 0 < t)
+    (hγ : Real.log (1 / (δ / T.card)) ≤ γ)
+    (hc : t * q + (a.parameterCount * ((3 / 2 ^ m) / (1 - 3 / 2 ^ m)) + γ) / n ≤ c')
+    (hc0 : 0 ≤ c') (hE : Real.exp c' ≤ E) (hL : L ≤ Real.exp t) (hL1 : 1 < L)
+    (hB : (1 - 1 / E) / (1 - 1 / L) ≤ B) :
+    sampleLaw P.law n {s | empRisk (classificationLoss a) s c ≤ q ∧
+      B < P.risk (classificationLoss a c)} ≤ ENNReal.ofReal δ :=
+  (measure_mono fun _ hs => dirac_mem_badEvent P a c hm hn T ht ht0 hγ hc hc0 hE hL hL1 hB
+    hs.1 hs.2).trans (mlp_pacBayes P a c hm n T hT hδ)
 
 end OpenTheory.QuantizedMLP

@@ -2,6 +2,7 @@ import Specs.Basic
 import Specs.HeldOut
 import Specs.PoolRate
 import Specs.JudgedRate
+import Specs.QuantizedMLP.PACBayes
 import Scopes.OnRegion
 
 /-!
@@ -18,6 +19,8 @@ catalog refer to them by name. See `docs/specs.md`.
 | `OnRegion` | property: predicts `c` | region (a box) | all | none | `0` |
 | `heldout-error` | property: wrong | distribution `D` | rate ≤ `p` | IID sample from any `D` | `δ` |
 | `pool-rate` | property: the event | committed pool | rate ≤ `p` | beacon seed | `(1 + N/2^b)ⁿ δ` |
+| `occam-code-error` | property: wrong | distribution `D` | rate ≤ `p` | IID training sample, any code | `2·4ᵈ·exp(−2nε²)` |
+| `pacbayes-error` | property: wrong | distribution `D` | rate ≤ `B` | IID sample independent of the prior | `δ` |
 | `judged-rate` | property: the true event | committed pool | rate ≤ `pJ + pA` | beacon seed, judge + gold audit | `(1 + N/2^b)ⁿ δJ + (1 + N/2^b)ᵐ δA` |
 -/
 
@@ -57,6 +60,57 @@ theorem heldOut_sound {H Z : Type*} [MeasurableSpace Z] {ℓ : H → Z → ℝ} 
   simp only [Spec.target_meanLe_distribution, not_le] at hnot
   rw [← BinomialTail.risk_eq_measureReal h01 hmeas] at hnot
   exact BinomialTail.mem_clopperPearson_event h01 hmeas hk hp hcdf hnot
+
+/-- The 0/1 classification loss of a quantized ReLU MLP takes the values `0` and `1`. -/
+theorem QuantizedMLP.classificationLoss_01 (a : QuantizedMLP.Arch)
+    (c : QuantizedMLP.Code a.parameterCount 4) (z : QuantizedMLP.Observation) :
+    QuantizedMLP.classificationLoss a c z = 0 ∨ QuantizedMLP.classificationLoss a c z = 1 := by
+  unfold QuantizedMLP.classificationLoss QuantizedMLP.errorBit QuantizedMLP.errorBitOfWeights
+  split <;> simp
+
+/-- **`occam-code-error`.** For every data distribution, the probability that the training sample
+admits a code `c` and a bound `p` with empirical error `+ ε ≤ p` while the population error rate of
+`c` exceeds `p` is at most `2·4ᵈ·exp(−2nε²)`, `d` the number of encoded parameters. The code is the
+parameter: it may be chosen after seeing the sample (by training on it). -/
+theorem occam_sound (P : Population QuantizedMLP.Observation) (a : QuantizedMLP.Arch) {n : ℕ}
+    (hn : 1 ≤ n) {ε : ℝ} (hε : 0 < ε) :
+    Sound (StatLean.StatisticalLearning.sampleLaw P.law n)
+      (fun s (cp : QuantizedMLP.Code a.parameterCount 4 × ℝ) =>
+        StatLean.StatisticalLearning.empRisk (QuantizedMLP.classificationLoss a) s cp.1 + ε ≤ cp.2)
+      (fun cp => (⟨.property fun c z => QuantizedMLP.classificationLoss a c z = 1,
+        .distribution inferInstance P.law, .meanLe cp.2⟩ :
+          Spec (QuantizedMLP.Code a.parameterCount 4) QuantizedMLP.Observation).Target cp.1)
+      (2 * 4 ^ a.parameterCount * Real.exp (-2 * n * ε ^ 2)) := by
+  refine (measure_mono fun s hs => ?_).trans (QuantizedMLP.uniform_code_tail P _
+    (QuantizedMLP.classificationLoss_range a) (QuantizedMLP.classificationLoss_measurable a) hn hε)
+  obtain ⟨⟨c, p⟩, hacc, hnot⟩ := hs
+  simp only [Spec.target_meanLe_distribution, not_le] at hnot
+  rw [← BinomialTail.risk_eq_measureReal (QuantizedMLP.classificationLoss_01 a c)
+    (QuantizedMLP.classificationLoss_measurable a c)] at hnot
+  exact ⟨c, by change _ < StatLean.StatisticalLearning.risk _ _ _; linarith⟩
+
+/-- **`pacbayes-error`.** For a reference code `c` fixed independently of the `n` IID observations,
+the probability that the sample admits a bound `B` passing the certificate's rational inequalities
+(Catoni with the prior centred on `c`, a grid `T` of temperatures, the Dirac posterior at `c`)
+while the population error rate of `c` exceeds `B` is at most `δ`, uniformly over `B` and the
+witnesses `t, q, γ, c', E, L`. -/
+theorem pacBayes_sound (P : Population QuantizedMLP.Observation) (a : QuantizedMLP.Arch)
+    (c : QuantizedMLP.Code a.parameterCount 4) {m n : ℕ} (hm : 2 ≤ m) (hn : 0 < n)
+    (T : Finset ℝ) (hT : T.Nonempty) {δ : ℝ} (hδ : 0 < δ) :
+    Sound (StatLean.StatisticalLearning.sampleLaw P.law n)
+      (fun s (B : ℝ) => ∃ t q γ c' E L : ℝ, t ∈ T ∧ 0 < t ∧ Real.log (1 / (δ / T.card)) ≤ γ ∧
+        t * q + (a.parameterCount * ((3 / 2 ^ m) / (1 - 3 / 2 ^ m)) + γ) / n ≤ c' ∧ 0 ≤ c' ∧
+        Real.exp c' ≤ E ∧ L ≤ Real.exp t ∧ 1 < L ∧ (1 - 1 / E) / (1 - 1 / L) ≤ B ∧
+        StatLean.StatisticalLearning.empRisk (QuantizedMLP.classificationLoss a) s c ≤ q)
+      (fun B => (⟨.property fun c z => QuantizedMLP.classificationLoss a c z = 1,
+        .distribution inferInstance P.law, .meanLe B⟩ :
+          Spec (QuantizedMLP.Code a.parameterCount 4) QuantizedMLP.Observation).Target c) δ := by
+  refine (measure_mono fun s hs => ?_).trans (QuantizedMLP.mlp_pacBayes P a c hm n T hT hδ)
+  obtain ⟨B, ⟨t, q, γ, c', E, L, ht, ht0, hγ, hc, hc0, hE, hL, hL1, hB, hemp⟩, hnot⟩ := hs
+  simp only [Spec.target_meanLe_distribution, not_le] at hnot
+  rw [← BinomialTail.risk_eq_measureReal (QuantizedMLP.classificationLoss_01 a c)
+    (QuantizedMLP.classificationLoss_measurable a c)] at hnot
+  exact QuantizedMLP.dirac_mem_badEvent P a c hm hn T ht ht0 hγ hc hc0 hE hL hL1 hB hemp hnot
 
 /-! ## Population: design-based sample of a committed pool -/
 

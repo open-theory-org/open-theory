@@ -1,4 +1,4 @@
-import scripts.audit_axioms
+import verifier.backends.formal.audit_axioms
 
 -- A completed claim must reject sorryAx even when inherited from another declaration.
 example : isAllowedForCompleted ``sorryAx = false := by decide

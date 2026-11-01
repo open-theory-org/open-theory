@@ -4,6 +4,7 @@ level = "verified"
 mode = "verified-checker"
 kind = "statistical"
 summary = "Untrusted bisection finds the tightest bound; the kernel checks the integer tail inequality; a proved theorem turns it into a population bound."
+establishes = ["heldout-error"]
 implementation = ["methods/statistical/binomial_bound.py", "methods/statistical/heldout_certificate.py"]
 assumptions = ["A1-iid", "A2-heldout-independent", "A4-labels"]
 trusted = ["Lean kernel", "statement of OpenTheory.BinomialTail.testSet_bound"]
@@ -11,6 +12,7 @@ conformance = ["tests/conformance/heldout_verify.py", "tests/conformance/certifi
 references = [{ key = "clopper1934use", relation = "implements" }]
 
 [lean]
+check = ["OpenTheory.BinomialTail.tailNumerator"]
 spec = ["OpenTheory.HeldOut.Claim", "OpenTheory.BinomialTail.binomCdf", "OpenTheory.BinomialTail.tailNumerator"]
 correctness = [
   "OpenTheory.HeldOut.Claim.of_tail",

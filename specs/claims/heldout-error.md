@@ -6,8 +6,6 @@ aggregate = "meanLe"
 models = ["quantized-mlp"]
 lean = ["OpenTheory.HeldOut.Claim", "OpenTheory.HeldOut.Claim.of_tail"]
 sound = ["OpenTheory.heldOut_sound"]
-checks = []        # `ot verify` writes the kernel statement from the template itself
-methods = ["heldout-binomial-bound", "quantized-mlp-kernel-inference"]
 assumptions = ["A1-iid", "A2-heldout-independent", "A3-model-binding", "A4-labels"]
 references = [{ key = "clopper1934use", relation = "implements" }]
 +++

@@ -4,6 +4,7 @@ level = "verified"
 mode = "verified-implementation"
 kind = "neural"
 summary = "One big-integer product per neuron instead of d multiply-adds; proved equal to the list decoder, so certificates scale to ~200k parameters."
+feeds = ["heldout-binomial-bound"]
 implementation = ["research/experiments/kernel_scaling/gen_packed_certificate.py"]
 assumptions = ["A3-model-binding"]
 trusted = ["Lean kernel (GMP-backed Nat arithmetic)", "definition OpenTheory.QuantizedMLP.scoresOfWeights"]
@@ -11,5 +12,6 @@ conformance = ["tests/regression/lean/KroneckerSmoke.lean"]
 references = [{ key = "harvey2009kronecker", relation = "background" }]
 
 [lean]
+check = ["OpenTheory.QuantizedMLP.errorCountPacked"]
 spec = ["OpenTheory.QuantizedMLP.scoresPacked", "OpenTheory.QuantizedMLP.errorCountPacked"]
 correctness = ["OpenTheory.QuantizedMLP.scoresPacked_eq", "OpenTheory.QuantizedMLP.errorCount_packed", "OpenTheory.Kronecker.kronecker_dot"]

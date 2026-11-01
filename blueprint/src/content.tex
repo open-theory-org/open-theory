@@ -1768,12 +1768,15 @@ The Dirac measure of a set is $0$ exactly when the point is not in it.
 \end{proof}
 
 \begin{theorem}[The claim templates are instances]\label{thm:spec_instances}
-\lean{OpenTheory.onRegion_sound, OpenTheory.heldOut_sound, OpenTheory.poolRate_sound, OpenTheory.judgedRate_sound, OpenTheory.judgedRate_alarms_sound, OpenTheory.seedLaw, OpenTheory.seedLaw_apply, OpenTheory.poolRate_eq_card}
+\lean{OpenTheory.onRegion_sound, OpenTheory.heldOut_sound, OpenTheory.poolRate_sound, OpenTheory.judgedRate_sound, OpenTheory.judgedRate_alarms_sound, OpenTheory.occam_sound, OpenTheory.pacBayes_sound, OpenTheory.QuantizedMLP.classificationLoss_01, OpenTheory.QuantizedMLP.dirac_mem_badEvent, OpenTheory.seedLaw, OpenTheory.seedLaw_apply, OpenTheory.poolRate_eq_card}
 \leanok
 \uses{def:spec, thm:sound_exact, thm:region_certificate}
 Region certificates for ReLU networks are sound with $\delta = 0$. Held-out error certificates are
 sound with $\delta$ for every data distribution, uniformly in the count and the bound
-(Clopper--Pearson \cite{clopper1934use}). Pool-rate certificates are sound with
+(Clopper--Pearson \cite{clopper1934use}). Occam certificates for quantized ReLU networks are
+sound with $2 \cdot 4^d e^{-2n\varepsilon^2}$ uniformly over the code chosen by training, and
+PAC-Bayes certificates with $\delta$ uniformly over the bound and the witnesses of Catoni's
+inequality \cite{catoni2007pac}. Pool-rate certificates are sound with
 $(1 + N/2^b)^n \delta$ over beacon seeds, and judged-rate certificates with
 $(1 + N/2^b)^n \delta_J + (1 + N/2^b)^m \delta_A$ (plus $(1 + N/2^b)^m \delta_B$ with the false-alarm
 term).
