@@ -58,7 +58,7 @@ which is why that translation is an assumption (A11) and is checked by re-runnin
 
 | Lane | What runs | What you trust in addition to the proof | Time | Label |
 | --- | --- | --- | --- | --- |
-| **Kernel** (`ot_kernel`) | the Lean kernel evaluates the check (`robustCertK`) on the certificate | the Lean kernel and GMP | MLP 0.2–2 ms; trees 4 ms (10) to 0.2 s (500) | `verified` |
+| **Kernel** (`ot_kernel`) | the Lean kernel evaluates the check (`robustCertK`) on the certificate | the Lean kernel and GMP | packed checks: MLP 0.2–2 ms, linear robustness 0.25–0.8 ms, beacon samples 0.3 ms (1,000 items) to 2.8 ms (20,000), Chernoff tails 0.1–0.2 ms; trees 4 ms (10) to 0.2 s (500) | `verified` |
 | **Compiled** (`ot_check`, `--compiled`) | the same Lean function, compiled to machine code | also the Lean compiler, the C compiler, the runtime | microseconds | "compiled check, not verified: trusts the Lean compiler" |
 | **Verified machine code** (not built) | a checker compiled by a verified compiler (CakeML, as `cake_lpr` does for SAT proofs) | that compiler, and a proof in its logic matching ours | microseconds | — |
 
@@ -72,7 +72,7 @@ re-checked by the kernel on demand.
 
 | Step | What it does | Effect |
 | --- | --- | --- |
-| A. One fast check per claim type | the check is a handful of big-integer operations (the kernel runs GMP at compiled speed; every other step costs about 1.5 µs), proved equal to the reference check | the kernel lane becomes sub-millisecond: fast **and** verified. Done for the MLP (2 ms for 100k parameters); measured for every check in [benchmarks.md](benchmarks.md); next, trees (`docs/PLAN.md`) |
+| A. One fast check per claim type | the check is a handful of big-integer operations (the kernel runs GMP at compiled speed; every other step costs about 1.5 µs), proved equal to the reference check | the kernel lane becomes sub-millisecond: fast **and** verified. Done for the MLP (2 ms for 100k parameters), linear robustness, beacon samples and Chernoff tails; measured for every check in [benchmarks.md](benchmarks.md); next, trees (`docs/PLAN.md`) |
 | B. Close the gaps between the lanes (done) | one Lean decoder from the certificate's numbers to the check's arguments, shared by both lanes; the claim the verifier means is compared with what that decoder reads (`ot_kernel --show`), so the Python encoder and the Lean decoder check each other on every run; a theorem that the compiled entry runs the kernel's check (`runRobust_eq`, `runMonotone_eq`; the pool entries call `poolCheck` itself) | the compiled lane is "verified source, unverified compilation": the compiler is its only extra trust |
 | C. Verified machine code | only if a user requires it | removes the compiler from the trust |
 

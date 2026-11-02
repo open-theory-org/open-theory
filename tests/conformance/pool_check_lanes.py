@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""The `pool` and `pool-witness` checks (`formal/core/Checks/PoolRate.lean`): both lanes, one answer.
+"""The `pool` and `pool-witness` checks (`formal/core/Checks/PoolRate.lean`) and their packed forms
+`pool-packed`, `pool-packed-witness` (bits one per slot, `Checks/PoolSample.lean`): both lanes, one answer.
 
 Sends random requests, honest and broken (stray bits above `n`, too small a halving depth `l`,
-understated counts, bounds one step too tight), to `ot_kernel --compare --stdin`, which evaluates
+understated counts, bounds one step too tight; for the packed forms, a bit in a slot past `n` and
+a slot holding 2), to `ot_kernel --compare --stdin`, which evaluates
 each in the Lean kernel and in the compiled lane (`ot_check`) and reports any disagreement. Each
 answer must also match an independent Python reading of the check. Standard library only;
 requires `lake build ot_kernel`.
@@ -51,6 +53,17 @@ def main() -> int:
         u, v = rng.randint(1, 1 << 20), 1 << 20
         lines.append(f"pool-witness {hex(x)} {n} {l} {k} {a} {b} {u} {v} {d}")
         want.append(common(x, n, l, k, a, b, d) and d * (b * v - a * v + a * u) ** n * v ** k <= (b * v) ** n * u ** k)
+        # packed: the same bits one per slot; a stray bit past n lands in slot n
+        T = (2 * n + 1).bit_length() + 1
+        X = sum(1 << (T * i) for i in range(n + 4) if x >> i & 1)
+        two = rng.random() < 0.08 and x & ((1 << n) - 1)
+        if two:
+            X += 1 << (T * (x & -x).bit_length() - T)        # the lowest set bit's slot becomes 2
+        okp = x >> n == 0 and not two and bin(x).count("1") <= k and a <= b and b > 0 and d > 0
+        lines.append(f"pool-packed {T} {n} {k} {a} {b} {d} {hex(X)}")
+        want.append(okp and d * tail(n, k, a, b) <= b ** n)
+        lines.append(f"pool-packed-witness {T} {n} {k} {a} {b} {u} {v} {d} {hex(X)}")
+        want.append(okp and d * (b * v - a * v + a * u) ** n * v ** k <= (b * v) ** n * u ** k)
     lines += ["pool 0x1 3 0 1", "pool-witness 0xZZ 1 0 0 1 2 1 1 2"]
     want += ["error", "error"]
     res = subprocess.run([str(KERNEL), "--compare", "--stdin"], input="\n".join(lines) + "\n",

@@ -1300,6 +1300,29 @@ The bit vector the kernel builds has bit $i$ equal to the event on item $b_i \bm
 derived index; the count and tail check then gives the claim, as for a given vector.
 \end{proof}
 
+\begin{theorem}[The packed sample check]\label{thm:pool_sample_packed}
+\lean{OpenTheory.Checks.indicesPacked, OpenTheory.Checks.differ, OpenTheory.Checks.countPacked, OpenTheory.Checks.poolSamplePacked, OpenTheory.Checks.poolSamplePackedW, OpenTheory.Checks.poolPacked, OpenTheory.Checks.poolPackedW, OpenTheory.PoolSample.decodeDrawn, OpenTheory.PoolSample.slot_mul_add, OpenTheory.PoolSample.index_of_indicesPacked, OpenTheory.PoolSample.slot_differ, OpenTheory.PoolSample.card_counted, OpenTheory.PoolSample.claim_of_poolSamplePacked, OpenTheory.PoolSample.claim_of_poolSamplePackedW, OpenTheory.PoolSample.poolRate_accepts_packed, OpenTheory.PoolSample.rateGap_of_claims, OpenTheory.PoolRate.Claim.of_poolPacked, OpenTheory.PoolRate.Claim.of_poolPackedW}
+\leanok
+\uses{thm:pool_sample}
+Store the blocks, quotients and indices as the base-$2^S$ digits of $B$, $Q$, $J$, and the items'
+two numbers as the base-$2^T$ digits of $A$, $C$, each below $2^{T-1}$. If $B = NQ + J$, every
+digit of $Q$ is below $2^{m_Q}$ and of $J$ below $2^{m_J}$, $N 2^{m_Q} + 2^{m_J} \le 2^S$, and every
+digit of $J + (2^{m_J} - N)\cdot\mathbf 1$ is below $2^{m_J}$, then digit $i$ of $J$ is digit $i$ of
+$B$ modulo $N$. The top bit of digit $i$ of $(A \oplus C) + (2^{T-1} - 1)\cdot\mathbf 1$ is set
+exactly when $a_i \ne c_i$, and the remainder of those bits, collected one per slot, modulo
+$2^T - 1$ is their number when $2n < 2^T - 1$. So a fixed number of big-integer operations checks
+the sample, its outcomes and its count; the claim is the same as in Theorem~\ref{thm:pool_sample},
+for the positions the request stores.
+\end{theorem}
+\begin{proof}
+\leanok
+When no digit overflows, $K P + Q$ has digits $K p_i + q_i$ (the numbers are sums of their digits
+times powers of $2^S$). Then $b_i = N q_i + j_i$ with $j_i < N$, so $j_i = b_i \bmod N$. A digit
+$x < 2^{T-1}$ plus $2^{T-1} - 1$ reaches $2^{T-1}$ exactly when $x \ne 0$, and $a \oplus c = 0$
+exactly when $a = c$. Since $2^T \equiv 1$, a number is congruent to the sum of its digits modulo
+$2^T - 1$, and the sum is smaller.
+\end{proof}
+
 \chapter{Gradient-descent plateau and singular learning}
 
 \begin{theorem}[The gradient-descent plateau: exact mode dynamics]\label{thm:plateau_modes}

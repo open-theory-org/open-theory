@@ -1,4 +1,5 @@
 import Checks.PoolRate
+import Checks.MLP
 
 /-!
 # The sample itself, checked by the kernel (core Lean only)
@@ -141,5 +142,109 @@ theorem runPoolSampleWitness_eq (N s n l k a b u v d : Nat) (rest : List Nat) :
       | some xs => poolSampleWitnessK N s n l k a b u v d xs
       | none => false := by
   simp only [runPoolSampleWitness]; split <;> simp_all [poolSampleWitnessK_eq]
+
+end OpenTheory.Checks
+
+/-! ### Packed form
+
+The same check on whole vectors. The request carries the `n` blocks, quotients and indices as
+base-`2^S` digits of three numbers `Bk`, `Q`, `J`, and the items' two numbers as base-`2^T` digits
+of `A` and `C`. The kernel checks, with a fixed number of big-integer operations:
+
+* `Bk = N·Q + J` with no carry between slots, and every slot of `J` below `N` (one addition of
+  `2^mJ − N` to every slot, then `digitsBelow`): so slot `i` of `J` is slot `i` of `Bk` mod `N`;
+* the outcomes: slot `i` of `A ^^^ C` is zero exactly when `aᵢ = cᵢ`; adding `2^(T−1) − 1` to every
+  slot sets its top bit exactly when it is not zero, and `differ` collects those bits;
+* the count: the sum of the slots of `differ`, its remainder modulo `2^T − 1`;
+* the tail bound, as before.
+
+What it proves is in `Specs/PoolSamplePacked.lean`, about the positions the request stores.
+-/
+
+namespace OpenTheory.Checks
+
+/-- The packed indices are the blocks modulo `N`. -/
+def indicesPacked (N n S mQ mJ Bk Q J : Nat) : Bool :=
+  Nat.blt 0 N && Nat.blt mJ S && MLP.digitsBelow S n mQ Q && MLP.digitsBelow S n mJ J &&
+    Nat.ble (Nat.add (Nat.mul N (MLP.pow2 mQ)) (MLP.pow2 mJ)) (MLP.pow2 S) &&
+    Nat.beq Bk (Nat.add (Nat.mul N Q) J) && Nat.ble N (MLP.pow2 mJ) &&
+    MLP.digitsBelow S n mJ (Nat.add (Nat.mul (Nat.sub (MLP.pow2 mJ) N) (MLP.ones S n)) J)
+
+/-- Slot `i` is `1` where `aᵢ ≠ cᵢ`, `0` where they are equal. -/
+def differ (T n A C : Nat) : Nat :=
+  Nat.land
+    (Nat.shiftRight (Nat.add (Nat.mul (Nat.sub (MLP.pow2 (Nat.sub T 1)) 1) (MLP.ones T n)) (Nat.xor A C))
+      (Nat.sub T 1))
+    (MLP.ones T n)
+
+/-- The items' numbers fit their slots with a guard bit, and the count fits a slot. -/
+def itemsPacked (T n A C : Nat) : Bool :=
+  Nat.ble 2 T && MLP.digitsBelow T n (Nat.sub T 1) A && MLP.digitsBelow T n (Nat.sub T 1) C &&
+    Nat.blt (Nat.mul n 2) (Nat.sub (MLP.pow2 T) 1)
+
+/-- How many positions are counted: those where `a = c` (`s = 1`) or `a ≠ c`. -/
+def countPacked (s T n A C : Nat) : Nat :=
+  cond (Nat.beq s 1) (Nat.sub n (Nat.mod (differ T n A C) (Nat.sub (MLP.pow2 T) 1)))
+    (Nat.mod (differ T n A C) (Nat.sub (MLP.pow2 T) 1))
+
+/-- The exact tail, `d · bⁿ P(Bin(n, a/b) ≤ k) ≤ bⁿ`. -/
+def tailOk (n k a b d : Nat) : Bool :=
+  Nat.ble a b && Nat.blt 0 b && Nat.blt 0 d && Nat.ble (Nat.mul d (tailFast n k a b)) (Nat.pow b n)
+
+/-- The Chernoff witness `t = u/v`. -/
+def witnessOk (n k a b u v d : Nat) : Bool :=
+  Nat.ble a b && Nat.blt 0 b && Nat.blt 0 u && Nat.ble u v && Nat.blt 0 d &&
+    Nat.ble (Nat.mul (Nat.mul d (Nat.pow (Nat.add (Nat.sub (Nat.mul b v) (Nat.mul a v)) (Nat.mul a u)) n))
+        (Nat.pow v k))
+      (Nat.mul (Nat.pow (Nat.mul b v) n) (Nat.pow u k))
+
+/-- **`pool-sample-packed`**: `pool-sample` on packed positions, exact tail. -/
+def poolSamplePacked (N s n S mQ mJ T k a b d Bk Q J A C : Nat) : Bool :=
+  indicesPacked N n S mQ mJ Bk Q J && itemsPacked T n A C && Nat.ble (countPacked s T n A C) k &&
+    tailOk n k a b d
+
+/-- **`pool-sample-packed-witness`**: the same with a Chernoff witness. -/
+def poolSamplePackedW (N s n S mQ mJ T k a b u v d Bk Q J A C : Nat) : Bool :=
+  indicesPacked N n S mQ mJ Bk Q J && itemsPacked T n A C && Nat.ble (countPacked s T n A C) k &&
+    witnessOk n k a b u v d
+
+/-- `n` bits, one per slot of width `T`, and their count fits a slot. -/
+def bitsPacked (T n X : Nat) : Bool :=
+  Nat.ble 1 T && MLP.digitsBelow T n 1 X && Nat.blt (Nat.mul n 2) (Nat.sub (MLP.pow2 T) 1)
+
+/-- **`pool-packed`**: `pool` on bits given one per slot, counted by one remainder; exact tail. -/
+def poolPacked (T n k a b d X : Nat) : Bool :=
+  bitsPacked T n X && Nat.ble (Nat.mod X (Nat.sub (MLP.pow2 T) 1)) k && tailOk n k a b d
+
+/-- **`pool-packed-witness`**: the same with a Chernoff witness. -/
+def poolPackedW (T n k a b u v d X : Nat) : Bool :=
+  bitsPacked T n X && Nat.ble (Nat.mod X (Nat.sub (MLP.pow2 T) 1)) k && witnessOk n k a b u v d
+
+def runPoolPacked : List Nat → Bool
+  | [T, n, k, a, b, d, X] => poolPacked T n k a b d X
+  | _ => false
+
+def runPoolPackedW : List Nat → Bool
+  | [T, n, k, a, b, u, v, d, X] => poolPackedW T n k a b u v d X
+  | _ => false
+
+def runPoolSamplePacked : List Nat → Bool
+  | [N, s, n, S, mQ, mJ, T, k, a, b, d, Bk, Q, J, A, C] => poolSamplePacked N s n S mQ mJ T k a b d Bk Q J A C
+  | _ => false
+
+def runPoolSamplePackedW : List Nat → Bool
+  | [N, s, n, S, mQ, mJ, T, k, a, b, u, v, d, Bk, Q, J, A, C] =>
+    poolSamplePackedW N s n S mQ mJ T k a b u v d Bk Q J A C
+  | _ => false
+
+def showPoolSamplePacked : List Nat → String
+  | [N, s, n, S, mQ, mJ, T, k, a, b, d, _, _, _, _, _] =>
+    s!"pool={N} same={s} sampled={n} slots={S},{T} quotientBits={mQ} indexBits={mJ} k={k} p={a}/{b} delta=1/{d}"
+  | _ => "malformed"
+
+def showPoolSamplePackedW : List Nat → String
+  | [N, s, n, S, mQ, mJ, T, k, a, b, u, v, d, _, _, _, _, _] =>
+    s!"pool={N} same={s} sampled={n} slots={S},{T} quotientBits={mQ} indexBits={mJ} k={k} p={a}/{b} t={u}/{v} delta=1/{d}"
+  | _ => "malformed"
 
 end OpenTheory.Checks

@@ -3,12 +3,12 @@ name = "Design-based pool-rate certificate from a public beacon"
 level = "verified"
 mode = "verified-checker"
 kind = "statistical"
-summary = "A drand round published after the pool and procedure are committed and timestamped selects the sample; the kernel counts failures and checks the tail; a proved theorem bounds the pool rate with no distributional assumption."
+summary = "A drand round published after the pool and procedure are committed and timestamped selects the sample; the kernel derives the indices from the beacon blocks, computes each sampled item's outcome, counts the failures and checks the tail, all on packed vectors (0.3 ms for 1,000 items, 0.7 ms for 5,000); a proved theorem bounds the pool rate with no distributional assumption."
 establishes = ["pool-rate"]
-checks = ["pool-sample", "pool-sample-witness", "pool", "pool-witness"]
+checks = ["pool-sample-packed", "pool-sample-packed-witness", "pool-sample", "pool-sample-witness", "pool", "pool-witness"]
 implementation = ["methods/statistical/pool_rate_certificate.py"]
 assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A12-commitment-binding"]
-trusted = ["Lean kernel (ot_kernel; ot_check runs are labelled not verified)", "statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck and DesignSampling.rate_sound", "verifier beacon expansion and Merkle checks (PoolSample.Faithful, under A5 and A12)", "drand threshold network", "RFC 3161 authority chosen by whoever runs the verifier"]
+trusted = ["Lean kernel (ot_kernel; ot_check runs are labelled not verified)", "statements of OpenTheory.PoolSample.poolRate_accepts_packed and DesignSampling.rate_sound", "verifier beacon expansion and Merkle checks (PoolSample.Faithful, under A5 and A12), and its packing of the checked positions (PoolSample.decodeDrawn reads them back; tests/conformance/pool_sample_lanes.py unpacks every request)", "drand threshold network", "RFC 3161 authority chosen by whoever runs the verifier"]
 conformance = ["tests/conformance/pool_sample_lanes.py", "tests/conformance/pool_rate_verify.py"]
 references = [
   { key = "luck2026certified", relation = "background" },
@@ -16,12 +16,20 @@ references = [
   { key = "clopper1934use", relation = "implements" },
   { key = "chernoff1952measure", relation = "implements" },
   { key = "laurie2021rfc9162", relation = "implements" },
+  { key = "harvey2009kronecker", relation = "background", note = "vectors as the digits of one big integer, so the kernel's work is a fixed number of GMP operations" },
 ]
 
 [lean]
-check = ["OpenTheory.Checks.poolSampleK", "OpenTheory.Checks.poolSampleWitnessK"]
-spec = ["OpenTheory.Checks.poolSample", "OpenTheory.Checks.Drawn", "OpenTheory.PoolSample.Faithful", "OpenTheory.PoolRate.Claim", "OpenTheory.Checks.poolCheck", "OpenTheory.Checks.poolCheckWitness", "OpenTheory.DesignSampling.poolRate", "OpenTheory.DesignSampling.derive", "OpenTheory.DesignSampling.bad"]
+check = ["OpenTheory.Checks.poolSamplePacked", "OpenTheory.Checks.poolSamplePackedW", "OpenTheory.Checks.poolSampleK", "OpenTheory.Checks.poolSampleWitnessK"]
+spec = ["OpenTheory.Checks.poolSample", "OpenTheory.PoolSample.decodeDrawn", "OpenTheory.Checks.Drawn", "OpenTheory.PoolSample.Faithful", "OpenTheory.PoolRate.Claim", "OpenTheory.Checks.poolCheck", "OpenTheory.Checks.poolCheckWitness", "OpenTheory.DesignSampling.poolRate", "OpenTheory.DesignSampling.derive", "OpenTheory.DesignSampling.bad"]
 correctness = [
+  "OpenTheory.PoolSample.poolRate_accepts_packed",
+  "OpenTheory.PoolSample.claim_of_poolSamplePacked",
+  "OpenTheory.PoolSample.claim_of_poolSamplePackedW",
+  "OpenTheory.PoolSample.card_counted",
+  "OpenTheory.PoolSample.index_of_indicesPacked",
+  "OpenTheory.PoolSample.slot_differ",
+  "OpenTheory.PoolSample.slot_mul_add",
   "OpenTheory.PoolSample.poolRate_accepts",
   "OpenTheory.PoolSample.claim_of_poolSample",
   "OpenTheory.PoolSample.claim_of_poolSampleWitness",

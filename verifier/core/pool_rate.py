@@ -282,6 +282,20 @@ def check_args(bits: list[bool], part, d: int) -> list[str]:
             str(witness[0]), str(witness[1]), str(d)]
 
 
+def packed_check_args(bits: list[bool], part, d: int) -> list[str]:
+    """A request for `Checks.poolPacked` / `poolPackedW` (registry `pool-packed`,
+    `pool-packed-witness`): the bits one per slot of width T, counted by the kernel with one
+    remainder modulo 2^T − 1 (`PoolRate.Claim.of_poolPacked`)."""
+    k, num, den, witness = part
+    n = len(bits)
+    T = (2 * n + 1).bit_length() + 1
+    x = hex(pack([int(b) for b in bits], T))
+    if witness is None:
+        return ["pool-packed", str(T), str(n), str(k), str(num), str(den), str(d), x]
+    return ["pool-packed-witness", str(T), str(n), str(k), str(num), str(den),
+            str(witness[0]), str(witness[1]), str(d), x]
+
+
 def encode(value) -> int:
     """An item's committed value as a number: its canonical JSON bytes behind a 0x01 byte, so that
     different values give different numbers (`Checks.Drawn`)."""
@@ -300,6 +314,36 @@ def sample_args(blocks: list[int], size: int, pairs: list[tuple], same_: bool, p
     for b, (x, y) in zip(blocks, pairs):
         head += [hex(b), str(b % size), hex(encode(x)), hex(encode(y))]
     return head
+
+
+def pack(digits: list[int], width: int) -> int:
+    """Σ digits[i] · 2^(width·i): slot i is digits[i] (`Slots.slot`)."""
+    out = 0
+    for v in reversed(digits):
+        out = (out << width) | v
+    return out
+
+
+def packed_sample_args(blocks: list[int], size: int, pairs: list[tuple], same_: bool, part, d: int) -> list[str]:
+    """A request for `Checks.poolSamplePacked` / `poolSamplePackedW` (registry `pool-sample-packed`,
+    `pool-sample-packed-witness`): the same check as `sample_args`, on whole vectors. Blocks,
+    quotients and indices are base-2^S digits (`Bk = N·Q + J`), the items' two numbers base-2^T
+    digits with a guard bit; the kernel does a fixed number of big-integer operations
+    (`Specs/PoolSamplePacked.lean`)."""
+    k, num, den, witness = part
+    n = len(blocks)
+    qs, js = [b // size for b in blocks], [b % size for b in blocks]
+    m_q = max([q.bit_length() for q in qs] + [0])
+    m_j = size.bit_length()                                  # j < N ≤ 2^mJ
+    S = max(((size << m_q) + (1 << m_j) - 1).bit_length(), m_j + 1)
+    xs = [encode(x) for x, _ in pairs]
+    ys = [encode(y) for _, y in pairs]
+    T = max([v.bit_length() + 1 for v in xs + ys] + [(2 * n + 1).bit_length() + 1, 2])
+    head = [size, int(same_), n, S, m_q, m_j, T, k, num, den]
+    tail = [d, pack(blocks, S), pack(qs, S), pack(js, S), pack(xs, T), pack(ys, T)]
+    if witness is None:
+        return ["pool-sample-packed", *map(str, head + tail[:1]), *map(hex, tail[1:])]
+    return ["pool-sample-packed-witness", *map(str, head + [witness[0], witness[1]] + tail[:1]), *map(hex, tail[1:])]
 
 
 def holds(bits: list[bool], part, d: int) -> bool:
@@ -365,14 +409,16 @@ def handle(bundle: Path, cert: dict, load_file) -> Task:
     k, num, den, witness = part
     ones = sum(bits)
     labels_used = [leaf["label"] if "label" in leaf else labels[i] for i, leaf in enumerate(leaves)]
-    args = sample_args(c["blocks"], size, [(leaf["output"], lab) for leaf, lab in zip(leaves, labels_used)],
+    args = packed_sample_args(c["blocks"], size, [(leaf["output"], lab) for leaf, lab in zip(leaves, labels_used)],
                        False, part, d)
-    fn = "poolSample" if args[0] == "pool-sample" else "poolSampleWitness"
+    fn = "poolSamplePacked" if args[0] == "pool-sample-packed" else "poolSamplePackedW"
     checked += [f"{n} indices (block mod N) and bits (output ≠ label) computed by the Lean kernel from the "
                 f"beacon blocks and the items' committed bytes: {ones} set",
                 f"attempt accounting over {count} declared commitment(s): total δ = {total}"]
     trusted = [
-        "statements of ClaimTypes.poolRate (poolRate_sound) and PoolSample.poolRate_accepts",
+        "statements of ClaimTypes.poolRate (poolRate_sound) and PoolSample.poolRate_accepts_packed",
+        "this verifier's packing of the blocks and the items' numbers into slots (packed_sample_args): "
+        "the positions PoolSample.decodeDrawn reads back are the ones it checked",
         "this verifier's beacon expansion and Merkle inclusion code (verifier/core/pool_rate.py, merkle.py): "
         "the two facts of PoolSample.Faithful, under A5 and A12",
         "SHA-256 as a random oracle for the beacon expansion (A5-beacon) and as a binding commitment (A12)",
@@ -398,8 +444,8 @@ def handle(bundle: Path, cert: dict, load_file) -> Task:
             "commitments the issuer made to the same round and did not declare (A7-issuer-identity)",
         ],
         fast=args,
-        fast_call=f"OpenTheory.Checks.{fn}K on the {n} sampled positions; {describe(part, d, n)}",
-        fast_meaning=(f"meaning, proved once: PoolSample.poolRate_accepts turns it into the acceptance of "
+        fast_call=f"OpenTheory.Checks.{fn} on the {n} sampled positions, packed; {describe(part, d, n)}",
+        fast_meaning=(f"meaning, proved once: PoolSample.poolRate_accepts_packed turns it into the acceptance of "
                       f"ClaimTypes.poolRate (Claim (exact-match failures on the derived sample) {k} ({num}/{den}) "
                       f"(1/{d})), and poolRate_sound into the bound over seeds"),
         fast_explain=reason,
@@ -433,7 +479,7 @@ def handle_judged(bundle: Path, cert: dict, load_file) -> Task:
     named = [("judge", judged, judge, c["d"]), ("audit", missed, audit, c["dA"])]
     if alarms is not None:
         named.append(("alarms", not_alarm, alarms, c["dB"]))
-    groups = [check_args(bits, part, d) for _, bits, part, d in named]
+    groups = [packed_check_args(bits, part, d) for _, bits, part, d in named]
     args = [a for g in groups for a in (*g, "+")][:-1]
     bound = Fraction(judge[1], judge[2]) + Fraction(audit[1], audit[2])
     if alarms is not None:
@@ -459,7 +505,7 @@ def handle_judged(bundle: Path, cert: dict, load_file) -> Task:
                f"Gold-only estimate on the {m} audited items: {sum(fail)}/{m} = {sum(fail) / m:.2%}."),
         checked=checked,
         trusted=[
-            "statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck, JudgedRate.Claim.sound, "
+            "statements of OpenTheory.Checks.poolPacked(W), PoolRate.Claim.of_poolPacked(W), JudgedRate.Claim.sound, "
             "Claim.sound_alarms and JudgedRate.bad_frac",
             "this verifier's index derivation, Merkle and exact-match code (verifier/core/pool_rate.py, merkle.py)",
             "SHA-256 as a random oracle for the beacon expansion (A5-beacon)",
@@ -472,7 +518,7 @@ def handle_judged(bundle: Path, cert: dict, load_file) -> Task:
         fast=args,
         fast_call="OpenTheory.Checks: " + "; ".join(
             f"{nm}: {describe(part, d, len(bits))}" for nm, bits, part, d in named),
-        fast_meaning=(f"meaning, proved once: PoolRate.Claim.of_poolCheck on each part, then "
+        fast_meaning=(f"meaning, proved once: PoolRate.Claim.of_poolPacked(W) on each part (bits one per slot), then "
                       f"JudgedRate.{theorem} gives true rate ≤ {bound} unless the seed is in JudgedRate.bad, "
                       "whose fraction JudgedRate.bad_frac bounds"),
         fast_explain=reason,
@@ -498,10 +544,10 @@ def handle_two_pools(bundle: Path, cert: dict, load_file) -> Task:
              ("upper B", pos_b, parts[2], c["ds"][2]), ("lower B", [not x for x in pos_b], parts[3], c["ds"][3])]
     pairs_a = [(leaf["output"], c["positive"]) for leaf in leaves_a]
     pairs_b = [(leaf["output"], c["positive"]) for leaf in leaves_b]
-    groups = [sample_args(c["blocks"], c["size"], pairs_a, True, parts[0], c["ds"][0]),
-              sample_args(c["blocks"], c["size"], pairs_a, False, parts[1], c["ds"][1]),
-              sample_args(c["blocks_b"], c["size_b"], pairs_b, True, parts[2], c["ds"][2]),
-              sample_args(c["blocks_b"], c["size_b"], pairs_b, False, parts[3], c["ds"][3])]
+    groups = [packed_sample_args(c["blocks"], c["size"], pairs_a, True, parts[0], c["ds"][0]),
+              packed_sample_args(c["blocks"], c["size"], pairs_a, False, parts[1], c["ds"][1]),
+              packed_sample_args(c["blocks_b"], c["size_b"], pairs_b, True, parts[2], c["ds"][2]),
+              packed_sample_args(c["blocks_b"], c["size_b"], pairs_b, False, parts[3], c["ds"][3])]
     args = [a for g in groups for a in (*g, "+")][:-1]
     pA, qA, pB, qB = (Fraction(pt[1], pt[2]) for pt in parts)
     lowA, lowB = 1 - qA, 1 - qB
@@ -544,7 +590,9 @@ def handle_two_pools(bundle: Path, cert: dict, load_file) -> Task:
         words=words,
         checked=checked,
         trusted=[
-            f"statements of ClaimTypes.rateGap / rateRatio ({theorem}) and PoolSample.rateGap_accepts",
+            f"statements of ClaimTypes.rateGap / rateRatio ({theorem}), PoolSample.claim_of_poolSamplePacked(W) "
+            "and PoolSample.rateGap_of_claims",
+            "this verifier's packing of the blocks and the items' numbers into slots (packed_sample_args)",
             "this verifier's beacon expansion and Merkle inclusion code (verifier/core/pool_rate.py, merkle.py): "
             "the two facts of PoolSample.Faithful, under A5 and A12",
             "SHA-256 as a random oracle for the beacon expansion (A5-beacon) and as a binding commitment (A12)",
@@ -558,7 +606,8 @@ def handle_two_pools(bundle: Path, cert: dict, load_file) -> Task:
         fast=args,
         fast_call="OpenTheory.Checks: " + "; ".join(
             f"{nm}: {describe(part, d, len(bits))}" for nm, bits, part, d in named),
-        fast_meaning=(f"meaning, proved once: PoolSample.rateGap_accepts turns the four kernel checks into "
+        fast_meaning=(f"meaning, proved once: PoolSample.claim_of_poolSamplePacked(W) on each packed check, then "
+                      f"PoolSample.rateGap_of_claims, turn the four kernel checks into "
                       f"RateGap.Claim, then OpenTheory.{theorem} over the seed (pool A on the first blocks, "
                       "pool B on the next)"),
         fast_explain=reason,

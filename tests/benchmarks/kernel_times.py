@@ -25,7 +25,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "methods" / "neural"))
 from mlp_exact_certificate import certificate, random_network, request  # noqa: E402
 from verifier.core import linear, trees  # noqa: E402
-from verifier.core.pool_rate import check_args, sample_args  # noqa: E402
+from verifier.core.pool_rate import check_args, packed_check_args, packed_sample_args, sample_args  # noqa: E402
 
 KERNEL = ROOT / ".lake" / "build" / "bin" / "ot_kernel"
 D = 20
@@ -56,12 +56,19 @@ def cases():
     for n in (1000, 20000):
         bits = [rng.random() < 0.05 for _ in range(n)]
         out.append(("pool-witness", f"pool rate, {n:,} sampled bits", " ".join(check_args(bits, (sum(bits), 1, 10, (1, 2)), 1000))))
+        out.append(("pool-packed-witness", f"pool rate, {n:,} sampled bits", " ".join(packed_check_args(bits, (sum(bits), 1, 10, (1, 2)), 1000))))
     for n in (1000, 5000, 20000):
         blocks = [int.from_bytes(hashlib.sha256(i.to_bytes(8, "big")).digest(), "big") for i in range(n)]
         pairs = [("approve" if rng.random() < 0.9 else "decline", "approve") for _ in range(n)]
         fails = sum(a != b for a, b in pairs)
-        out.append(("pool-sample-witness", f"pool rate from the beacon, {n:,} items",
-                    " ".join(sample_args(blocks, 100000, pairs, False, (fails, 1, 5, (1, 2)), 1000))))
+        if n <= 5000:
+            out.append(("pool-sample-witness", f"pool rate from the beacon, {n:,} items",
+                        " ".join(sample_args(blocks, 100000, pairs, False, (fails, 1, 5, (1, 2)), 1000))))
+        out.append(("pool-sample-packed-witness", f"pool rate from the beacon, {n:,} items",
+                    " ".join(packed_sample_args(blocks, 100000, pairs, False, (fails, 1, 5, (1, 2)), 1000))))
+        if n == 1000:
+            out.append(("pool-sample-packed", f"pool rate from the beacon, {n:,} items, exact tail (k = {fails})",
+                        " ".join(packed_sample_args(blocks, 100000, pairs, False, (fails, 1, 5, None), 1000))))
     for n, depth in ((10, 5), (100, 5), (500, 5)):
         model = {"base": 0, "trees": [rtree(rng, depth) for _ in range(n)]}
         x0 = [rng.uniform(-3, 3) for _ in range(D)]

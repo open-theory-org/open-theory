@@ -120,4 +120,5 @@ import Specs.MLPExact
 import Specs.LinearPacked
 import Specs.Linear
 import Specs.PoolSample
+import Specs.PoolSamplePacked
 import Properties.Tree

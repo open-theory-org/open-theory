@@ -695,4 +695,17 @@ theorem mlpExact_sound (D : ℕ) (hs : List ℕ) (o : ℕ) :
   show (Exact.reluMLP D hs o).run _ _ = _
   rw [run_toParams _ _ _ _ _ (by rw [length_decode]; exact hlen), check_spec h, hw]
 
+/-- The remainder modulo `2^B − 1` of a packed number is the sum of its slots, if it fits a slot. -/
+theorem mod_pred_eq_sum {B d m A : ℕ} (hA : A < 2 ^ (B * d)) (hAd : ∀ j, slot B j A < 2 ^ m)
+    (hX : d * 2 ^ m < 2 ^ B - 1) : A % (2 ^ B - 1) = ∑ f ∈ range d, slot B f A := by
+  have hsum : (Kronecker.slots B d A).sum ≤ d * (2 ^ m - 1) := by
+    have := List.sum_le_length_nsmul (Kronecker.slots B d A) (2 ^ m - 1) (by
+      intro y hy; obtain ⟨k, _, rfl⟩ := List.mem_map.mp hy; exact Nat.le_sub_one_of_lt (hAd k))
+    simpa [Kronecker.length_slots] using this
+  have hlt : (Kronecker.slots B d A).sum < 2 ^ B - 1 :=
+    lt_of_le_of_lt (le_trans hsum (Nat.mul_le_mul_left d (Nat.sub_le _ _))) hX
+  nth_rewrite 1 [← Kronecker.pack_slots (B := B) hA]
+  rw [pack_mod_pred, Nat.mod_eq_of_lt hlt, Kronecker.slots, sum_range_list']
+  rfl
+
 end OpenTheory.Checks.MLP

@@ -5,11 +5,11 @@ mode = "verified-checker"
 kind = "statistical"
 summary = "A committed judge's verdicts on a large beacon sample, and gold labels on a small prefix of it, bound the true failure rate through the rectifier identity true = judged + missed − false alarms; each part is a pool-rate check."
 establishes = ["judged-rate"]
-checks = ["pool", "pool-witness"]
+checks = ["pool-packed", "pool-packed-witness", "pool", "pool-witness"]
 implementation = ["methods/statistical/pool_rate_certificate.py"]
 assumptions = ["A5-beacon", "A6-timestamp", "A7-issuer-identity", "A12-commitment-binding", "A9-gold-labels"]
-trusted = ["Lean kernel (ot_kernel; ot_check runs are labelled not verified)", "statements of OpenTheory.Checks.poolCheck, PoolRate.Claim.of_poolCheck, JudgedRate.Claim.sound and JudgedRate.bad_frac", "verifier index derivation and Merkle checks", "drand threshold network", "RFC 3161 authority chosen by whoever runs the verifier"]
-conformance = ["tests/conformance/judged_rate_verify.py"]
+trusted = ["Lean kernel (ot_kernel; ot_check runs are labelled not verified)", "statements of OpenTheory.PoolRate.Claim.of_poolPacked(W), JudgedRate.Claim.sound and JudgedRate.bad_frac", "verifier index derivation, Merkle checks and verdict bits (the kernel counts the bits it is given, one per slot)", "drand threshold network", "RFC 3161 authority chosen by whoever runs the verifier"]
+conformance = ["tests/conformance/judged_rate_verify.py", "tests/conformance/pool_check_lanes.py"]
 references = [
   { key = "angelopoulos2023prediction", relation = "adapts", note = "exact finite-sample bounds for a failure rate on a committed pool, from Clopper-Pearson parts and a union bound, instead of asymptotic intervals" },
   { key = "clopper1934use", relation = "implements" },
@@ -17,7 +17,7 @@ references = [
 ]
 
 [lean]
-check = ["OpenTheory.Checks.poolCheck", "OpenTheory.Checks.poolCheckWitness"]
+check = ["OpenTheory.Checks.poolPacked", "OpenTheory.Checks.poolPackedW", "OpenTheory.Checks.poolCheck", "OpenTheory.Checks.poolCheckWitness"]
 spec = ["OpenTheory.JudgedRate.Claim", "OpenTheory.JudgedRate.missed", "OpenTheory.JudgedRate.notAlarm", "OpenTheory.JudgedRate.bad", "OpenTheory.Checks.poolCheck"]
 correctness = [
   "OpenTheory.JudgedRate.Claim.sound",
@@ -26,4 +26,7 @@ correctness = [
   "OpenTheory.DesignSampling.poolRate_rectify",
   "OpenTheory.DesignSampling.seedFrac_prefix",
   "OpenTheory.PoolRate.Claim.of_poolCheck",
+  "OpenTheory.PoolRate.Claim.of_poolPacked",
+  "OpenTheory.PoolRate.Claim.of_poolPackedW",
+  "OpenTheory.PoolSample.card_bitsPacked",
 ]

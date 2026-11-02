@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-11-01T22:32:10.052094+00:00",
+  "generatedAt": "2026-11-01T23:34:56.172705+00:00",
   "toolchain": "leanprover/lean4:v4.34.0",
   "convention": "massot-leanblueprint",
-  "nodesCount": 119,
+  "nodesCount": 120,
   "nodes": [
     {
       "id": "def:sample",
@@ -1668,6 +1668,40 @@
       ],
       "bountyUsd": null,
       "informalSketch": "The bit vector the kernel builds has bit $i$ equal to the event on item $b_i \\bmod N$, which is the\nderived index; the count and tail check then gives the claim, as for a given vector."
+    },
+    {
+      "id": "thm:pool_sample_packed",
+      "kind": "theorem",
+      "title": "The packed sample check",
+      "leanName": "OpenTheory.Checks.indicesPacked",
+      "leanNames": [
+        "OpenTheory.Checks.indicesPacked",
+        "OpenTheory.Checks.differ",
+        "OpenTheory.Checks.countPacked",
+        "OpenTheory.Checks.poolSamplePacked",
+        "OpenTheory.Checks.poolSamplePackedW",
+        "OpenTheory.Checks.poolPacked",
+        "OpenTheory.Checks.poolPackedW",
+        "OpenTheory.PoolSample.decodeDrawn",
+        "OpenTheory.PoolSample.slot_mul_add",
+        "OpenTheory.PoolSample.index_of_indicesPacked",
+        "OpenTheory.PoolSample.slot_differ",
+        "OpenTheory.PoolSample.card_counted",
+        "OpenTheory.PoolSample.claim_of_poolSamplePacked",
+        "OpenTheory.PoolSample.claim_of_poolSamplePackedW",
+        "OpenTheory.PoolSample.poolRate_accepts_packed",
+        "OpenTheory.PoolSample.rateGap_of_claims",
+        "OpenTheory.PoolRate.Claim.of_poolPacked",
+        "OpenTheory.PoolRate.Claim.of_poolPackedW"
+      ],
+      "statementFormalized": true,
+      "proofFormalized": true,
+      "isVerified": true,
+      "dependencies": [
+        "thm:pool_sample"
+      ],
+      "bountyUsd": null,
+      "informalSketch": "When no digit overflows, $K P + Q$ has digits $K p_i + q_i$ (the numbers are sums of their digits\ntimes powers of $2^S$). Then $b_i = N q_i + j_i$ with $j_i < N$, so $j_i = b_i \\bmod N$. A digit\n$x < 2^{T-1}$ plus $2^{T-1} - 1$ reaches $2^{T-1}$ exactly when $x \\ne 0$, and $a \\oplus c = 0$\nexactly when $a = c$. Since $2^T \\equiv 1$, a number is congruent to the sum of its digits modulo\n$2^T - 1$, and the sum is smaller."
     },
     {
       "id": "thm:plateau_modes",

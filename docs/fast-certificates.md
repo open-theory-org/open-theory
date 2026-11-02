@@ -109,8 +109,8 @@ Steps 2 and 3 change only the speed: the guarantee, the claim type and the level
 | `linear-monotone` | ✓ | ✓ | not needed | 0.13–0.26 ms | ✓ |
 | `linear-robust` | ✓ | ✓ | ✓ `linear-robust-packed` (`Specs/LinearPacked.lean`): weights as `W⁺ − W⁻`, bounds shifted by `O` and reversed, the least score `W⁺·L − W⁻·H` by two products, digit sums by one remainder each | per feature: 0.8 ms (10), 11 ms (200); packed: 0.25 ms (10), 0.5 ms (200), 0.8 ms (1,000) | ✓ under a millisecond to 1,000 features |
 | `mlp-exact` (exact MLP output) | ✓ (`Specs/MLPExact.lean`) | ✓ | ✓ | 0.4 ms (1,210 params), 2 ms (101,770) | ✓ under a millisecond for small networks, `verified` |
-| `pool-sample` (beacon sample) | ✓ | ✓ | planned: blocks, quotients and indices packed; `B = Q·N + J` in one product, `J < N` by guard bits; outcomes by one `xor` and a zero test per slot | 28 ms (1,000 items), 1.2 s (20,000) | < 1 ms |
-| `pool-witness` (Chernoff tail) | ✓ | ✓ | planned: witness powers rounded upwards to a fixed precision | 9 ms (1,000), 0.48 s (20,000) | < 1 ms |
+| `pool-sample` (beacon sample) | ✓ | ✓ | ✓ `pool-sample-packed(-witness)` (`Specs/PoolSamplePacked.lean`): `Bk = N·Q + J` slot by slot, `J < N` by an offset and `digitsBelow`; outcomes by one `xor`, an offset and the top bit of each slot; the count by one remainder | per position: 30 ms (1,000), 1.2 s (20,000); packed: 0.3 ms (1,000), 0.7 ms (5,000), 2.8 ms (20,000) | ✓ under a millisecond to 5,000 items |
+| `pool-witness` (Chernoff tail) | ✓ | ✓ | ✓ `pool-packed(-witness)`: the bits one per slot, counted by one remainder; the witness inequality was never the cost (GMP powers) | per bit: 10 ms (1,000), 0.58 s (20,000); packed: 0.08 ms, 0.23 ms | ✓ |
 | `tree-robust` | ✓ | ✓ | planned: trees padded to complete depth `D` in heap order; every node's box bound gathered by one product; reachability level by level by shifts and masks; leaves against bounds by guard bits; and opened paths only | 4 ms (10 trees), 0.16 s (500) | < 1 ms |
 | `tree-monotone` | ✓ | ✓ | as above, cuts against leaves by guard bits | 17 ms (10), 1.4 s (500) | a few ms |
 
@@ -143,8 +143,12 @@ with big integers instead of by cryptography: nothing is added to what a `verifi
    (`dotSlot_eq`: the middle digit of a product is the dot product). The theorem speaks of the model
    and box the request stores (`packedModel`, `packedBox`), and the conformance test unpacks them.
    The time left is mostly reading the request's decimal numbers.
-3. **Packed `pool-sample` and Chernoff tails**, so that every black-box rate checks in under a
-   millisecond.
+3. **Packed `pool-sample` and Chernoff tails (done).** `Specs/PoolSamplePacked.lean`: one lemma
+   for slot-wise linear combinations (`slot_mul_add`), one for the top bit of each slot
+   (`slot_signs`), and the digit sum by one remainder (`MLP.mod_pred_eq_sum`, shared with the
+   linear check). The cost was the bit count (`popTree`, a step per bit), not the Chernoff
+   witness, so no rounding was needed. Every black-box rate checks in under a millisecond up to
+   5,000 items; at 20,000 the 256-bit blocks dominate (2.8 ms).
 4. **Packed and opened trees**: complete trees in heap order, opened paths, hidden subtrees under
    the commitment.
 

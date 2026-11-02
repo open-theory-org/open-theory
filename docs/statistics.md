@@ -53,11 +53,11 @@ beacon round (drand)          ── BLS signature checked ───────
 seed blocks b₁ … bₙ           ┐
    │ jᵢ = bᵢ mod N            │
    ▼                          │  evaluated by the Lean kernel
-sampled indices j₁ … jₙ       │  (Checks.poolSampleK)
+sampled indices j₁ … jₙ       │  (Checks.poolSamplePacked(W))
    │ bit = [output ≠ label]   │
    ▼                          │
 bits, count, tail bound       ┘
-   │                          ── PoolSample.poolRate_accepts, then poolRate_sound (proved once)
+   │                          ── PoolSample.poolRate_accepts_packed, then poolRate_sound (proved once)
    ▼
 the claim, except with probability δ
 ```
@@ -65,7 +65,9 @@ the claim, except with probability δ
 The items' values `(output, label)` reach the kernel from the verifier, which checks each one's
 Merkle inclusion in the committed root (A12). `PoolSample.Faithful` states exactly these two facts
 (the blocks are the seed; the values are the committed items), and it is the only hypothesis of
-`poolRate_accepts` and `rateGap_accepts`.
+`poolRate_accepts_packed`, `claim_of_poolSamplePacked(W)` and their per-position forms. The verifier
+sends the positions packed, as the digits of five big integers; `PoolSample.decodeDrawn` reads them
+back, and `Faithful` is stated about what it reads.
 
 | Step | Before | Now |
 | --- | --- | --- |
@@ -97,13 +99,16 @@ omits any.
 
 | What | Where it is today | Next |
 | --- | --- | --- |
-| `judged-rate`'s bits (output, judge label, gold label: three values per item) | the verifier computes the bits; the kernel checks count and tail | a `Drawn` with three values and the bridge to `JudgedRate.Claim` |
+| `judged-rate`'s bits (output, judge label, gold label: three values per item) | the verifier computes the bits; the kernel counts them (packed) and checks the tail | a `Drawn` with three values and the bridge to `JudgedRate.Claim` |
 | the SHA-256 expansion and Merkle paths | the verifier | stay outside as A5 and A12: computing SHA-256 in the kernel would not remove the cryptographic assumption, and would cost thousands of kernel steps per sampled item |
 
 ## 6. Cost
 
-The kernel's time grows with the sample: about 30 ms for 1,000 items, 0.2 s for 5,000 and 1.1 s
-for 20,000 (`pool-sample-witness`, measured with `ot_kernel --time`). The compiled lane runs the
-same check, proved equal (`runPoolSample_eq`), in 10 ms, 20 ms and 0.1 s (process start
-included). Packing the per-item work into
-big-integer operations, as for the MLP check, is the plan for sub-millisecond checks.
+The kernel checks the sample packed: blocks, quotients and indices as the digits of three big
+integers, the items' numbers as the digits of two, so the work is a fixed number of GMP operations
+(`Specs/PoolSamplePacked.lean`): 0.3 ms for 1,000 items, 0.7 ms for 5,000 and 2.8 ms for 20,000
+(`pool-sample-packed-witness`, [benchmarks.md](benchmarks.md)), against 30 ms, 0.26 s and 1.2 s
+position by position. What remains at 20,000 is the size of the blocks (256 bits each, five
+million bits in all). The per-position check stays, as the reference the packed one is tested
+against. `judged-rate`'s bits are counted the same way, one per slot (`pool-packed-witness`):
+0.23 ms for 20,000 bits instead of 0.58 s.
