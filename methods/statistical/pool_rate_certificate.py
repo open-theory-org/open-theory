@@ -78,6 +78,7 @@ def fetch_round(chain: str, round_: int, wait: bool = True) -> dict:
 
 def tsa_local(digest_hex: str, tsa_dir: Path) -> bytes:
     """Stamp with a local test authority made by `make_test_tsa` (for tests and demos only)."""
+    tsa_dir = tsa_dir.resolve()  # openssl runs inside tsa_dir, so a relative -config would not resolve
     with tempfile.TemporaryDirectory() as tmp:
         q = Path(tmp) / "q.tsq"
         out = Path(tmp) / "r.tsr"
