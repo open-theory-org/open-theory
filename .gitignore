@@ -12,7 +12,7 @@ __pycache__/
 .venv/
 venv/
 
-MANAGEMENT/
+MANAGEMENT.md
 LOG.md
 
 # Editor & OS files
@@ -20,6 +20,10 @@ LOG.md
 !.vscode/settings.json
 !.vscode/extensions.json
 .DS_Store
+
+# MCP build & dependencies
+interfaces/mcp/node_modules/
+interfaces/mcp/dist/
 
 # leanblueprint / plasTeX / latexmk outputs
 blueprint/web/

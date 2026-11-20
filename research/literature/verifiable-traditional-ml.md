@@ -10,8 +10,9 @@ Context: a bank wants to check the reliability and robustness of production mode
 | Verifiable by design | Large-spread ensembles: polynomial-time ℓ∞ verification, pseudo-polynomial for ℓp; LightGBM extension [@calzavara2023verifiable; @calzavara2025boosted] | Fast exact robustness for boosted trees trained the right way | A natural first algorithm for an exact check |
 | Monotonicity | XGBoost/LightGBM monotone constraints (training); per-tree checks for additive ensembles (sufficient condition) [@devos2021versatile] | Exact, cheap | A natural first property |
 | Fairness | FairSquare [@albarghouthi2017fairsquare], VeriFair [@bastani2019verifair], Justicia [@ghosh2021justicia] | Distributional fairness of trees and logistic regression | Solver-based; nothing found for ensembles |
-| Zero knowledge | Tree predictions and accuracy [@zhang2020zkdt]; fair tree training [@shamsabadi2023profitt]; fair neural networks [@yadav2024fairproof]; audits on committed models and data [@waiwitlikhit2024zkaudit] | Show a property without revealing the model | Building blocks to integrate, not rebuild |
+| Zero knowledge | Tree predictions and accuracy [@zhang2020zkdt]; fair tree training [@shamsabadi2023profitt]; fair neural networks [@yadav2024fairproof]; audits on committed models and data [@waiwitlikhit2024zkaudit]; XGBoost training [@melissaris2026zkboost]; GBDT training and inference [@gao2026terrae] | Show a property without revealing the model | Building blocks to integrate, not rebuild |
 | Small trusted checkers | Verified SAT proof checker in CakeML, used by the SAT Competition [@tan2021cakelpr]; certified checker for Marabou certificates [@desmartin2024checker] | The verified-checker pattern, for SAT and neural networks | Nothing found for tree ensembles in a proof assistant |
+| Statistics and ML in a proof assistant | Verified generalization bounds in Coq (MLCert) [@bagnall2019certifying]; network semantics and certificate checking in Lean [@torchlean; @leancert]; a specification language compiled to Agda [@daggitt2022vehicle] | Machine-checked error bounds (IID test set); per-input robustness of networks | No commit-then-sample, no rates on production pools, no tabular models |
 
 ## The recent result that matters most
 
@@ -24,4 +25,4 @@ Certifying a model on a fixed audit set can be gamed: one model was certified at
 
 ## What this means for the project
 
-Nobody offers independently re-checkable certificates for production models, with assumptions stated, bound to the deployed model, covering performance, robustness, monotonicity and fairness in one framework. First milestone: see `docs/PLAN.md`, "Milestone: certified credit-model report".
+Nobody offers independently re-checkable certificates for production models, with assumptions stated, bound to the deployed model, covering performance, robustness, monotonicity and fairness in one framework. Full comparison, today and in the vision: `docs/positioning.md`. First milestone: see `docs/PLAN.md`, "Milestone: certified credit-model report".

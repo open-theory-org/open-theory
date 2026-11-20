@@ -12,6 +12,7 @@ This section
 | [statistics.md](statistics.md) | Statistical guarantees: what is proved, what the kernel computes, what is assumed |
 | [fast-certificates.md](fast-certificates.md) | Proved once, checked in a millisecond: intermediate quantities, packing, commitments; the recipe and where each check stands |
 | [privacy.md](privacy.md) | Showing a result without the model: enclave, zkVM, kernel in a zkVM; what each reuses and trusts |
+| [positioning.md](positioning.md) | What OpenTheory adds: prior work strand by strand, today and in the vision; how the goal and impact differ; limits |
 | [benchmarks.md](benchmarks.md) | Kernel time of every check (generated) |
 | [concepts/](concepts/) | [overview](concepts/overview.md), MLP risk and trajectory notes |
 | [tutorials/](tutorials/) | [Quantized MLP certificate](tutorials/quantized-mlp-certificate.md) |
